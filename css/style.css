@@ -1,0 +1,267 @@
+/* ============================================================
+   《沉浸式双语互动绘本》— v3 光影特效交互容器
+   深邃暗夜 · 极品毛玻璃 · 金色魔法字音 · 图片占位符体系
+   ============================================================ */
+
+/* ---------- 防误触 ---------- */
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden; position: fixed; top: 0; left: 0;
+  font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  -webkit-overflow-scrolling: auto;
+  overscroll-behavior: none;
+  background: #030610;
+}
+
+/* ---------- 舞台 ---------- */
+#stage {
+  position: relative;
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(180deg,
+    #05080F 0%, #0B1026 12%, #111D4A 28%,
+    #162458 45%, #0f2040 65%, #0a1830 82%, #060e20 100%);
+}
+
+/* ---------- Canvas 粒子层 ---------- */
+#bg-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ============================================================
+   极品 Glassmorphism 字幕面板
+   ============================================================ */
+#subtitle-panel {
+  position: absolute;
+  top: 14px; left: 14px; right: 14px;
+  width: auto;
+  z-index: 100;
+  display: flex; flex-wrap: wrap;
+  justify-content: center; align-items: center;
+  gap: 0.35em;
+  padding: 1.1rem 1.5rem;
+  padding-top: max(1.1rem, calc(env(safe-area-inset-top) + 0.6rem));
+  background: rgba(15, 20, 30, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  min-height: 3.4rem;
+  transition: opacity 0.4s ease;
+}
+
+/* ---------- 魔法字音 ---------- */
+.word-span {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  transition: color 0.22s ease,
+              transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              text-shadow 0.22s ease;
+  transform-origin: center bottom;
+  padding: 0 0.06em;
+  line-height: 1.5;
+}
+
+.word-span.highlight {
+  color: #d4af37;
+  transform: scale(1.15);
+  text-shadow:
+    0 0 15px rgba(212, 175, 55, 0.8),
+    0 0 35px rgba(212, 175, 55, 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.word-span.spoken {
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.15);
+}
+
+#subtitle-zh {
+  width: 100%; text-align: center;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 0.9rem; font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 0.3rem;
+  letter-spacing: 0.1em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   场景角色 / 物品（图片占位符体系）
+   ============================================================ */
+.scene-character,
+.scene-item {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: default;
+  z-index: 10;
+  transition: filter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  line-height: 1;
+}
+
+.scene-character img,
+.scene-item img {
+  width: 100%; height: 100%;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.scene-item[data-draggable="true"] {
+  cursor: grab; z-index: 20;
+}
+.scene-item[data-draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* ---------- 拖拽进行时：强烈金色外发光 ---------- */
+.scene-item.dragging {
+  z-index: 999;
+  transform: translate(-50%, -50%) scale(1.15);
+  filter: drop-shadow(0 0 20px rgba(212, 175, 55, 1))
+          drop-shadow(0 0 40px rgba(212, 175, 55, 0.5))
+          drop-shadow(0 6px 18px rgba(0, 0, 0, 0.5));
+  transition: filter 0.1s ease, transform 0s;
+  animation: none !important;
+}
+
+/* ---------- 苹果浮动 + 金色脉冲外发光 ---------- */
+@keyframes item-bounce {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.3))
+            drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  }
+  50% {
+    transform: translate(-50%, -56%) scale(1.04);
+    filter: drop-shadow(0 0 18px rgba(212, 175, 55, 0.85))
+            drop-shadow(0 0 35px rgba(212, 175, 55, 0.3))
+            drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  }
+}
+.anim-item-bounce {
+  animation: item-bounce 2.4s ease-in-out infinite;
+}
+
+/* ---------- 狐狸空闲呼吸 ---------- */
+@keyframes fox-idle {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -51%) scale(1.02); }
+}
+.anim-fox-idle {
+  animation: fox-idle 3s ease-in-out infinite;
+}
+
+/* ---------- 狐狸开心跳跃 ---------- */
+@keyframes fox-jump {
+  0%   { transform: translate(-50%, -50%) scale(1, 1) rotate(0deg); }
+  12%  { transform: translate(-50%, -48%) scale(1.08, 0.88) rotate(0deg); }
+  28%  { transform: translate(-50%, -80%) scale(0.92, 1.12) rotate(-4deg); }
+  45%  { transform: translate(-50%, -50%) scale(1.06, 0.92) rotate(0deg); }
+  58%  { transform: translate(-50%, -62%) scale(0.97, 1.04) rotate(3deg); }
+  72%  { transform: translate(-50%, -50%) scale(1.02, 0.97) rotate(0deg); }
+  85%  { transform: translate(-50%, -53%) scale(0.99, 1.01) rotate(-1deg); }
+  100% { transform: translate(-50%, -50%) scale(1, 1) rotate(0deg); }
+}
+.anim-fox-jump {
+  animation: fox-jump 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ---------- 苹果消失 ---------- */
+@keyframes pop-vanish {
+  0%   { transform: translate(-50%, -50%) scale(1); opacity: 1;
+         filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.8)); }
+  40%  { transform: translate(-50%, -50%) scale(1.6); opacity: 0.7;
+         filter: drop-shadow(0 0 50px rgba(255, 215, 0, 1)); }
+  100% { transform: translate(-50%, -50%) scale(0); opacity: 0;
+         filter: drop-shadow(0 0 0px transparent); }
+}
+.anim-pop-vanish {
+  animation: pop-vanish 0.5s ease-out forwards;
+  pointer-events: none;
+}
+
+/* ---------- 底部提示条 ---------- */
+#hint-bar {
+  position: absolute;
+  bottom: 14px; left: 14px; right: 14px;
+  width: auto; z-index: 100; text-align: center;
+  padding: 0.9rem 1.2rem;
+  padding-bottom: max(0.9rem, calc(env(safe-area-inset-bottom) + 0.4rem));
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.05rem; font-weight: 700;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(15, 20, 30, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 215, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#hint-bar.visible { opacity: 1; transform: translateY(0); }
+
+/* ---------- DOM 粒子 ---------- */
+.particle {
+  position: absolute; pointer-events: none; z-index: 500;
+  font-size: 1.6rem;
+  animation: particle-fly 1.2s ease-out forwards;
+}
+@keyframes particle-fly {
+  0%   { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--px), var(--py)) scale(0.2) rotate(720deg); }
+}
+
+/* ---------- Loading ---------- */
+#loading-screen {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%; z-index: 9999;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  background: radial-gradient(ellipse at 50% 40%, #111D4A 0%, #0B1026 50%, #030610 100%);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.15rem; font-weight: 700;
+  letter-spacing: 0.06em; gap: 1.5rem;
+  transition: opacity 0.8s ease;
+}
+#loading-screen.fade-out { opacity: 0; pointer-events: none; }
+
+.loader-ring {
+  width: 52px; height: 52px;
+  border: 2.5px solid rgba(212, 175, 55, 0.12);
+  border-top-color: #d4af37;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ---------- 碰撞高亮 ---------- */
+.scene-character.drop-hover {
+  filter: brightness(1.2) saturate(1.2)
+          drop-shadow(0 0 25px rgba(255, 215, 0, 0.9))
+          drop-shadow(0 0 50px rgba(212, 175, 55, 0.4)) !important;
+  transition: filter 0.12s ease !important;
+}
