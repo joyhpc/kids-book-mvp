@@ -1,6 +1,6 @@
 /* ============================================================
-   《沉浸式双语互动绘本》— v3 光影特效交互容器
-   深邃暗夜 · 极品毛玻璃 · 金色魔法字音 · 图片占位符体系
+   《沉浸式双语互动绘本》— v4 深邃助眠暗夜画风
+   极暗径向背景 · 萤火虫粒子 · 梦境涟漪 · 柔和毛玻璃
    ============================================================ */
 
 /* ---------- 防误触 ---------- */
@@ -19,17 +19,15 @@ html, body {
   font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   -webkit-overflow-scrolling: auto;
   overscroll-behavior: none;
-  background: #030610;
+  background: #010205;
 }
 
-/* ---------- 舞台 ---------- */
+/* ---------- 舞台：极深径向暗夜 ---------- */
 #stage {
   position: relative;
   width: 100vw; height: 100vh;
   overflow: hidden;
-  background: linear-gradient(180deg,
-    #05080F 0%, #0B1026 12%, #111D4A 28%,
-    #162458 45%, #0f2040 65%, #0a1830 82%, #060e20 100%);
+  background: radial-gradient(circle at 50% 40%, #050a14 0%, #010205 100%);
 }
 
 /* ---------- Canvas 粒子层 ---------- */
@@ -42,7 +40,7 @@ html, body {
 }
 
 /* ============================================================
-   极品 Glassmorphism 字幕面板
+   深色毛玻璃字幕面板（参考作品风格）
    ============================================================ */
 #subtitle-panel {
   position: absolute;
@@ -52,61 +50,66 @@ html, body {
   display: flex; flex-wrap: wrap;
   justify-content: center; align-items: center;
   gap: 0.35em;
-  padding: 1.1rem 1.5rem;
-  padding-top: max(1.1rem, calc(env(safe-area-inset-top) + 0.6rem));
-  background: rgba(15, 20, 30, 0.4);
+  padding: 1.3rem 1.6rem;
+  padding-top: max(1.3rem, calc(env(safe-area-inset-top) + 0.6rem));
+  background: rgba(5, 8, 15, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 215, 0, 0.1);
-  border-radius: 20px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.9),
+    inset 0 0 30px rgba(255, 255, 255, 0.02);
   min-height: 3.4rem;
   transition: opacity 0.4s ease;
 }
 
-/* ---------- 魔法字音 ---------- */
+/* ---------- 字音词（柔和白色 → 金色高亮） ---------- */
 .word-span {
   display: inline-block;
-  color: rgba(255, 255, 255, 0.45);
-  font-family: 'Nunito', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  transition: color 0.22s ease,
-              transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-              text-shadow 0.22s ease;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Playfair Display', 'Nunito', serif;
+  font-size: 1.75rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 1);
+  transition: color 0.3s ease,
+              transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              text-shadow 0.3s ease;
   transform-origin: center bottom;
   padding: 0 0.06em;
-  line-height: 1.5;
+  line-height: 2;
 }
 
 .word-span.highlight {
   color: #d4af37;
   transform: scale(1.15);
   text-shadow:
-    0 0 15px rgba(212, 175, 55, 0.8),
-    0 0 35px rgba(212, 175, 55, 0.35),
-    0 2px 4px rgba(0, 0, 0, 0.4);
+    0 0 12px rgba(212, 175, 55, 0.6),
+    0 0 25px rgba(212, 175, 55, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
 .word-span.spoken {
-  color: rgba(255, 255, 255, 0.88);
-  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 1);
 }
 
+/* ---------- 中文翻译行：薰衣草紫 ---------- */
 #subtitle-zh {
   width: 100%; text-align: center;
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  font-size: 0.9rem; font-weight: 600;
-  color: rgba(255, 255, 255, 0.35);
-  margin-top: 0.3rem;
-  letter-spacing: 0.1em;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 1.1rem; font-weight: 400;
+  color: rgba(167, 139, 250, 0.7);
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  letter-spacing: 0.08em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 /* ============================================================
-   场景角色 / 物品（图片占位符体系）
+   场景角色 / 物品
    ============================================================ */
 .scene-character,
 .scene-item {
@@ -114,7 +117,7 @@ html, body {
   transform: translate(-50%, -50%);
   cursor: default;
   z-index: 10;
-  transition: filter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: filter 0.8s ease;
   line-height: 1;
 }
 
@@ -133,42 +136,40 @@ html, body {
   cursor: grabbing;
 }
 
-/* ---------- 拖拽进行时：强烈金色外发光 ---------- */
+/* ---------- 拖拽进行时：柔和暖光 ---------- */
 .scene-item.dragging {
   z-index: 999;
-  transform: translate(-50%, -50%) scale(1.15);
-  filter: drop-shadow(0 0 20px rgba(212, 175, 55, 1))
-          drop-shadow(0 0 40px rgba(212, 175, 55, 0.5))
-          drop-shadow(0 6px 18px rgba(0, 0, 0, 0.5));
-  transition: filter 0.1s ease, transform 0s;
+  transform: translate(-50%, -50%) scale(1.1);
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4))
+          drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+  transition: filter 0.15s ease, transform 0s;
   animation: none !important;
 }
 
-/* ---------- 苹果浮动 + 金色脉冲外发光 ---------- */
+/* ---------- 苹果浮动：柔和呼吸发光 ---------- */
 @keyframes item-bounce {
   0%, 100% {
     transform: translate(-50%, -50%) scale(1);
-    filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.3))
-            drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.15))
+            drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
   }
   50% {
-    transform: translate(-50%, -56%) scale(1.04);
-    filter: drop-shadow(0 0 18px rgba(212, 175, 55, 0.85))
-            drop-shadow(0 0 35px rgba(212, 175, 55, 0.3))
-            drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+    transform: translate(-50%, -54%) scale(1.03);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.25))
+            drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
   }
 }
 .anim-item-bounce {
-  animation: item-bounce 2.4s ease-in-out infinite;
+  animation: item-bounce 3s ease-in-out infinite;
 }
 
-/* ---------- 狐狸空闲呼吸 ---------- */
+/* ---------- 狐狸空闲呼吸（更缓慢） ---------- */
 @keyframes fox-idle {
   0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50%      { transform: translate(-50%, -51%) scale(1.02); }
+  50%      { transform: translate(-50%, -50.5%) scale(1.015); }
 }
 .anim-fox-idle {
-  animation: fox-idle 3s ease-in-out infinite;
+  animation: fox-idle 4s ease-in-out infinite;
 }
 
 /* ---------- 狐狸开心跳跃 ---------- */
@@ -186,17 +187,17 @@ html, body {
   animation: fox-jump 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* ---------- 苹果消失 ---------- */
+/* ---------- 苹果消失：柔和渐隐 ---------- */
 @keyframes pop-vanish {
   0%   { transform: translate(-50%, -50%) scale(1); opacity: 1;
-         filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.8)); }
-  40%  { transform: translate(-50%, -50%) scale(1.6); opacity: 0.7;
-         filter: drop-shadow(0 0 50px rgba(255, 215, 0, 1)); }
-  100% { transform: translate(-50%, -50%) scale(0); opacity: 0;
+         filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)); }
+  50%  { transform: translate(-50%, -50%) scale(1.3); opacity: 0.5;
+         filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3)); }
+  100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0;
          filter: drop-shadow(0 0 0px transparent); }
 }
 .anim-pop-vanish {
-  animation: pop-vanish 0.5s ease-out forwards;
+  animation: pop-vanish 0.6s ease-out forwards;
   pointer-events: none;
 }
 
@@ -205,32 +206,32 @@ html, body {
   position: absolute;
   bottom: 14px; left: 14px; right: 14px;
   width: auto; z-index: 100; text-align: center;
-  padding: 0.9rem 1.2rem;
-  padding-bottom: max(0.9rem, calc(env(safe-area-inset-bottom) + 0.4rem));
+  padding: 0.8rem 1.2rem;
+  padding-bottom: max(0.8rem, calc(env(safe-area-inset-bottom) + 0.4rem));
   font-family: 'Nunito', sans-serif;
-  font-size: 1.05rem; font-weight: 700;
-  letter-spacing: 0.03em;
-  color: rgba(255, 255, 255, 0.8);
-  background: rgba(15, 20, 30, 0.35);
+  font-size: 1rem; font-weight: 400;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(5, 8, 15, 0.6);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 215, 0, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-  opacity: 0; transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 #hint-bar.visible { opacity: 1; transform: translateY(0); }
 
 /* ---------- DOM 粒子 ---------- */
 .particle {
   position: absolute; pointer-events: none; z-index: 500;
-  font-size: 1.6rem;
-  animation: particle-fly 1.2s ease-out forwards;
+  font-size: 1.4rem;
+  animation: particle-fly 1.5s ease-out forwards;
 }
 @keyframes particle-fly {
-  0%   { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
-  100% { opacity: 0; transform: translate(var(--px), var(--py)) scale(0.2) rotate(720deg); }
+  0%   { opacity: 0.8; transform: translate(0, 0) scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--px), var(--py)) scale(0.3) rotate(360deg); }
 }
 
 /* ---------- Loading ---------- */
@@ -239,29 +240,150 @@ html, body {
   width: 100%; height: 100%; z-index: 9999;
   display: flex; flex-direction: column;
   justify-content: center; align-items: center;
-  background: radial-gradient(ellipse at 50% 40%, #111D4A 0%, #0B1026 50%, #030610 100%);
-  color: rgba(255, 255, 255, 0.8);
+  background: radial-gradient(circle at 50% 40%, #050a14 0%, #010205 100%);
+  color: rgba(255, 255, 255, 0.7);
   font-family: 'Nunito', sans-serif;
-  font-size: 1.15rem; font-weight: 700;
-  letter-spacing: 0.06em; gap: 1.5rem;
-  transition: opacity 0.8s ease;
+  font-size: 1.1rem; font-weight: 300;
+  letter-spacing: 2px; gap: 1.5rem;
+  transition: opacity 1s ease;
 }
 #loading-screen.fade-out { opacity: 0; pointer-events: none; }
 
 .loader-ring {
-  width: 52px; height: 52px;
-  border: 2.5px solid rgba(212, 175, 55, 0.12);
-  border-top-color: #d4af37;
+  width: 48px; height: 48px;
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  border-top-color: rgba(255, 255, 255, 0.4);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+  animation: spin 1.5s linear infinite;
 }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* ---------- 碰撞高亮 ---------- */
+/* ============================================================
+   章节完成覆盖层
+   ============================================================ */
+#ending-overlay {
+  position: absolute;
+  inset: 0; z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(1, 2, 5, 0.0);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.5s ease, background 1.5s ease;
+}
+#ending-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+  background: rgba(1, 2, 5, 0.82);
+}
+
+.ending-card {
+  text-align: center;
+  transform: translateY(30px) scale(0.92);
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+#ending-overlay.visible .ending-card {
+  transform: translateY(0) scale(1);
+}
+
+.ending-stars {
+  font-size: 2rem;
+  letter-spacing: 0.5em;
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  animation: none;
+}
+#ending-overlay.visible .ending-stars {
+  animation: ending-stars-in 1.5s 0.5s ease both;
+}
+@keyframes ending-stars-in {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.ending-title-en {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.3), 0 4px 20px rgba(0,0,0,0.8);
+  margin-bottom: 0.6rem;
+  opacity: 0;
+}
+#ending-overlay.visible .ending-title-en {
+  animation: ending-text-in 1.2s 0.8s ease both;
+}
+
+.ending-title-zh {
+  font-family: 'Nunito', 'PingFang SC', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: rgba(167, 139, 250, 0.8);
+  letter-spacing: 6px;
+  text-shadow: 0 0 15px rgba(167, 139, 250, 0.3);
+  margin-bottom: 0.5rem;
+  opacity: 0;
+}
+#ending-overlay.visible .ending-title-zh {
+  animation: ending-text-in 1.2s 1.1s ease both;
+}
+
+.ending-subtitle {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 2px;
+  margin-bottom: 2.2rem;
+  opacity: 0;
+}
+#ending-overlay.visible .ending-subtitle {
+  animation: ending-text-in 1.2s 1.4s ease both;
+}
+
+@keyframes ending-text-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ending-btn {
+  display: inline-block;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(167, 139, 250, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  border-radius: 30px;
+  padding: 0.8rem 2.5rem;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5), inset 0 0 15px rgba(167, 139, 250, 0.05);
+  transition: all 0.4s ease;
+  opacity: 0;
+  outline: none;
+}
+#ending-overlay.visible .ending-btn {
+  animation: ending-text-in 1.2s 1.8s ease both;
+}
+.ending-btn:hover, .ending-btn:active {
+  background: rgba(167, 139, 250, 0.25);
+  border-color: rgba(167, 139, 250, 0.5);
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 25px rgba(167, 139, 250, 0.2);
+  transform: scale(1.03);
+}
+
+/* ---------- 碰撞高亮：柔和发光 ---------- */
 .scene-character.drop-hover {
-  filter: brightness(1.2) saturate(1.2)
-          drop-shadow(0 0 25px rgba(255, 215, 0, 0.9))
-          drop-shadow(0 0 50px rgba(212, 175, 55, 0.4)) !important;
-  transition: filter 0.12s ease !important;
+  filter: brightness(1.15) saturate(1.1)
+          drop-shadow(0 0 15px rgba(255, 255, 255, 0.35))
+          drop-shadow(0 0 30px rgba(167, 139, 250, 0.2)) !important;
+  transition: filter 0.2s ease !important;
 }

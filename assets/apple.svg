@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- body -->
+  <circle cx="60" cy="68" r="44" fill="#E84C3D"/>
+  <!-- stem -->
+  <rect x="57" y="18" width="5" height="14" rx="2.5" fill="#6D4C2E"/>
+  <!-- leaf -->
+  <ellipse cx="72" cy="24" rx="13" ry="6" fill="#5BAD5B" transform="rotate(-30 72 24)"/>
+</svg>

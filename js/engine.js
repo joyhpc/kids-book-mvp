@@ -1,10 +1,10 @@
 /**
  * ============================================================
- *  《沉浸式双语互动绘本》通用播放引擎 v3
- *  纯 Vanilla JS · JSON 驱动 · 图片占位符体系 · Canvas 粒子
+ *  《沉浸式双语互动绘本》通用播放引擎 v4
+ *  深邃助眠暗夜画风 · 萤火虫粒子 · 梦境涟漪
  *
  *  核心状态机（绝对不动）：DragDropEngine / AudioSyncEngine
- *  渲染层 v3：img 占位符 + ParticleSystem（Canvas 超新星）
+ *  渲染层 v4：img 占位符 + ParticleSystem（萤火虫 + DreamRipple）
  * ============================================================
  */
 
@@ -35,18 +35,14 @@ const SceneLoader = (() => {
 
     const { scene, dialogues, ui } = _data;
 
-    // —— 渲染背景 ——
     if (scene.background.type === 'css_gradient') {
       _stageEl.style.background = scene.background.value;
-    } else if (scene.background.type === 'image') {
-      _stageEl.style.background = `url('${scene.background.src}') center/cover no-repeat`;
     } else if (scene.background.type === 'canvas') {
       if (scene.background.gradient) {
         _stageEl.style.background = scene.background.gradient;
       }
     }
 
-    // —— 渲染角色 ——
     scene.characters.forEach(ch => {
       const el = document.createElement('div');
       el.id = ch.id;
@@ -75,7 +71,6 @@ const SceneLoader = (() => {
       _stageEl.appendChild(el);
     });
 
-    // —— 渲染可拖拽物品 ——
     scene.items.forEach(item => {
       const el = document.createElement('div');
       el.id = item.id;
@@ -100,10 +95,8 @@ const SceneLoader = (() => {
       _stageEl.appendChild(el);
     });
 
-    // —— 渲染字幕面板 ——
     _renderSubtitle(dialogues.intro);
 
-    // —— 渲染底部提示 ——
     if (ui && ui.hint) {
       const hintBar = document.getElementById('hint-bar');
       if (hintBar) {
@@ -322,7 +315,7 @@ const DragDropEngine = (() => {
     const el = document.getElementById(action.target);
     if (!el) return;
     if (action.animation) el.classList.add('anim-' + action.animation);
-    setTimeout(() => el.style.display = 'none', 500);
+    setTimeout(() => el.style.display = 'none', 600);
   }
 
   function _changeState(action) {
@@ -341,9 +334,6 @@ const DragDropEngine = (() => {
     if (newState.animation) el.classList.add('anim-' + newState.animation);
   }
 
-  /**
-   * Canvas 超新星爆炸 + DOM 粒子双层叠加
-   */
   function _showParticles(action, anchorEl) {
     const rect = anchorEl.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
@@ -386,13 +376,12 @@ const DragDropEngine = (() => {
 
 
 /* ==================== AudioSyncEngine 模块 ==================== */
-/* requestAnimationFrame 驱动逐词卡拉OK高亮，支持真实音频文件同步 */
+/* ▼▼▼ 一行不动 ▼▼▼ */
 const AudioSyncEngine = (() => {
   let _playing = false;
   let _startTs = 0;
   let _words = [];
   let _rafId = null;
-  let _audio = null;
 
   function play(dialogue) {
     if (_playing) stop();
@@ -401,28 +390,14 @@ const AudioSyncEngine = (() => {
     if (_words.length === 0) return;
 
     _playing = true;
-
-    if (dialogue.audio) {
-      _audio = new Audio(dialogue.audio);
-      _audio.play().then(() => {
-        _startTs = performance.now();
-        _rafId = requestAnimationFrame(_tick);
-      }).catch(() => {
-        _startTs = performance.now();
-        _rafId = requestAnimationFrame(_tick);
-      });
-    } else {
-      _startTs = performance.now();
-      _rafId = requestAnimationFrame(_tick);
-    }
+    _startTs = performance.now();
+    _rafId = requestAnimationFrame(_tick);
   }
 
   function _tick(now) {
     if (!_playing) return;
 
-    const elapsed = _audio
-      ? _audio.currentTime
-      : (now - _startTs) / 1000;
+    const elapsed = (now - _startTs) / 1000;
     const spans = document.querySelectorAll('#subtitle-words .word-span');
 
     let allDone = true;
@@ -458,25 +433,23 @@ const AudioSyncEngine = (() => {
       cancelAnimationFrame(_rafId);
       _rafId = null;
     }
-    if (_audio) {
-      _audio.pause();
-      _audio = null;
-    }
   }
 
   function isPlaying() { return _playing; }
 
   return { play, stop, isPlaying };
 })();
+/* ▲▲▲ AudioSyncEngine 结束 ▲▲▲ */
 
 
-/* ==================== ParticleSystem（Canvas 粒子引擎） ==================== */
+/* ==================== ParticleSystem v4（萤火虫 + 梦境涟漪） ==================== */
 const ParticleSystem = (() => {
   let _canvas, _ctx;
   let _w = 0, _h = 0, _dpr = 1;
-  let _ambients = [];
-  let _bursts = [];
-  let _shockwaves = [];
+  let _stars = [];
+  let _fireflies = [];
+  let _ripples = [];
+  let _burstFireflies = [];
   let _running = false;
   let _rafId = null;
 
@@ -487,9 +460,11 @@ const ParticleSystem = (() => {
     _resize();
     window.addEventListener('resize', _resize);
 
-    for (let i = 0; i < 70; i++) {
-      _ambients.push(_makeAmbient());
-    }
+    const numStars = Math.min(100, (_w * _h) / 5000);
+    for (let i = 0; i < numStars; i++) _stars.push(_makeStar());
+
+    const numFF = Math.min(40, (_w * _h) / 25000);
+    for (let i = 0; i < numFF; i++) _fireflies.push(_makeFirefly());
 
     _running = true;
     _rafId = requestAnimationFrame(_loop);
@@ -504,121 +479,151 @@ const ParticleSystem = (() => {
     _ctx.setTransform(_dpr, 0, 0, _dpr, 0, 0);
   }
 
-  function _makeAmbient() {
+  function _makeStar() {
     return {
       x: Math.random() * (_w || 400),
       y: Math.random() * (_h || 800),
-      r: Math.random() * 2.0 + 0.5,
-      vx: (Math.random() - 0.5) * 0.2,
-      vy: -(Math.random() * 0.35 + 0.06),
-      alpha: Math.random(),
-      dAlpha: (Math.random() * 0.012 + 0.004) * (Math.random() > 0.5 ? 1 : -1),
-      color: Math.random() > 0.3 ? '#d4af37' : '#ffffff'
+      size: Math.random() * 1.5,
+      alpha: Math.random() * 0.4,
+      speed: (Math.random() * 0.005 + 0.002) * (Math.random() < 0.5 ? 1 : -1)
     };
   }
 
+  function _makeFirefly() {
+    return {
+      x: Math.random() * (_w || 400),
+      y: Math.random() * (_h || 800),
+      size: Math.random() * 2 + 1,
+      angle: Math.random() * Math.PI * 2,
+      speedY: -(Math.random() * 0.2 + 0.1),
+      color: Math.random() > 0.4 ? '#ffffff' : '#a78bfa'
+    };
+  }
+
+  /**
+   * 梦境涟漪 burst —— 公共 API 与 v3 相同，内部改为柔和涟漪
+   */
   function burst(vx, vy) {
     const rect = _canvas.getBoundingClientRect();
     const cx = vx - rect.left;
     const cy = vy - rect.top;
 
-    const colors = ['#FFD700', '#FFA500', '#FF6347', '#FFFFFF', '#d4af37',
-                    '#FFE4B5', '#FF8C00', '#FFFACD'];
-
-    for (let i = 0; i < 130; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 8 + 1.5;
-      _bursts.push({
+    for (let i = 0; i < 4; i++) {
+      _ripples.push({
         x: cx, y: cy,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 2,
-        r: Math.random() * 5.5 + 1.5,
-        life: 1,
-        decay: 0.006 + Math.random() * 0.011,
-        gravity: 0.035 + Math.random() * 0.03,
-        color: colors[Math.floor(Math.random() * colors.length)]
+        radius: 0,
+        maxRadius: 60 + Math.random() * 80,
+        alpha: 0.5 + Math.random() * 0.2,
+        color: i % 2 === 0 ? 'rgba(167, 139, 250, A)' : 'rgba(255, 255, 255, A)'
       });
     }
 
-    _shockwaves.push(
-      { x: cx, y: cy, radius: 0, maxR: 200, speed: 5.5, alpha: 0.75, color: '#FFD700', width: 3 },
-      { x: cx, y: cy, radius: 0, maxR: 280, speed: 3.5, alpha: 0.35, color: '#d4af37', width: 2 }
-    );
+    for (let i = 0; i < 25; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 1.5 + 0.3;
+      _burstFireflies.push({
+        x: cx, y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 0.5,
+        size: Math.random() * 2.5 + 1,
+        life: 1,
+        decay: 0.005 + Math.random() * 0.008,
+        color: Math.random() > 0.5 ? '#a78bfa' : '#ffffff'
+      });
+    }
   }
 
   function _loop() {
     if (!_running) return;
-    _ctx.clearRect(0, 0, _w, _h);
-    _drawAmbients();
-    _drawBursts();
-    _drawShockwaves();
+
+    _ctx.globalCompositeOperation = 'destination-out';
+    _ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+    _ctx.fillRect(0, 0, _w, _h);
+
+    _ctx.globalCompositeOperation = 'lighter';
+
+    _drawStars();
+    _drawFireflies();
+    _drawRipples();
+    _drawBurstFireflies();
+
     _rafId = requestAnimationFrame(_loop);
   }
 
-  function _drawAmbients() {
-    _ambients.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.alpha += p.dAlpha;
-      if (p.alpha >= 1 || p.alpha <= 0.08) p.dAlpha *= -1;
-      p.alpha = Math.max(0.08, Math.min(1, p.alpha));
+  function _drawStars() {
+    for (let i = 0; i < _stars.length; i++) {
+      const s = _stars[i];
+      s.alpha += s.speed;
+      if (s.alpha <= 0.05 || s.alpha >= 0.5) s.speed *= -1;
+      s.alpha = Math.max(0.05, Math.min(0.5, s.alpha));
+      s.x -= 0.02;
+      if (s.x < 0) s.x = _w;
 
-      if (p.y < -10) { p.y = _h + 10; p.x = Math.random() * _w; }
-      if (p.x < -10) p.x = _w + 10;
-      if (p.x > _w + 10) p.x = -10;
-
-      _ctx.save();
-      _ctx.globalAlpha = p.alpha * 0.5;
-      _ctx.fillStyle = p.color;
-      _ctx.shadowColor = p.color;
-      _ctx.shadowBlur = p.r * 4;
-      _ctx.beginPath();
-      _ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      _ctx.fill();
-      _ctx.restore();
-    });
+      _ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+      _ctx.fillRect(s.x, s.y, s.size, s.size);
+    }
   }
 
-  function _drawBursts() {
-    for (let i = _bursts.length - 1; i >= 0; i--) {
-      const p = _bursts[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += p.gravity;
-      p.vx *= 0.985;
-      p.life -= p.decay;
+  function _drawFireflies() {
+    for (let i = 0; i < _fireflies.length; i++) {
+      const f = _fireflies[i];
 
-      if (p.life <= 0) { _bursts.splice(i, 1); continue; }
+      f.angle += 0.02;
+      f.x += Math.sin(f.angle) * 0.5;
+      f.y += f.speedY;
+
+      if (f.y < -10) { f.y = _h + 10; f.x = Math.random() * _w; }
+      if (f.x < -10) f.x = _w + 10;
+      if (f.x > _w + 10) f.x = -10;
+
+      _ctx.beginPath();
+      _ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
+      _ctx.fillStyle = f.color;
+      _ctx.shadowBlur = 8;
+      _ctx.shadowColor = f.color;
+      _ctx.fill();
+      _ctx.shadowBlur = 0;
+    }
+  }
+
+  function _drawRipples() {
+    for (let i = _ripples.length - 1; i >= 0; i--) {
+      const r = _ripples[i];
+      r.radius += 0.6;
+      r.alpha -= 0.004;
+
+      if (r.alpha <= 0) { _ripples.splice(i, 1); continue; }
 
       _ctx.save();
-      _ctx.globalAlpha = p.life * p.life;
-      _ctx.fillStyle = p.color;
-      _ctx.shadowColor = p.color;
-      _ctx.shadowBlur = p.r * 5 * p.life;
+      _ctx.globalAlpha = Math.max(0, r.alpha);
       _ctx.beginPath();
-      _ctx.arc(p.x, p.y, p.r * (0.3 + p.life * 0.7), 0, Math.PI * 2);
-      _ctx.fill();
+      _ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+      _ctx.lineWidth = 1.5;
+      _ctx.strokeStyle = r.color.replace('A', r.alpha.toFixed(2));
+      _ctx.stroke();
       _ctx.restore();
     }
   }
 
-  function _drawShockwaves() {
-    for (let i = _shockwaves.length - 1; i >= 0; i--) {
-      const sw = _shockwaves[i];
-      sw.radius += sw.speed;
-      const progress = sw.radius / sw.maxR;
+  function _drawBurstFireflies() {
+    for (let i = _burstFireflies.length - 1; i >= 0; i--) {
+      const p = _burstFireflies[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.995;
+      p.vy *= 0.995;
+      p.life -= p.decay;
 
-      if (progress >= 1) { _shockwaves.splice(i, 1); continue; }
+      if (p.life <= 0) { _burstFireflies.splice(i, 1); continue; }
 
       _ctx.save();
-      _ctx.globalAlpha = sw.alpha * (1 - progress);
-      _ctx.strokeStyle = sw.color;
-      _ctx.lineWidth = sw.width * (1 - progress * 0.5);
-      _ctx.shadowColor = sw.color;
-      _ctx.shadowBlur = 18 * (1 - progress);
+      _ctx.globalAlpha = p.life * p.life;
       _ctx.beginPath();
-      _ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
-      _ctx.stroke();
+      _ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      _ctx.fillStyle = p.color;
+      _ctx.shadowBlur = 6 * p.life;
+      _ctx.shadowColor = p.color;
+      _ctx.fill();
       _ctx.restore();
     }
   }
@@ -655,11 +660,13 @@ const App = (() => {
       DragDropEngine.init(stage, data.interaction, () => {
         const hintBar = document.getElementById('hint-bar');
         if (hintBar) hintBar.classList.remove('visible');
+
+        _scheduleEnding(data.ending);
       });
 
       if (loadingScreen) {
         loadingScreen.classList.add('fade-out');
-        setTimeout(() => loadingScreen.remove(), 800);
+        setTimeout(() => loadingScreen.remove(), 1000);
       }
 
     } catch (err) {
@@ -671,6 +678,50 @@ const App = (() => {
         if (text) text.textContent = '加载失败，请刷新重试';
       }
     }
+  }
+
+  function _scheduleEnding(cfg) {
+    if (!cfg) return;
+    const delay = cfg.delay_after_success_ms || 4000;
+
+    setTimeout(() => {
+      const overlay = document.getElementById('ending-overlay');
+      if (!overlay) return;
+
+      const stars = overlay.querySelector('.ending-stars');
+      const titleEn = overlay.querySelector('.ending-title-en');
+      const titleZh = overlay.querySelector('.ending-title-zh');
+      const subtitle = overlay.querySelector('.ending-subtitle');
+      const btn = overlay.querySelector('.ending-btn');
+
+      if (stars) stars.textContent = '✦  ✧  ✦';
+      if (titleEn) titleEn.textContent = cfg.title_en || '';
+      if (titleZh) titleZh.textContent = cfg.title_zh || '';
+      if (subtitle) subtitle.textContent = cfg.subtitle_zh || '';
+      if (btn) {
+        btn.textContent = cfg.button_text || '再读一遍';
+        btn.addEventListener('click', () => location.reload());
+      }
+
+      const subtitlePanel = document.getElementById('subtitle-panel');
+      if (subtitlePanel) subtitlePanel.style.opacity = '0';
+
+      const foxEl = document.getElementById('fox');
+      if (foxEl) {
+        foxEl.style.transition = 'opacity 1.5s ease, transform 1.5s ease';
+        foxEl.style.opacity = '0.15';
+        foxEl.style.transform = 'translate(-50%, -50%) scale(0.85)';
+      }
+
+      overlay.classList.add('visible');
+
+      if (typeof ParticleSystem !== 'undefined' && ParticleSystem.burst) {
+        const vw = window.innerWidth, vh = window.innerHeight;
+        ParticleSystem.burst(vw * 0.5, vh * 0.45);
+        setTimeout(() => ParticleSystem.burst(vw * 0.3, vh * 0.5), 400);
+        setTimeout(() => ParticleSystem.burst(vw * 0.7, vh * 0.5), 800);
+      }
+    }, delay);
   }
 
   return { boot };

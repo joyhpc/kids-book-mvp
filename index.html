@@ -12,7 +12,7 @@
   <!-- 绘本字体：Nunito（儿童友好）+ Playfair Display（高级感标题） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -32,6 +32,16 @@
     <div id="subtitle-panel"></div>
     <!-- 底部操作提示 -->
     <div id="hint-bar"></div>
+    <!-- 章节完成覆盖层 -->
+    <div id="ending-overlay">
+      <div class="ending-card">
+        <div class="ending-stars" aria-hidden="true"></div>
+        <div class="ending-title-en"></div>
+        <div class="ending-title-zh"></div>
+        <div class="ending-subtitle"></div>
+        <button class="ending-btn"></button>
+      </div>
+    </div>
   </div>
 
   <!-- file:// 协议兼容：预加载场景数据（服务器环境下引擎优先用 fetch） -->

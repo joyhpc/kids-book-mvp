@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>小王子 | The Little Prince — 极简毛玻璃阅读引擎</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background:#000}
+body{transition:background 2s ease}
+
+/* ═══ Canvas 粒子层 ═══ */
+#particles{position:fixed;inset:0;z-index:1;pointer-events:none}
+
+/* ═══ SVG 场景层 ═══ */
+#svg-scene{position:fixed;bottom:0;left:0;width:100%;height:35vh;z-index:2;
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:.85;transition:opacity 1.2s ease;pointer-events:auto}
+#svg-scene svg{width:100%;max-height:100%;display:block}
+
+/* ═══ 3D 视差容器 ═══ */
+#parallax{position:fixed;inset:0;z-index:10;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  perspective:1200px;transform-style:preserve-3d;pointer-events:none}
+
+/* ═══ 毛玻璃阅读面板 ═══ */
+#panel{position:relative;width:min(88vw,680px);max-height:72vh;
+  padding:2.4rem 2.8rem;overflow-y:auto;pointer-events:auto;
+  background:rgba(10,15,25,0.65);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(212,175,55,0.08);border-radius:12px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.04),0 30px 80px rgba(0,0,0,0.6);
+  transform:translateZ(40px);transition:opacity .6s ease,transform .6s ease}
+#panel.hidden{opacity:0;transform:translateZ(40px) translateY(24px);pointer-events:none}
+
+#chapter-label{font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:#d4af37;margin-bottom:1.2rem;
+  opacity:.7}
+
+#text-en{font-family:'Playfair Display',Georgia,serif;font-size:1.45rem;line-height:1.9;
+  color:rgba(255,255,255,0.92);text-shadow:0 2px 8px rgba(0,0,0,0.6);
+  margin-bottom:1.4rem;min-height:2em}
+
+#text-zh{font-family:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;
+  font-size:.95rem;line-height:1.8;color:rgba(255,255,255,0.38);
+  letter-spacing:.04em;margin-bottom:1rem}
+
+#author-note{font-family:'Nunito',sans-serif;font-size:.72rem;
+  color:rgba(212,175,55,0.45);letter-spacing:.12em;text-align:right;
+  font-style:italic}
+
+/* ═══ 打字机光标 ═══ */
+.cursor{display:inline-block;width:2px;height:1.2em;background:#d4af37;
+  margin-left:2px;vertical-align:text-bottom;
+  animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ═══ 底部导航 ═══ */
+#nav{position:fixed;bottom:max(20px,env(safe-area-inset-bottom));
+  left:50%;transform:translateX(-50%);z-index:20;pointer-events:auto;
+  display:flex;align-items:center;gap:16px}
+.nav-btn{width:44px;height:44px;border-radius:50%;border:1px solid rgba(212,175,55,0.15);
+  background:rgba(10,15,25,0.5);backdrop-filter:blur(10px);
+  color:rgba(255,255,255,0.7);font-size:1.1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s ease;-webkit-backdrop-filter:blur(10px)}
+.nav-btn:hover{border-color:rgba(212,175,55,0.4);color:#d4af37;
+  box-shadow:0 0 20px rgba(212,175,55,0.15)}
+.nav-btn:active{transform:scale(.92)}
+#dots{display:flex;gap:8px}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);
+  transition:all .4s ease;cursor:pointer}
+.dot.active{background:#d4af37;box-shadow:0 0 8px rgba(212,175,55,0.5);
+  transform:scale(1.4)}
+
+/* ═══ 音频开关 ═══ */
+#audio-btn{position:fixed;top:20px;right:20px;z-index:20;
+  width:40px;height:40px;border-radius:50%;border:1px solid rgba(212,175,55,0.12);
+  background:rgba(10,15,25,0.4);backdrop-filter:blur(10px);
+  color:rgba(255,255,255,0.5);font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s ease;pointer-events:auto;-webkit-backdrop-filter:blur(10px)}
+#audio-btn:hover{color:#d4af37;border-color:rgba(212,175,55,0.3)}
+#audio-btn.muted{opacity:.35}
+
+/* ═══ 滚动条隐藏 ═══ */
+#panel::-webkit-scrollbar{width:3px}
+#panel::-webkit-scrollbar-track{background:transparent}
+#panel::-webkit-scrollbar-thumb{background:rgba(212,175,55,0.2);border-radius:3px}
+
+@media(max-width:520px){
+  #panel{padding:1.6rem 1.4rem;width:94vw}
+  #text-en{font-size:1.2rem;line-height:1.75}
+  #svg-scene{height:28vh}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="svg-scene"></div>
+
+<div id="parallax">
+  <div id="panel">
+    <div id="chapter-label"></div>
+    <div id="text-en"></div>
+    <div id="text-zh"></div>
+    <div id="author-note"></div>
+  </div>
+</div>
+
+<nav id="nav">
+  <button class="nav-btn" id="prev-btn" aria-label="Previous">&#8592;</button>
+  <div id="dots"></div>
+  <button class="nav-btn" id="next-btn" aria-label="Next">&#8594;</button>
+</nav>
+<button id="audio-btn" aria-label="Toggle audio">&#9835;</button>
+
+<script>
+/* ================================================================
+   DATA — 章节数据 / 和弦 / SVG 场景
+   ================================================================ */
+const chapters = [
+  {
+    en: "All grown-ups were once children... but only few of them remember it.",
+    zh: "所有的大人都曾经是小孩，虽然，只有少数的人记得。",
+    bg: "radial-gradient(ellipse at 50% 55%, #0c1445 0%, #060d24 50%, #000 100%)",
+    pColor: "#7c9ed9",
+    mode: "stars",
+    author: "Chapter I · 献辞"
+  },
+  {
+    en: "I ought to have judged her by her actions and not by her words. She cast her fragrance and her radiance over me. I ought never to have run away!",
+    zh: "我本应该以她的行为来判断她，而不是以她的话。她为我送来芬芳，照亮了我的生活。我本不该离开她！",
+    bg: "radial-gradient(ellipse at 40% 60%, #1a0a20 0%, #0d0515 50%, #000 100%)",
+    pColor: "#c9879f",
+    mode: "magic",
+    author: "Chapter IX · 玫瑰"
+  },
+  {
+    en: "You become responsible, forever, for what you have tamed. You are responsible for your rose.",
+    zh: ""你要对你驯服的东西负责到底。你要对你的玫瑰负责……"",
+    bg: "radial-gradient(ellipse at 55% 50%, #1a1508 0%, #0d0c04 50%, #000 100%)",
+    pColor: "#d4a052",
+    mode: "fireflies",
+    author: "Chapter XXI · 狐狸"
+  },
+  {
+    en: "The stars are beautiful, because of a flower that cannot be seen.",
+    zh: ""星星真美，因为有一朵看不见的花。"",
+    bg: "radial-gradient(ellipse at 50% 40%, #0a0e2e 0%, #050818 50%, #000 100%)",
+    pColor: "#e8e8f0",
+    mode: "snow",
+    author: "Chapter XXIV · 星辰"
+  },
+  {
+    en: "What makes the desert beautiful is that somewhere it hides a well.",
+    zh: ""沙漠之所以美丽，是因为在它的某个角落隐藏着一口井。"",
+    bg: "radial-gradient(ellipse at 50% 65%, #1a1610 0%, #0c0a06 50%, #000 100%)",
+    pColor: "#a89070",
+    mode: "ashes",
+    author: "Chapter XXIV · 沙漠"
+  },
+  {
+    en: "In one of the stars I shall be living. In one of them I shall be laughing. And so it will be as if all the stars were laughing, when you look at the sky at night.",
+    zh: ""在其中一颗星星上面，我在那里生活。我在那里笑着。于是当你在夜里仰望天空时，就好像所有的星星都在笑。"",
+    bg: "radial-gradient(ellipse at 50% 45%, #0f1238 0%, #08091e 50%, #000 100%)",
+    pColor: "#d4af37",
+    mode: "stars",
+    author: "Chapter XXVI · 告别"
+  }
+];
+
+const chords = [
+  [130.81, 196.00],
+  [220.00, 277.18],
+  [146.83, 185.00],
+  [164.81, 246.94],
+  [98.00,  130.81],
+  [220.00, 329.63]
+];
+
+const pentatonic = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
+
+const svgScenes = [
+  /* 0 — 小行星 */
+  `<svg viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+    <circle cx="500" cy="310" r="180" fill="#0a0f1e"/>
+    <ellipse cx="500" cy="132" rx="178" ry="14" fill="#111827" opacity=".5"/>
+    <g transform="translate(490,90)">
+      <line x1="0" y1="0" x2="0" y2="35" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="0" cy="-4" r="7" fill="#1e293b"/>
+      <animateTransform attributeName="transform" type="translate" values="490,90;490,86;490,90" dur="4s" repeatCount="indefinite"/>
+    </g>
+    <circle cx="440" cy="115" r="4" fill="#d4af37" opacity=".8">
+      <animate attributeName="opacity" values=".8;.3;.8" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <g id="s0-star" onmouseenter="playChime(0.3)" ontouchstart="playChime(0.3)" style="cursor:pointer">
+      <circle cx="320" cy="60" r="2.5" fill="#ffd700"/>
+      <circle cx="680" cy="45" r="2" fill="#ffd700" opacity=".6"/>
+      <circle cx="750" cy="90" r="1.5" fill="#fff" opacity=".5"/>
+      <animate attributeName="opacity" values="1;.5;1" dur="2.5s" repeatCount="indefinite"/>
+    </g>
+  </svg>`,
+
+  /* 1 — 玫瑰与玻璃罩 */
+  `<svg viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+    <rect x="430" y="230" width="140" height="30" rx="4" fill="#0a0f1e"/>
+    <line x1="500" y1="230" x2="500" y2="145" stroke="#1e3a1e" stroke-width="3"/>
+    <line x1="500" y1="185" x2="480" y2="170" stroke="#1e3a1e" stroke-width="2"/>
+    <line x1="500" y1="195" x2="518" y2="182" stroke="#1e3a1e" stroke-width="2"/>
+    <g id="s1-rose" onmouseenter="playChime(0.5)" ontouchstart="playChime(0.5)" style="cursor:pointer">
+      <ellipse cx="500" cy="138" rx="14" ry="18" fill="#8b2252" opacity=".9"/>
+      <ellipse cx="494" cy="133" rx="9" ry="13" fill="#a0325e"/>
+      <animate attributeName="opacity" values="1;.7;1" dur="3.5s" repeatCount="indefinite"/>
+    </g>
+    <path d="M445,100 Q500,20 555,100" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
+    <path d="M450,105 Q500,28 550,105" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+    <circle cx="500" cy="126" r="3" fill="#d4af37" opacity=".4">
+      <animate attributeName="r" values="3;5;3" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values=".4;.15;.4" dur="4s" repeatCount="indefinite"/>
+    </circle>
+  </svg>`,
+
+  /* 2 — 狐狸 */
+  `<svg viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+    <rect x="0" y="220" width="1000" height="40" fill="#0a0f1e"/>
+    <g transform="translate(200,230)" opacity=".4">
+      <line x1="0" y1="0" x2="-3" y2="-45" stroke="#3a3520" stroke-width="1.5"/>
+      <line x1="20" y1="0" x2="18" y2="-55" stroke="#3a3520" stroke-width="1.5"/>
+      <line x1="45" y1="0" x2="48" y2="-40" stroke="#3a3520" stroke-width="1.5"/>
+      <animateTransform attributeName="transform" type="translate" values="200,230;202,230;200,230" dur="5s" repeatCount="indefinite"/>
+    </g>
+    <g id="s2-fox" transform="translate(600,160)" onmouseenter="this.style.opacity='0.3';playChime(0.6)" onmouseleave="this.style.opacity='1'" ontouchstart="playChime(0.6)" style="cursor:pointer;transition:opacity .8s ease">
+      <polygon points="0,60 15,20 30,60" fill="#1e293b"/>
+      <polygon points="30,60 45,20 60,60" fill="#1e293b"/>
+      <ellipse cx="30" cy="55" rx="35" ry="20" fill="#111827"/>
+      <circle cx="22" cy="42" r="2" fill="#d4af37" opacity=".8"/>
+      <circle cx="38" cy="42" r="2" fill="#d4af37" opacity=".8"/>
+      <ellipse cx="50" cy="72" rx="30" ry="4" fill="#111827" opacity=".7"/>
+      <animateTransform attributeName="transform" type="translate" values="600,160;600,157;600,160" dur="3.5s" repeatCount="indefinite"/>
+    </g>
+  </svg>`,
+
+  /* 3 — 星夜山丘 */
+  `<svg viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+    <path d="M0,260 L0,180 Q150,120 300,170 Q450,100 600,160 Q750,90 900,150 L1000,130 L1000,260Z" fill="#0a0f1e"/>
+    <path d="M0,260 L0,200 Q200,160 400,195 Q600,140 800,185 L1000,165 L1000,260Z" fill="#111827" opacity=".6"/>
+    <g id="s3-stars" onmouseenter="playChime(0.2)" ontouchstart="playChime(0.2)" style="cursor:pointer">
+      <circle cx="200" cy="50" r="2" fill="#fff" opacity=".7">
+        <animate attributeName="opacity" values=".7;.2;.7" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="500" cy="30" r="2.5" fill="#ffd700">
+        <animate attributeName="opacity" values="1;.4;1" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="780" cy="55" r="1.8" fill="#fff" opacity=".5">
+        <animate attributeName="opacity" values=".5;.15;.5" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="350" cy="70" r="1.5" fill="#d4af37" opacity=".4"/>
+      <circle cx="650" cy="40" r="1.2" fill="#fff" opacity=".3"/>
+    </g>
+  </svg>`,
+
+  /* 4 — 沙漠之井 */
+  `<svg viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+    <path d="M0,260 L0,190 Q250,170 500,185 Q750,165 1000,180 L1000,260Z" fill="#1a1610"/>
+    <path d="M0,260 L0,210 Q300,195 600,205 Q800,192 1000,200 L1000,260Z" fill="#0a0f1e"/>
+    <g transform="translate(500,140)">
+      <rect x="-30" y="0" width="5" height="55" fill="#1e293b"/>
+      <rect x="25" y="0" width="5" height="55" fill="#1e293b"/>
+      <rect x="-32" y="-5" width="64" height="5" rx="2" fill="#1e293b"/>
+      <line x1="0" y1="0" x2="0" y2="35" stroke="#3a3520" stroke-width="1"/>
+      <rect x="-8" y="32" width="16" height="12" rx="2" fill="#111827" id="s4-bucket"/>
+      <animateTransform attributeName="transform" type="translate" values="500,140;500,137;500,140" dur="6s" repeatCount="indefinite"/>
+    </g>
+    <circle cx="820" cy="100" r="30" fill="none" stroke="rgba(212,175,55,0.08)" stroke-width="1"/>
+    <circle cx="820" cy="100" r="28" fill="#0d0c04" opacity=".3"/>
+    <g id="s4-moon" onmouseenter="playChime(0.8)" ontouchstart="playChime(0.8)" style="cursor:pointer">
+      <circle cx="820" cy="100" r="22" fill="#1e293b"/>
+      <circle cx="830" cy="95" r="22" fill="#0d0c04"/>
+    </g>
+  </svg>`,
+
+  /* 5 — 告别 */
+  `<svg viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+    <path d="M0,260 L0,210 Q500,190 1000,210 L1000,260Z" fill="#0a0f1e"/>
+    <g transform="translate(500,165)">
+      <line x1="0" y1="0" x2="0" y2="40" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="0" cy="-6" r="6" fill="#1e293b"/>
+      <animateTransform attributeName="transform" type="translate" values="500,165;500,162;500,165" dur="4.5s" repeatCount="indefinite"/>
+    </g>
+    <g id="s5-star" onmouseenter="playChime(0.15)" ontouchstart="playChime(0.15)" style="cursor:pointer">
+      <circle cx="540" cy="40" r="4" fill="#d4af37">
+        <animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;.5;1" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <line x1="540" y1="40" x2="520" y2="65" stroke="#d4af37" stroke-width=".5" opacity=".3">
+        <animate attributeName="opacity" values=".3;0;.3" dur="3s" repeatCount="indefinite"/>
+      </line>
+    </g>
+    <circle cx="180" cy="60" r="1.5" fill="#fff" opacity=".3"/>
+    <circle cx="750" cy="50" r="1" fill="#fff" opacity=".25"/>
+    <circle cx="350" cy="35" r="1.2" fill="#fff" opacity=".2"/>
+  </svg>`
+];
+
+/* ================================================================
+   STATE
+   ================================================================ */
+let cur = 0;
+let audioOn = false;
+let typing = false;
+let typeTimer = null;
+
+/* ================================================================
+   DOM
+   ================================================================ */
+const cvs = document.getElementById('particles');
+const ctx = cvs.getContext('2d');
+const svgBox = document.getElementById('svg-scene');
+const panel = document.getElementById('panel');
+const elLabel = document.getElementById('chapter-label');
+const elEn = document.getElementById('text-en');
+const elZh = document.getElementById('text-zh');
+const elAuthor = document.getElementById('author-note');
+const dotsBox = document.getElementById('dots');
+const parallax = document.getElementById('parallax');
+
+/* ================================================================
+   WEB AUDIO API
+   ================================================================ */
+let actx = null, drone1 = null, drone2 = null, droneGain = null;
+let windSrc = null, windGain = null;
+
+function initAudio() {
+  if (actx) return;
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+  droneGain = actx.createGain();
+  droneGain.gain.value = 0;
+  droneGain.connect(actx.destination);
+
+  windGain = actx.createGain();
+  windGain.gain.value = 0;
+  const lp = actx.createBiquadFilter();
+  lp.type = 'lowpass'; lp.frequency.value = 400; lp.Q.value = 1;
+  windGain.connect(lp); lp.connect(actx.destination);
+
+  const buf = actx.createBuffer(1, actx.sampleRate * 4, actx.sampleRate);
+  const ch = buf.getChannelData(0);
+  for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1;
+  windSrc = actx.createBufferSource();
+  windSrc.buffer = buf; windSrc.loop = true;
+  windSrc.connect(windGain); windSrc.start();
+}
+
+function playDrone(f1, f2) {
+  if (!actx || !audioOn) return;
+  const t = actx.currentTime;
+  if (drone1) { drone1.stop(t + 0.05); drone2.stop(t + 0.05); }
+  droneGain.gain.setTargetAtTime(0, t, 0.3);
+  drone1 = actx.createOscillator(); drone1.type = 'sine'; drone1.frequency.value = f1;
+  drone2 = actx.createOscillator(); drone2.type = 'sine'; drone2.frequency.value = f2;
+  const g1 = actx.createGain(); g1.gain.value = 0.06;
+  const g2 = actx.createGain(); g2.gain.value = 0.04;
+  drone1.connect(g1); g1.connect(droneGain);
+  drone2.connect(g2); g2.connect(droneGain);
+  drone1.start(t + 0.4); drone2.start(t + 0.4);
+  droneGain.gain.setTargetAtTime(1, t + 0.5, 1.5);
+  windGain.gain.setTargetAtTime(0.015, t + 0.5, 2);
+}
+
+function stopDrone() {
+  if (!actx) return;
+  const t = actx.currentTime;
+  droneGain.gain.setTargetAtTime(0, t, 0.8);
+  windGain.gain.setTargetAtTime(0, t, 0.8);
+}
+
+window.playChime = function(yNorm) {
+  if (!actx || !audioOn) return;
+  const idx = Math.min(pentatonic.length - 1, Math.floor(yNorm * pentatonic.length));
+  const freq = pentatonic[idx];
+  const t = actx.currentTime;
+  const osc = actx.createOscillator();
+  osc.type = 'sine'; osc.frequency.value = freq;
+  const g = actx.createGain();
+  g.gain.setValueAtTime(0.18, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
+  osc.connect(g); g.connect(actx.destination);
+  osc.start(t); osc.stop(t + 1.3);
+};
+
+/* ================================================================
+   CANVAS 粒子系统
+   ================================================================ */
+let particles = [];
+let mouse = { x: -9999, y: -9999 };
+let pMode = 'stars', pColor = '#7c9ed9';
+const PARTICLE_COUNT = 90;
+const CONNECT_DIST = 120;
+const MOUSE_RADIUS = 140;
+
+function resizeCanvas() {
+  cvs.width = window.innerWidth;
+  cvs.height = window.innerHeight;
+}
+
+function createParticle(mode, color) {
+  const w = cvs.width, h = cvs.height;
+  const p = { x: Math.random() * w, y: Math.random() * h,
+              size: Math.random() * 2.2 + 0.5, alpha: Math.random(),
+              dAlpha: (Math.random() * 0.012 + 0.003) * (Math.random() > 0.5 ? 1 : -1),
+              color, life: 999 };
+  switch (mode) {
+    case 'snow':
+      p.vx = (Math.random() - 0.5) * 0.3;
+      p.vy = Math.random() * 0.6 + 0.15;
+      p.connect = false; break;
+    case 'magic':
+      p.vx = (Math.random() - 0.5) * 0.4;
+      p.vy = -(Math.random() * 0.5 + 0.1);
+      p.connect = false; p.dAlpha = Math.abs(p.dAlpha) * 2; break;
+    case 'ashes':
+      p.vx = (Math.random() - 0.5) * 0.15;
+      p.vy = Math.random() * 0.2 + 0.05;
+      p.connect = false; p.size *= 0.7; break;
+    case 'fireflies':
+      p.vx = (Math.random() - 0.5) * 0.3;
+      p.vy = (Math.random() - 0.5) * 0.3;
+      p.connect = false; p.size = Math.random() * 3 + 1;
+      p.dAlpha = (Math.random() * 0.03 + 0.01) * (Math.random() > 0.5 ? 1 : -1); break;
+    default: // stars
+      p.vx = (Math.random() - 0.5) * 0.25;
+      p.vy = (Math.random() - 0.5) * 0.25;
+      p.connect = true; break;
+  }
+  return p;
+}
+
+function initParticles(mode, color) {
+  pMode = mode; pColor = color;
+  particles = [];
+  for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(createParticle(mode, color));
+}
+
+function updateParticles() {
+  const w = cvs.width, h = cvs.height;
+  particles.forEach(p => {
+    const dx = p.x - mouse.x, dy = p.y - mouse.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < MOUSE_RADIUS && dist > 0) {
+      const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS * 0.8;
+      p.vx += (dx / dist) * force;
+      p.vy += (dy / dist) * force;
+    }
+    p.vx *= 0.98; p.vy *= 0.98;
+    p.x += p.vx; p.y += p.vy;
+    p.alpha += p.dAlpha;
+    if (p.alpha > 1 || p.alpha < 0.05) p.dAlpha *= -1;
+    p.alpha = Math.max(0.05, Math.min(1, p.alpha));
+    if (p.x < -20) p.x = w + 20;
+    if (p.x > w + 20) p.x = -20;
+    if (p.y < -20) p.y = h + 20;
+    if (p.y > h + 20) p.y = -20;
+    if (p.life < 999) { p.life -= 0.015; if (p.life <= 0) p.alpha = 0; }
+  });
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, cvs.width, cvs.height);
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i];
+    if (p.alpha <= 0) continue;
+    ctx.save();
+    ctx.globalAlpha = p.alpha * 0.7;
+    ctx.fillStyle = p.color;
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = p.size * 3;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    if (p.connect) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const q = particles[j];
+        if (!q.connect) continue;
+        const d = Math.hypot(p.x - q.x, p.y - q.y);
+        if (d < CONNECT_DIST) {
+          ctx.save();
+          ctx.globalAlpha = (1 - d / CONNECT_DIST) * 0.12 * Math.min(p.alpha, q.alpha);
+          ctx.strokeStyle = p.color;
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+    }
+  }
+}
+
+function supernova(sx, sy) {
+  const colors = ['#FFD700', '#FFA500', '#FF6347', '#FFFFFF', pColor];
+  for (let i = 0; i < 60; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 5 + 1;
+    const p = createParticle(pMode, colors[Math.floor(Math.random() * colors.length)]);
+    p.x = sx; p.y = sy;
+    p.vx = Math.cos(angle) * speed;
+    p.vy = Math.sin(angle) * speed;
+    p.size = Math.random() * 3 + 1;
+    p.life = 1; p.connect = false;
+    particles.push(p);
+  }
+}
+
+function animLoop() {
+  updateParticles();
+  drawParticles();
+  requestAnimationFrame(animLoop);
+}
+
+/* ================================================================
+   PARALLAX 3D
+   ================================================================ */
+function applyParallax(rx, ry) {
+  parallax.style.transform =
+    `rotateX(${rx}deg) rotateY(${ry}deg)`;
+}
+
+document.addEventListener('mousemove', e => {
+  const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+  const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+  applyParallax(-ny * 1.8, nx * 1.8);
+  mouse.x = e.clientX; mouse.y = e.clientY;
+});
+
+window.addEventListener('deviceorientation', e => {
+  if (e.gamma == null) return;
+  applyParallax(
+    Math.max(-8, Math.min(8, e.beta * 0.15)),
+    Math.max(-8, Math.min(8, e.gamma * 0.15))
+  );
+});
+
+/* ================================================================
+   TYPEWRITER
+   ================================================================ */
+function typewrite(el, text, speed, cb) {
+  if (typeTimer) clearTimeout(typeTimer);
+  el.innerHTML = '';
+  typing = true;
+  let i = 0;
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+
+  function next() {
+    if (i < text.length) {
+      el.textContent = text.slice(0, i + 1);
+      el.appendChild(cursor);
+      i++;
+      const jitter = speed + (Math.random() - 0.5) * speed * 0.6;
+      typeTimer = setTimeout(next, Math.max(15, jitter));
+    } else {
+      typing = false;
+      setTimeout(() => { if (cursor.parentNode) cursor.remove(); }, 2500);
+      if (cb) cb();
+    }
+  }
+  next();
+}
+
+/* ================================================================
+   CHAPTER NAVIGATION
+   ================================================================ */
+function buildDots() {
+  dotsBox.innerHTML = '';
+  chapters.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === cur ? ' active' : '');
+    d.addEventListener('click', () => showChapter(i));
+    dotsBox.appendChild(d);
+  });
+}
+
+function showChapter(idx) {
+  if (idx < 0 || idx >= chapters.length || (idx === cur && !panel.classList.contains('hidden') === false)) return;
+  cur = idx;
+  const ch = chapters[cur];
+
+  panel.classList.add('hidden');
+
+  setTimeout(() => {
+    document.body.style.background = ch.bg;
+    svgBox.innerHTML = svgScenes[cur] || '';
+    initParticles(ch.mode, ch.pColor);
+
+    elLabel.textContent = ch.author;
+    elZh.textContent = ch.zh;
+    elAuthor.textContent = '— Antoine de Saint-Exupéry';
+
+    panel.classList.remove('hidden');
+
+    typewrite(elEn, ch.en, 48, () => {});
+
+    if (audioOn) playDrone(chords[cur][0], chords[cur][1]);
+
+    document.querySelectorAll('.dot').forEach((d, i) =>
+      d.classList.toggle('active', i === cur));
+  }, 500);
+}
+
+document.getElementById('prev-btn').addEventListener('click', () => {
+  if (cur > 0) showChapter(cur - 1);
+});
+document.getElementById('next-btn').addEventListener('click', () => {
+  if (cur < chapters.length - 1) showChapter(cur + 1);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    if (cur < chapters.length - 1) showChapter(cur + 1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    if (cur > 0) showChapter(cur - 1);
+  }
+});
+
+/* touch swipe */
+let tx0 = 0;
+document.addEventListener('touchstart', e => { tx0 = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx0;
+  if (Math.abs(dx) > 60) {
+    if (dx < 0 && cur < chapters.length - 1) showChapter(cur + 1);
+    if (dx > 0 && cur > 0) showChapter(cur - 1);
+  }
+});
+
+/* click supernova + chime */
+document.addEventListener('click', e => {
+  if (e.target.closest('#nav') || e.target.closest('#audio-btn') || e.target.closest('#panel')) return;
+  supernova(e.clientX, e.clientY);
+  const yNorm = e.clientY / window.innerHeight;
+  playChime(yNorm);
+});
+
+/* ═══ AUDIO TOGGLE ═══ */
+const audioBtn = document.getElementById('audio-btn');
+audioBtn.addEventListener('click', () => {
+  initAudio();
+  audioOn = !audioOn;
+  audioBtn.classList.toggle('muted', !audioOn);
+  audioBtn.textContent = audioOn ? '♫' : '♪';
+  if (audioOn) {
+    if (actx.state === 'suspended') actx.resume();
+    playDrone(chords[cur][0], chords[cur][1]);
+  } else {
+    stopDrone();
+  }
+});
+
+/* ═══ BOOT ═══ */
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+buildDots();
+initParticles(chapters[0].mode, chapters[0].pColor);
+animLoop();
+showChapter(0);
+</script>
+</body>
+</html>
