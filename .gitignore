@@ -6,21 +6,28 @@ __pycache__/
 dist/
 build/
 
-# AIGC 生成资产（按需取消注释来跟踪）
-# assets/
-
-# Dependencies
+# Node
 node_modules/
+package-lock.json
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+.cursor/
 
 # OS
 .DS_Store
 Thumbs.db
 
-# 环境变量
+# Environment / Secrets
 .env
+*.env.local
+
+# Dev screenshots (regenerate via tools/screenshot.js)
+screenshots/
+
+# AIGC generated assets (uncomment to track)
+# assets/scenes/
+# assets/audio/

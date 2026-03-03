@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 160">
+  <!-- Cubist Flower: geometric petals, angular stem -->
+  <!-- stem -->
+  <polygon points="56,85 64,85 66,155 54,155" fill="#4CAF50" stroke="#2E7D32" stroke-width="1.5"/>
+  <!-- leaf left -->
+  <polygon points="55,120 25,105 45,95" fill="#66BB6A" stroke="#2E7D32" stroke-width="1"/>
+  <!-- leaf right -->
+  <polygon points="65,110 95,100 78,92" fill="#43A047" stroke="#2E7D32" stroke-width="1"/>
+  <!-- petals: bold angular shapes -->
+  <polygon points="60,42 35,15 22,50" fill="#F44336" stroke="#C62828" stroke-width="1.5"/>
+  <polygon points="60,42 85,15 98,50" fill="#E53935" stroke="#C62828" stroke-width="1.5"/>
+  <polygon points="60,42 100,55 90,80" fill="#FF7043" stroke="#BF360C" stroke-width="1.5"/>
+  <polygon points="60,42 20,55 30,80" fill="#FF5722" stroke="#BF360C" stroke-width="1.5"/>
+  <polygon points="60,42 40,82 80,82" fill="#FF8A65" stroke="#BF360C" stroke-width="1.5"/>
+  <!-- center -->
+  <circle cx="60" cy="50" r="14" fill="#FFC107" stroke="#F57F17" stroke-width="2"/>
+  <circle cx="57" cy="47" r="4" fill="#FFE082" opacity="0.7"/>
+</svg>

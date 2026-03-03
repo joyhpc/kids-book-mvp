@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "scene_id": "ch1_s6_farewell",
+    "title": "再见，朋友 | Goodbye, Friend",
+    "version": "1.0.0"
+  },
+  "scene": {
+    "id": "ch1_s6_farewell",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 80%, #1a1020 0%, #120818 40%, #08040f 80%, #030208 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "fox6",
+        "img_src": "assets/fox.svg",
+        "label": "The Fox",
+        "position": {
+          "x": "65%",
+          "y": "62%"
+        },
+        "width": "100px",
+        "height": "100px",
+        "states": {
+          "farewell": {
+            "filter": "brightness(1.0) saturate(1.1) drop-shadow(0 0 20px rgba(255,200,100,0.3))",
+            "animation": "float-gentle"
+          }
+        },
+        "initial_state": "farewell"
+      },
+      {
+        "id": "prince6",
+        "img_src": "assets/prince.svg",
+        "label": "The Little Prince",
+        "position": {
+          "x": "30%",
+          "y": "52%"
+        },
+        "width": "95px",
+        "height": "130px"
+      }
+    ],
+    "items": [
+      {
+        "id": "star_final",
+        "img_src": "assets/star.svg",
+        "label": "Star",
+        "position": {
+          "x": "50%",
+          "y": "18%"
+        },
+        "width": "40px",
+        "height": "40px",
+        "animation": "float-gentle"
+      }
+    ]
+  },
+  "interaction": null,
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "\"Goodbye,\" said the fox. \"Here is my secret again: you become responsible, forever, for what you have tamed.\"",
+      "text_zh": "“再见。”狐狸说。“这还是我的秘密：你要对你驯服的东西负责到底。”",
+      "words": [
+        {
+          "word": "\"Goodbye,\"",
+          "start_time": 0.0,
+          "end_time": 0.8
+        },
+        {
+          "word": "said",
+          "start_time": 0.9,
+          "end_time": 1.22
+        },
+        {
+          "word": "the",
+          "start_time": 1.32,
+          "end_time": 1.56
+        },
+        {
+          "word": "fox.",
+          "start_time": 1.66,
+          "end_time": 1.98
+        },
+        {
+          "word": "\"Here",
+          "start_time": 2.08,
+          "end_time": 2.48
+        },
+        {
+          "word": "is",
+          "start_time": 2.58,
+          "end_time": 2.78
+        },
+        {
+          "word": "my",
+          "start_time": 2.88,
+          "end_time": 3.08
+        },
+        {
+          "word": "secret",
+          "start_time": 3.18,
+          "end_time": 3.66
+        },
+        {
+          "word": "again:",
+          "start_time": 3.76,
+          "end_time": 4.24
+        },
+        {
+          "word": "you",
+          "start_time": 4.34,
+          "end_time": 4.58
+        },
+        {
+          "word": "become",
+          "start_time": 4.68,
+          "end_time": 5.16
+        },
+        {
+          "word": "responsible,",
+          "start_time": 5.26,
+          "end_time": 6.22
+        },
+        {
+          "word": "forever,",
+          "start_time": 6.32,
+          "end_time": 6.96
+        },
+        {
+          "word": "for",
+          "start_time": 7.06,
+          "end_time": 7.3
+        },
+        {
+          "word": "what",
+          "start_time": 7.4,
+          "end_time": 7.72
+        },
+        {
+          "word": "you",
+          "start_time": 7.82,
+          "end_time": 8.06
+        },
+        {
+          "word": "have",
+          "start_time": 8.16,
+          "end_time": 8.48
+        },
+        {
+          "word": "tamed.\"",
+          "start_time": 8.58,
+          "end_time": 9.14
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready"
+    }
+  },
+  "ending": {
+    "auto_advance": false
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "show_after_ms": 2500,
+      "position": "bottom"
+    }
+  }
+}

@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 """
-AIGC 绘本资产全自动构建流水线
-==============================
-用法:
-    python tools/build_book.py \
-        --text "The fox is hungry. Feed him!" \
-        --scene "A small fox sitting alone in a magical forest clearing at night"
+AIGC 绘本资产全自动构建流水线 v2
+===================================
+支持两种模式：
+  1. 单场景模式（兼容 v1）:
+     python tools/build_book.py scene \
+         --text "The fox is hungry. Feed him!" \
+         --scene "A small fox sitting alone in a magical forest"
 
-可选参数:
-    --dialogue-id   要更新的对白 ID（默认 intro）
-    --voice-id      ElevenLabs 语音 ID（默认 Rachel）
-    --text-zh       中文翻译文本
+  2. 整本书批量模式:
+     python tools/build_book.py book --config tools/book_config.yaml
 
 依赖安装:
-    pip install google-genai requests
+    pip install google-genai requests pyyaml
 """
 
 import argparse
@@ -23,16 +22,16 @@ import os
 import sys
 from pathlib import Path
 
-# ─── API Keys（运行前请替换为你自己的密钥，或设置同名环境变量） ───
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY_HERE")
 ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "YOUR_ELEVENLABS_API_KEY_HERE")
-ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"  # 默认 Rachel
+ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
 
-# ─── 路径常量（相对于项目根目录） ───
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 ASSETS_DIR = PROJECT_ROOT / "assets"
+SCENES_DIR = PROJECT_ROOT / "data" / "scenes"
 SCENE_JSON_PATH = PROJECT_ROOT / "data" / "scene.json"
 SCENE_JS_PATH = PROJECT_ROOT / "data" / "scene.js"
+BOOK_JSON_PATH = PROJECT_ROOT / "data" / "book.json"
 
 STYLE_PREFIX = (
     "Masterpiece, breathtaking children's storybook illustration, "
@@ -49,7 +48,7 @@ def generate_image(scene_description: str, output_path: Path) -> Path:
     from google import genai
     from google.genai import types
 
-    print("[1/3] 正在调用 Gemini Imagen 3 生成背景图 ...")
+    print("  [IMG] 正在调用 Gemini Imagen 3 生成背景图 ...")
     client = genai.Client(api_key=GEMINI_API_KEY)
     prompt = STYLE_PREFIX + scene_description
 
@@ -69,7 +68,7 @@ def generate_image(scene_description: str, output_path: Path) -> Path:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     image.save(str(output_path))
     size_kb = output_path.stat().st_size / 1024
-    print(f"      ✅ 背景图已保存 → {output_path}  ({size_kb:.0f} KB)")
+    print(f"        -> {output_path} ({size_kb:.0f} KB)")
     return output_path
 
 
@@ -85,7 +84,7 @@ def generate_speech_with_timestamps(
     """
     import requests
 
-    print("[2/3] 正在调用 ElevenLabs TTS（含字符级时间戳）...")
+    print("  [TTS] 正在调用 ElevenLabs TTS（含字符级时间戳）...")
 
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/with-timestamps"
     headers = {
@@ -109,14 +108,12 @@ def generate_speech_with_timestamps(
 
     data = resp.json()
 
-    # ── 保存音频 ──
     audio_bytes = base64.b64decode(data["audio_base64"])
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_bytes(audio_bytes)
     size_kb = len(audio_bytes) / 1024
-    print(f"      ✅ 配音已保存 → {output_path}  ({size_kb:.0f} KB)")
+    print(f"        -> {output_path} ({size_kb:.0f} KB)")
 
-    # ── 字符级 → 单词级 合并 ──
     alignment = data["alignment"]
     word_timings = merge_characters_to_words(
         characters=alignment["characters"],
@@ -124,7 +121,7 @@ def generate_speech_with_timestamps(
         ends=alignment["character_end_times_seconds"],
     )
 
-    print(f"      ✅ 已解析 {len(word_timings)} 个单词时间戳")
+    print(f"        -> {len(word_timings)} 个单词时间戳")
     return word_timings
 
 
@@ -133,23 +130,14 @@ def merge_characters_to_words(
     starts: list[float],
     ends: list[float],
 ) -> list[dict]:
-    """
-    将 ElevenLabs 返回的字符级时间戳聚合为单词级。
-
-    规则：
-    - 空格作为分词界限
-    - 标点符号（如 . ! ? , ;）紧跟前一个单词，不独立成词
-    - 连续空格 / 前导空格被跳过
-    - 每个单词的 start_time 取首字符，end_time 取末字符
-    """
+    """将 ElevenLabs 返回的字符级时间戳聚合为单词级。"""
     words: list[dict] = []
-    buf = ""          # 当前单词字符缓冲
-    w_start = None    # 当前单词起始时间
-    w_end = None      # 当前单词结束时间
+    buf = ""
+    w_start = None
+    w_end = None
 
     for i, ch in enumerate(characters):
         if ch == " ":
-            # 遇到空格 → 落袋当前单词
             if buf:
                 words.append({
                     "word": buf,
@@ -165,7 +153,6 @@ def merge_characters_to_words(
             w_end = ends[i]
             buf += ch
 
-    # 收尾：最后一个单词
     if buf:
         words.append({
             "word": buf,
@@ -177,9 +164,9 @@ def merge_characters_to_words(
 
 
 # =====================================================================
-# Step 3 — 组装并覆写 scene.json / scene.js
+# 单场景 JSON 组装
 # =====================================================================
-def build_scene_json(
+def build_single_scene_json(
     text_en: str,
     text_zh: str,
     word_timings: list[dict],
@@ -187,26 +174,18 @@ def build_scene_json(
     bg_rel: str,
     audio_rel: str,
 ) -> dict:
-    """
-    读取现有 scene.json 作为模板，更新背景图、音频和对白时间戳，
-    然后覆写 scene.json 和 scene.js。
-    """
-    print("[3/3] 正在组装 scene.json ...")
-
-    # 读取现有模板
+    """读取现有 scene.json 作为模板，更新背景图、音频和对白时间戳。"""
     if SCENE_JSON_PATH.exists():
         scene_data = json.loads(SCENE_JSON_PATH.read_text(encoding="utf-8"))
     else:
         scene_data = _default_scene_template()
 
-    # ── 更新背景 ──
     scene_data["scene"]["background"] = {
         "type": "image",
         "src": bg_rel,
         "particles": True,
     }
 
-    # ── 更新目标对白 ──
     dialogue = scene_data.get("dialogues", {}).get(dialogue_id)
     if dialogue is None:
         dialogue = {
@@ -222,62 +201,263 @@ def build_scene_json(
     dialogue["audio"] = audio_rel
     dialogue["words"] = word_timings
 
-    # ── 写入 scene.json ──
-    json_str = json.dumps(scene_data, indent=2, ensure_ascii=False)
-    SCENE_JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
-    SCENE_JSON_PATH.write_text(json_str, encoding="utf-8")
-    print(f"      ✅ {SCENE_JSON_PATH}")
+    _write_json(SCENE_JSON_PATH, scene_data)
 
-    # ── 同步写入 scene.js（file:// 降级方案） ──
     js_content = (
         "/**\n"
         " * [AUTO-GENERATED by build_book.py]\n"
         " * file:// 协议兼容层 — 与 scene.json 内容完全同步\n"
         " */\n"
-        f"window.__SCENE_DATA__ = {json_str};\n"
+        f"window.__SCENE_DATA__ = {json.dumps(scene_data, indent=2, ensure_ascii=False)};\n"
     )
     SCENE_JS_PATH.write_text(js_content, encoding="utf-8")
-    print(f"      ✅ {SCENE_JS_PATH}")
 
     return scene_data
 
 
-def _default_scene_template() -> dict:
-    """如果项目中没有 scene.json，提供一份最小模板。"""
-    return {
+# =====================================================================
+# 整本书批量构建
+# =====================================================================
+def build_book(config: dict, voice_id: str) -> dict:
+    """根据 YAML/dict 配置批量生成所有场景并组装 book.json。"""
+    book_id = config["book_id"]
+    title = config.get("title", book_id)
+    language = config.get("language", ["en"])
+    target_age = config.get("target_age", "4-8")
+    scenes_cfg = config["scenes"]
+
+    print(f"  书籍: {title}")
+    print(f"  场景数: {len(scenes_cfg)}")
+    print()
+
+    book_scenes = []
+    nav_rules = {}
+
+    for idx, sc in enumerate(scenes_cfg):
+        scene_num = idx + 1
+        scene_id = sc.get("id", f"scene_{scene_num:02d}")
+        scene_title_zh = sc.get("title_zh", sc.get("title", f"场景 {scene_num}"))
+        scene_title_en = sc.get("title_en", f"Scene {scene_num}")
+
+        print(f"  ── [{scene_num}/{len(scenes_cfg)}] {scene_id}: {scene_title_zh} ──")
+
+        bg_filename = f"{scene_id}_bg.jpg"
+        audio_filename = f"{scene_id}.mp3"
+        bg_path = ASSETS_DIR / "scenes" / bg_filename
+        audio_path = ASSETS_DIR / "audio" / audio_filename
+        bg_rel = f"assets/scenes/{bg_filename}"
+        audio_rel = f"assets/audio/{audio_filename}"
+
+        word_timings = []
+        text_en = sc.get("dialogue_text", "")
+        text_zh = sc.get("dialogue_text_zh", "")
+
+        bg_override = sc.get("background_override")
+
+        if sc.get("scene_description") and GEMINI_API_KEY != "YOUR_GEMINI_API_KEY_HERE":
+            try:
+                generate_image(sc["scene_description"], bg_path)
+            except Exception as e:
+                print(f"        [WARN] 生图失败: {e}")
+                bg_rel = None
+
+        if text_en and ELEVENLABS_API_KEY != "YOUR_ELEVENLABS_API_KEY_HERE":
+            try:
+                word_timings = generate_speech_with_timestamps(
+                    text=text_en,
+                    voice_id=voice_id,
+                    output_path=audio_path,
+                )
+            except Exception as e:
+                print(f"        [WARN] TTS 失败: {e}")
+                audio_rel = None
+        elif text_en:
+            word_timings = _fake_word_timings(text_en)
+            audio_rel = None
+
+        scene_json = _build_scene_data(
+            scene_id=scene_id,
+            title_zh=scene_title_zh,
+            title_en=scene_title_en,
+            text_en=text_en,
+            text_zh=text_zh,
+            word_timings=word_timings,
+            bg_rel=bg_rel,
+            audio_rel=audio_rel,
+            characters=sc.get("characters", []),
+            items=sc.get("items", []),
+            interaction=sc.get("interaction"),
+            ending=sc.get("ending"),
+            after_success_text=sc.get("after_success_text"),
+            after_success_text_zh=sc.get("after_success_text_zh"),
+            background_override=bg_override,
+        )
+
+        scene_file = SCENES_DIR / f"scene_{scene_num:02d}.json"
+        _write_json(scene_file, scene_json)
+
+        book_scenes.append({
+            "id": scene_id,
+            "title_zh": scene_title_zh,
+            "title_en": scene_title_en,
+            "data_url": f"data/scenes/scene_{scene_num:02d}.json",
+            "thumbnail": None,
+        })
+
+        next_id = scenes_cfg[idx + 1].get("id", f"scene_{scene_num + 1:02d}") if idx < len(scenes_cfg) - 1 else None
+        unlock = sc.get("unlock_condition", "interaction_success" if sc.get("interaction") else None)
+        nav_rules[scene_id] = {
+            "next": next_id,
+            "unlock_condition": unlock,
+        }
+
+        print()
+
+    book_json = {
         "meta": {
-            "title": "AIGC Storybook",
-            "version": "2.0.0",
-            "language": ["en"],
-            "target_age": "4-8",
+            "book_id": book_id,
+            "title": title,
+            "version": "1.0.0",
+            "language": language,
+            "target_age": target_age,
+        },
+        "config": {
+            "navigation": {
+                "type": config.get("navigation_type", "linear"),
+                "show_progress": True,
+                "allow_skip": False,
+                "transition": config.get("transition", "fade"),
+            },
+            "ui": {
+                "theme": config.get("theme", "night_sky"),
+                "font_family": config.get("font_family", "Nunito"),
+            },
+        },
+        "scenes": book_scenes,
+        "navigation_rules": nav_rules,
+    }
+
+    _write_json(BOOK_JSON_PATH, book_json)
+    return book_json
+
+
+def _build_scene_data(
+    scene_id, title_zh, title_en,
+    text_en, text_zh, word_timings,
+    bg_rel, audio_rel,
+    characters, items, interaction, ending,
+    after_success_text=None, after_success_text_zh=None,
+    background_override=None,
+) -> dict:
+    """组装单个场景的完整 JSON 数据。"""
+    bg_cfg = {"type": "canvas", "gradient": "radial-gradient(circle at 50% 40%, #050a14 0%, #010205 100%)", "particles": True}
+    if background_override:
+        bg_cfg = background_override
+    elif bg_rel:
+        bg_cfg = {"type": "image", "src": bg_rel, "particles": True}
+
+    dialogues = {}
+    if text_en:
+        intro_dlg = {
+            "id": "intro",
+            "text_en": text_en,
+            "text_zh": text_zh or "",
+            "words": word_timings,
+            "auto_play": True,
+            "display_on": "scene_ready",
+        }
+        if audio_rel:
+            intro_dlg["audio"] = audio_rel
+        dialogues["intro"] = intro_dlg
+
+    if after_success_text:
+        after_timings = _fake_word_timings(after_success_text)
+        dialogues["after_feed"] = {
+            "id": "after_feed",
+            "text_en": after_success_text,
+            "text_zh": after_success_text_zh or "",
+            "words": after_timings,
+            "auto_play": False,
+        }
+
+    scene_data = {
+        "meta": {
+            "scene_id": scene_id,
+            "title": f"{title_zh} | {title_en}",
+            "version": "1.0.0",
         },
         "scene": {
-            "id": "generated_scene",
-            "background": {},
-            "characters": [],
-            "items": [],
+            "id": scene_id,
+            "background": bg_cfg,
+            "characters": characters or [],
+            "items": items or [],
         },
+        "interaction": interaction,
+        "dialogues": dialogues,
+        "ending": ending,
+        "ui": {
+            "subtitle_panel": {
+                "position": "top", "height": "auto", "padding": "1.2rem",
+                "font_size": "1.75rem", "highlight_color": "#d4af37",
+                "highlight_scale": 1.15, "normal_color": "#FFFFFF",
+                "bg_color": "rgba(5,8,15,0.7)", "border_radius": "16px",
+            },
+            "hint": {
+                "show_after_ms": 2500, "position": "bottom",
+            },
+        },
+    }
+
+    return scene_data
+
+
+def _fake_word_timings(text: str) -> list[dict]:
+    """在无 API key 时，根据文本生成模拟时间戳（每词约 0.35 秒）。"""
+    words = text.split()
+    timings = []
+    t = 0.0
+    for w in words:
+        duration = max(0.2, len(w) * 0.08)
+        timings.append({
+            "word": w,
+            "start_time": round(t, 3),
+            "end_time": round(t + duration, 3),
+        })
+        t += duration + 0.1
+    return timings
+
+
+def _default_scene_template() -> dict:
+    return {
+        "meta": {"title": "AIGC Storybook", "version": "2.0.0", "language": ["en"], "target_age": "4-8"},
+        "scene": {"id": "generated_scene", "background": {}, "characters": [], "items": []},
         "interaction": {},
         "dialogues": {},
         "ui": {
             "subtitle_panel": {
-                "position": "top",
-                "height": "auto",
-                "padding": "1.2rem",
-                "font_size": "1.6rem",
-                "highlight_color": "#d4af37",
-                "highlight_scale": 1.15,
-                "normal_color": "#FFFFFF",
-                "bg_color": "rgba(10,15,25,0.65)",
-                "border_radius": "20px",
+                "position": "top", "height": "auto", "padding": "1.2rem",
+                "font_size": "1.6rem", "highlight_color": "#d4af37",
+                "highlight_scale": 1.15, "normal_color": "#FFFFFF",
+                "bg_color": "rgba(10,15,25,0.65)", "border_radius": "20px",
             },
-            "hint": {
-                "show_after_ms": 2500,
-                "position": "bottom",
-                "font_size": "1.1rem",
-            },
+            "hint": {"show_after_ms": 2500, "position": "bottom", "font_size": "1.1rem"},
         },
     }
+
+
+def _write_json(path: Path, data: dict):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(f"        -> {path}")
+
+
+def _check_api_keys():
+    errors = []
+    if GEMINI_API_KEY.startswith("YOUR_"):
+        errors.append("GEMINI_API_KEY")
+    if ELEVENLABS_API_KEY.startswith("YOUR_"):
+        errors.append("ELEVENLABS_API_KEY")
+    return errors
 
 
 # =====================================================================
@@ -285,71 +465,106 @@ def _default_scene_template() -> dict:
 # =====================================================================
 def main():
     parser = argparse.ArgumentParser(
-        description="AIGC 绘本资产全自动构建流水线",
+        description="AIGC 绘本资产全自动构建流水线 v2",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=(
-            "示例:\n"
-            '  python tools/build_book.py \\\n'
-            '      --text "The fox is hungry. Feed him!" \\\n'
-            '      --scene "A small fox sitting alone in a magical forest"\n'
-        ),
     )
-    parser.add_argument("--text", required=True, help="英文台词（将作为 TTS 输入和字幕源）")
-    parser.add_argument("--scene", required=True, help="英文场景描述（将拼接风格词后发给 Imagen 3）")
-    parser.add_argument("--text-zh", default="", help="中文翻译（可选，写入 text_zh 字段）")
-    parser.add_argument(
-        "--dialogue-id", default="intro", help="要更新的对白 ID（默认 intro）"
-    )
-    parser.add_argument(
-        "--voice-id", default=ELEVENLABS_VOICE_ID, help="ElevenLabs 语音 ID"
-    )
-    args = parser.parse_args()
+    sub = parser.add_subparsers(dest="command", help="子命令")
 
-    # 前置校验
-    if GEMINI_API_KEY.startswith("YOUR_"):
-        print("❌ 请先设置 GEMINI_API_KEY（环境变量或脚本顶部常量）", file=sys.stderr)
-        sys.exit(1)
-    if ELEVENLABS_API_KEY.startswith("YOUR_"):
-        print("❌ 请先设置 ELEVENLABS_API_KEY（环境变量或脚本顶部常量）", file=sys.stderr)
-        sys.exit(1)
+    # ── scene 子命令：单场景模式（兼容 v1） ──
+    p_scene = sub.add_parser("scene", help="生成单个场景的资产")
+    p_scene.add_argument("--text", required=True, help="英文台词")
+    p_scene.add_argument("--scene", required=True, help="英文场景描述")
+    p_scene.add_argument("--text-zh", default="", help="中文翻译")
+    p_scene.add_argument("--dialogue-id", default="intro", help="对白 ID（默认 intro）")
+    p_scene.add_argument("--voice-id", default=ELEVENLABS_VOICE_ID, help="ElevenLabs 语音 ID")
 
-    bg_path = ASSETS_DIR / "bg.jpg"
-    audio_path = ASSETS_DIR / "audio.mp3"
+    # ── book 子命令：整本书批量模式 ──
+    p_book = sub.add_parser("book", help="根据 YAML 配置批量生成整本书")
+    p_book.add_argument("--config", required=True, help="YAML 配置文件路径")
+    p_book.add_argument("--voice-id", default=ELEVENLABS_VOICE_ID, help="ElevenLabs 语音 ID")
+
+    # 向后兼容：如果没有子命令但有 --text 参数，按单场景处理
+    args, remaining = parser.parse_known_args()
+    if args.command is None:
+        if "--text" in sys.argv:
+            args = p_scene.parse_args(sys.argv[1:])
+            args.command = "scene"
+        else:
+            parser.print_help()
+            sys.exit(0)
 
     print("=" * 56)
-    print("   AIGC 绘本流水线  ·  build_book.py")
+    print("   AIGC 绘本流水线  v2  ·  build_book.py")
     print("=" * 56)
-    print(f"  台词 : {args.text}")
-    print(f"  场景 : {args.scene}")
-    print(f"  对白ID: {args.dialogue_id}")
     print()
 
-    # Step 1: 生图
-    generate_image(args.scene, bg_path)
-    print()
+    if args.command == "scene":
+        missing = _check_api_keys()
+        if missing:
+            print(f"  [WARN] 未设置: {', '.join(missing)}", file=sys.stderr)
+            print("         将跳过对应的 API 调用", file=sys.stderr)
+            print()
 
-    # Step 2: 生音 + 时间戳
-    word_timings = generate_speech_with_timestamps(
-        text=args.text,
-        voice_id=args.voice_id,
-        output_path=audio_path,
-    )
-    print()
+        bg_path = ASSETS_DIR / "bg.jpg"
+        audio_path = ASSETS_DIR / "audio.mp3"
 
-    # Step 3: 组装 JSON
-    bg_rel = "assets/bg.jpg"
-    audio_rel = "assets/audio.mp3"
-    build_scene_json(
-        text_en=args.text,
-        text_zh=args.text_zh,
-        word_timings=word_timings,
-        dialogue_id=args.dialogue_id,
-        bg_rel=bg_rel,
-        audio_rel=audio_rel,
-    )
+        print(f"  台词 : {args.text}")
+        print(f"  场景 : {args.scene}")
+        print()
+
+        if "GEMINI_API_KEY" not in missing:
+            generate_image(args.scene, bg_path)
+            bg_rel = "assets/bg.jpg"
+        else:
+            bg_rel = None
+            print("  [SKIP] 生图（无 GEMINI_API_KEY）")
+
+        print()
+
+        if "ELEVENLABS_API_KEY" not in missing:
+            word_timings = generate_speech_with_timestamps(
+                text=args.text, voice_id=args.voice_id, output_path=audio_path,
+            )
+            audio_rel = "assets/audio.mp3"
+        else:
+            word_timings = _fake_word_timings(args.text)
+            audio_rel = None
+            print("  [SKIP] TTS（无 ELEVENLABS_API_KEY），使用模拟时间戳")
+
+        print()
+        print("  [JSON] 组装 scene.json ...")
+        build_single_scene_json(
+            text_en=args.text, text_zh=args.text_zh,
+            word_timings=word_timings, dialogue_id=args.dialogue_id,
+            bg_rel=bg_rel or "assets/bg.jpg",
+            audio_rel=audio_rel or "",
+        )
+
+    elif args.command == "book":
+        try:
+            import yaml
+        except ImportError:
+            print("  [ERR] 请安装 pyyaml: pip install pyyaml", file=sys.stderr)
+            sys.exit(1)
+
+        config_path = Path(args.config)
+        if not config_path.exists():
+            print(f"  [ERR] 配置文件不存在: {config_path}", file=sys.stderr)
+            sys.exit(1)
+
+        with open(config_path, encoding="utf-8") as f:
+            config = yaml.safe_load(f)
+
+        missing = _check_api_keys()
+        if missing:
+            print(f"  [WARN] 未设置: {', '.join(missing)}")
+            print("         将跳过对应的 API 调用，使用占位数据")
+            print()
+
+        build_book(config, voice_id=args.voice_id)
 
     print()
-    print("🎉 全部完成！现在可以用浏览器打开 index.html 预览效果。")
+    print("  Done! 用浏览器打开 index.html 预览效果。")
     print("=" * 56)
 
 

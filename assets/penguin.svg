@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 200">
+  <!-- Cubist Penguin: geometric planes, angular body -->
+  <!-- body -->
+  <polygon points="40,180 120,180 130,80 30,80" fill="#263238" stroke="#1A1A2E" stroke-width="2"/>
+  <!-- belly: angular white plane -->
+  <polygon points="58,180 102,180 112,100 48,100" fill="#ECEFF1" stroke="#1A1A2E" stroke-width="1"/>
+  <!-- head -->
+  <polygon points="45,85 80,35 115,85" fill="#37474F" stroke="#1A1A2E" stroke-width="2"/>
+  <!-- face plane -->
+  <polygon points="55,85 80,50 105,85" fill="#263238"/>
+  <!-- eyes: cubist asymmetric -->
+  <polygon points="62,68 70,60 78,68 70,76" fill="#FFF" stroke="#1A1A2E" stroke-width="1.5"/>
+  <circle cx="70" cy="68" r="3" fill="#1A1A2E"/>
+  <circle cx="95" cy="66" r="8" fill="#FFF" stroke="#1A1A2E" stroke-width="1.5"/>
+  <circle cx="96" cy="65" r="3.5" fill="#1A1A2E"/>
+  <!-- beak: bold orange angular -->
+  <polygon points="72,78 88,78 80,92" fill="#FF9800" stroke="#E65100" stroke-width="1.5"/>
+  <!-- wings -->
+  <polygon points="30,90 18,130 35,150 42,100" fill="#37474F" stroke="#1A1A2E" stroke-width="2"/>
+  <polygon points="130,90 142,130 125,150 118,100" fill="#455A64" stroke="#1A1A2E" stroke-width="2"/>
+  <!-- feet -->
+  <polygon points="48,178 38,195 68,195 62,178" fill="#FF9800" stroke="#E65100" stroke-width="1.5"/>
+  <polygon points="98,178 88,195 118,195 112,178" fill="#FF9800" stroke="#E65100" stroke-width="1.5"/>
+  <!-- bow tie (cute detail) -->
+  <polygon points="72,98 80,105 88,98" fill="#F44336"/>
+  <polygon points="72,112 80,105 88,112" fill="#F44336"/>
+  <circle cx="80" cy="105" r="3" fill="#D32F2F"/>
+</svg>

@@ -1,0 +1,116 @@
+# 《小王子与狐狸》AIGC 批量构建配置
+# 用法: python tools/build_book.py book --config tools/book_config.yaml
+
+book_id: little_prince_fox
+title: "小王子与狐狸 | The Little Prince and the Fox"
+language: [en, zh]
+target_age: "4-8"
+navigation_type: linear
+transition: fade
+theme: night_sky
+
+scenes:
+  - id: scene_01_meet
+    title_zh: 遇见狐狸
+    title_en: Meeting the Fox
+    scene_description: >
+      A small golden fox sitting alone at the edge of a magical forest clearing at twilight,
+      stars beginning to appear, soft bioluminescent plants glowing, dreamy atmosphere
+    dialogue_text: '"Please — tame me!" said the fox.'
+    dialogue_text_zh: "\u201c求你\u2014\u2014驯服我吧！\u201d狐狸说。"
+    characters:
+      - id: fox
+        img_src: assets/fox.svg
+        label: Fox
+        position: { x: "80%", y: "68%" }
+        width: "90px"
+        height: "90px"
+        states:
+          shy:
+            filter: "grayscale(0.5) brightness(0.6) drop-shadow(0 0 8px rgba(255,255,255,0.1))"
+            animation: fox-idle
+          curious:
+            filter: "grayscale(0.2) brightness(0.9) drop-shadow(0 0 12px rgba(167,139,250,0.3))"
+            animation: fox-idle
+        initial_state: shy
+    ending:
+      delay_after_success_ms: 3000
+      auto_advance: true
+
+  - id: scene_02_feed
+    title_zh: 喂养狐狸
+    title_en: Feeding the Fox
+    scene_description: >
+      The same magical forest clearing, now with a small red apple glowing softly on the ground,
+      the fox looking hungrily at it, starry night sky, fireflies floating
+    dialogue_text: 'The fox is hungry. Can you feed him?'
+    dialogue_text_zh: 狐狸饿了，你能喂喂它吗？
+    after_success_text: 'What is essential is invisible to the eye.'
+    after_success_text_zh: 真正重要的东西，眼睛是看不见的。
+    characters:
+      - id: fox
+        img_src: assets/fox.svg
+        label: Fox
+        position: { x: "75%", y: "65%" }
+        width: "100px"
+        height: "100px"
+        states:
+          hungry:
+            filter: "grayscale(0.7) brightness(0.75) drop-shadow(0 0 8px rgba(255,255,255,0.1))"
+            animation: fox-idle
+          happy:
+            filter: "saturate(1.3) brightness(1.15) drop-shadow(0 0 20px rgba(255,200,100,0.4))"
+            animation: fox-jump
+        initial_state: hungry
+    items:
+      - id: apple
+        img_src: assets/apple.svg
+        label: Apple
+        position: { x: "22%", y: "68%" }
+        width: "65px"
+        height: "65px"
+        draggable: true
+        animation: item-bounce
+    interaction:
+      type: drag_and_drop
+      draggable_id: apple
+      target_id: fox
+      hit_tolerance: 60
+      on_fail:
+        action: spring_back
+        duration_ms: 400
+        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)"
+      on_success:
+        actions:
+          - { type: hide_item, target: apple, animation: pop-vanish }
+          - { type: change_state, target: fox, to_state: happy }
+          - { type: play_dialogue, dialogue_id: after_feed }
+          - { type: show_particles, emoji: "✨", count: 8, duration_ms: 1200 }
+
+  - id: scene_03_tame
+    title_zh: 驯养的秘密
+    title_en: The Secret of Taming
+    scene_description: >
+      The little prince and the fox sitting together on a hill under a vast starry sky,
+      warm golden light surrounding them, peaceful and emotional atmosphere
+    dialogue_text: 'You become responsible, forever, for what you have tamed.'
+    dialogue_text_zh: 你要对你驯服的东西负责到底。
+    characters:
+      - id: fox
+        img_src: assets/fox.svg
+        label: Fox
+        position: { x: "55%", y: "62%" }
+        width: "110px"
+        height: "110px"
+        states:
+          tamed:
+            filter: "saturate(1.4) brightness(1.2) drop-shadow(0 0 25px rgba(212,175,55,0.5))"
+            animation: fox-idle
+        initial_state: tamed
+    ending:
+      delay_after_success_ms: 5000
+      title_en: The End
+      title_zh: "全书 · 完"
+      subtitle_zh: "驯服，就是创造联系……"
+      button_text: 再读一遍
+      particles_emoji: "✨"

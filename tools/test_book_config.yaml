@@ -1,0 +1,207 @@
+# Engine Stress Test: 4 completely different themes
+# Tests: diverse backgrounds, characters, interactions, dialogues
+
+book_id: engine_stress_test
+book_title_zh: 引擎泛化测试
+book_title_en: Engine Generalization Test
+author: QA Bot
+target_age: "4-8"
+theme: night_sky
+font_family: Nunito
+
+scenes:
+  # ============================================
+  # TEST 1: Deep Ocean - Whale + Star drag
+  # Background: ocean gradient, different from night sky
+  # ============================================
+  - id: test_ocean
+    title_zh: 深海鲸歌
+    title_en: Song of the Deep
+    scene_description: >
+      Deep ocean scene with bioluminescent particles
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 80%, #0a1628 0%, #04243e 40%, #010a14 100%)"
+      particles: true
+    dialogue_text: '"I am the loneliest whale," she sang, "in all the seven seas."'
+    dialogue_text_zh: "\u201c我是最孤独的鲸鱼，\u201d她唱着，\u201c在所有的七片海。\u201d"
+    characters:
+      - id: whale
+        img_src: assets/whale.svg
+        label: Whale
+        position: { x: "55%", y: "55%" }
+        width: "180px"
+        height: "120px"
+        states:
+          lonely:
+            filter: "brightness(0.7) saturate(0.5) drop-shadow(0 0 15px rgba(100,180,255,0.2))"
+            animation: float-gentle
+          happy:
+            filter: "brightness(1.2) saturate(1.4) drop-shadow(0 0 30px rgba(100,200,255,0.6))"
+            animation: float-gentle
+        initial_state: lonely
+    items:
+      - id: star
+        img_src: assets/star.svg
+        label: Wishing Star
+        position: { x: "15%", y: "25%" }
+        width: "55px"
+        height: "55px"
+        draggable: true
+        animation: item-bounce
+    interaction:
+      type: drag_and_drop
+      draggable_id: star
+      target_id: whale
+      hit_tolerance: 80
+      on_fail:
+        action: spring_back
+        duration_ms: 400
+        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)"
+      on_success:
+        actions:
+          - { type: hide_item, target: star, animation: pop-vanish }
+          - { type: change_state, target: whale, to_state: happy }
+          - { type: play_dialogue, dialogue_id: after_feed }
+          - { type: show_particles, emoji: "🌟", count: 12, duration_ms: 1500 }
+    after_success_text: 'The star melted into the sea, and the whale was no longer alone.'
+    after_success_text_zh: "星星融入了海中，鲸鱼不再孤独。"
+    ending:
+      auto_advance: false
+      delay_after_success_ms: 4000
+
+  # ============================================
+  # TEST 2: Space Station - Robot intro (non-interactive)
+  # Background: space purple gradient
+  # ============================================
+  - id: test_space
+    title_zh: 太空站日志
+    title_en: Space Station Log
+    scene_description: >
+      Futuristic space station interior with starfield outside window
+    background_override:
+      type: canvas
+      gradient: "linear-gradient(180deg, #0d0221 0%, #1a0533 30%, #2d1b69 60%, #150825 100%)"
+      particles: true
+    dialogue_text: 'Unit 7 reporting. All systems operational. Moon phase: waning crescent.'
+    dialogue_text_zh: "7号单元报告。所有系统运行正常。月相：残月。"
+    characters:
+      - id: robot
+        img_src: assets/robot.svg
+        label: Unit 7
+        position: { x: "30%", y: "50%" }
+        width: "100px"
+        height: "125px"
+      - id: moon
+        img_src: assets/moon.svg
+        label: Moon
+        position: { x: "72%", y: "18%" }
+        width: "90px"
+        height: "90px"
+    items: []
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 4500
+
+  # ============================================
+  # TEST 3: Garden - Butterfly + Flower drag
+  # Background: warm sunset gradient
+  # ============================================
+  - id: test_garden
+    title_zh: 花园里的秘密
+    title_en: The Garden Secret
+    scene_description: >
+      Magical twilight garden with warm sunset colors
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 100%, #2d1f0e 0%, #1a120a 40%, #0d0805 80%, #050302 100%)"
+      particles: true
+    dialogue_text: 'The butterfly searched for the last flower of autumn.'
+    dialogue_text_zh: "蝴蝶在寻找秋天最后一朵花。"
+    characters:
+      - id: flower
+        img_src: assets/flower.svg
+        label: Flower
+        position: { x: "70%", y: "58%" }
+        width: "85px"
+        height: "115px"
+        states:
+          closed:
+            filter: "brightness(0.6) saturate(0.4) drop-shadow(0 0 5px rgba(255,100,50,0.1))"
+            animation: none
+          bloomed:
+            filter: "brightness(1.3) saturate(1.5) drop-shadow(0 0 25px rgba(255,180,50,0.5))"
+            animation: fox-jump
+        initial_state: closed
+    items:
+      - id: butterfly
+        img_src: assets/butterfly.svg
+        label: Butterfly
+        position: { x: "18%", y: "35%" }
+        width: "80px"
+        height: "70px"
+        draggable: true
+        animation: float-gentle
+    interaction:
+      type: drag_and_drop
+      draggable_id: butterfly
+      target_id: flower
+      hit_tolerance: 70
+      on_fail:
+        action: spring_back
+        duration_ms: 500
+        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)"
+      on_success:
+        actions:
+          - { type: change_state, target: flower, to_state: bloomed }
+          - { type: play_dialogue, dialogue_id: after_feed }
+          - { type: show_particles, emoji: "🌸", count: 10, duration_ms: 1400 }
+    after_success_text: 'At last, they found each other. The garden remembered.'
+    after_success_text_zh: "终于，它们找到了彼此。花园记住了这一切。"
+    ending:
+      auto_advance: false
+      delay_after_success_ms: 4000
+
+  # ============================================
+  # TEST 4: Snow - Penguin finale (non-interactive)
+  # Background: cold blue-white gradient
+  # ============================================
+  - id: test_snow
+    title_zh: 南极的信
+    title_en: Letter from Antarctica
+    scene_description: >
+      Snowy Antarctic landscape under aurora borealis
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 20%, #1a2940 0%, #0f1a2e 50%, #060d18 100%)"
+      particles: true
+    dialogue_text: '"Every snowflake," whispered the penguin, "carries a wish back home."'
+    dialogue_text_zh: "\u201c每一片雪花，\u201d企鹅低语道，\u201c都带着一个回家的愿望。\u201d"
+    characters:
+      - id: penguin
+        img_src: assets/penguin.svg
+        label: Penguin
+        position: { x: "45%", y: "52%" }
+        width: "100px"
+        height: "130px"
+      - id: snowflake
+        img_src: assets/snowflake.svg
+        label: Snowflake
+        position: { x: "25%", y: "20%" }
+        width: "50px"
+        height: "50px"
+    items:
+      - id: snowflake2
+        img_src: assets/snowflake.svg
+        label: Snowflake
+        position: { x: "72%", y: "30%" }
+        width: "35px"
+        height: "35px"
+      - id: snowflake3
+        img_src: assets/snowflake.svg
+        label: Snowflake
+        position: { x: "85%", y: "15%" }
+        width: "25px"
+        height: "25px"
+    ending:
+      auto_advance: false

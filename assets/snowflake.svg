@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Geometric Snowflake -->
+  <g fill="none" stroke="#B3E5FC" stroke-width="2.5" stroke-linecap="round">
+    <line x1="50" y1="10" x2="50" y2="90"/>
+    <line x1="15" y1="30" x2="85" y2="70"/>
+    <line x1="15" y1="70" x2="85" y2="30"/>
+    <!-- branches -->
+    <line x1="50" y1="25" x2="38" y2="18"/>
+    <line x1="50" y1="25" x2="62" y2="18"/>
+    <line x1="50" y1="75" x2="38" y2="82"/>
+    <line x1="50" y1="75" x2="62" y2="82"/>
+    <line x1="28" y1="38" x2="20" y2="28"/>
+    <line x1="72" y1="62" x2="80" y2="72"/>
+    <line x1="28" y1="62" x2="20" y2="72"/>
+    <line x1="72" y1="38" x2="80" y2="28"/>
+  </g>
+  <circle cx="50" cy="50" r="6" fill="#E1F5FE" stroke="#81D4FA" stroke-width="1.5"/>
+</svg>

@@ -1,0 +1,167 @@
+{
+  "meta": {
+    "scene_id": "ch1_s1_visitor",
+    "title": "星球来客 | The Visitor",
+    "version": "1.0.0"
+  },
+  "scene": {
+    "id": "ch1_s1_visitor",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 30%, #1a1535 0%, #0d0a20 50%, #050310 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "prince",
+        "img_src": "assets/prince.svg",
+        "label": "The Little Prince",
+        "position": {
+          "x": "50%",
+          "y": "58%"
+        },
+        "width": "110px",
+        "height": "150px"
+      }
+    ],
+    "items": [
+      {
+        "id": "star_deco1",
+        "img_src": "assets/star.svg",
+        "label": "Star",
+        "position": {
+          "x": "80%",
+          "y": "22%"
+        },
+        "width": "30px",
+        "height": "30px",
+        "animation": "float-gentle"
+      },
+      {
+        "id": "star_deco2",
+        "img_src": "assets/star.svg",
+        "label": "Star",
+        "position": {
+          "x": "18%",
+          "y": "15%"
+        },
+        "width": "22px",
+        "height": "22px",
+        "animation": "float-gentle"
+      }
+    ]
+  },
+  "interaction": null,
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "\"I come from a very small planet,\" said the little prince, \"hardly bigger than a house.\"",
+      "text_zh": "“我来自一颗很小很小的星球，”小王子说，“它几乎只比一间房子大一点。”",
+      "words": [
+        {
+          "word": "\"I",
+          "start_time": 0.0,
+          "end_time": 0.2
+        },
+        {
+          "word": "come",
+          "start_time": 0.3,
+          "end_time": 0.62
+        },
+        {
+          "word": "from",
+          "start_time": 0.72,
+          "end_time": 1.04
+        },
+        {
+          "word": "a",
+          "start_time": 1.14,
+          "end_time": 1.34
+        },
+        {
+          "word": "very",
+          "start_time": 1.44,
+          "end_time": 1.76
+        },
+        {
+          "word": "small",
+          "start_time": 1.86,
+          "end_time": 2.26
+        },
+        {
+          "word": "planet,\"",
+          "start_time": 2.36,
+          "end_time": 3.0
+        },
+        {
+          "word": "said",
+          "start_time": 3.1,
+          "end_time": 3.42
+        },
+        {
+          "word": "the",
+          "start_time": 3.52,
+          "end_time": 3.76
+        },
+        {
+          "word": "little",
+          "start_time": 3.86,
+          "end_time": 4.34
+        },
+        {
+          "word": "prince,",
+          "start_time": 4.44,
+          "end_time": 5.0
+        },
+        {
+          "word": "\"hardly",
+          "start_time": 5.1,
+          "end_time": 5.66
+        },
+        {
+          "word": "bigger",
+          "start_time": 5.76,
+          "end_time": 6.24
+        },
+        {
+          "word": "than",
+          "start_time": 6.34,
+          "end_time": 6.66
+        },
+        {
+          "word": "a",
+          "start_time": 6.76,
+          "end_time": 6.96
+        },
+        {
+          "word": "house.\"",
+          "start_time": 7.06,
+          "end_time": 7.62
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready"
+    }
+  },
+  "ending": {
+    "auto_advance": true,
+    "delay_after_success_ms": 6000
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "show_after_ms": 2500,
+      "position": "bottom"
+    }
+  }
+}

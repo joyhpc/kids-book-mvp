@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "book_id": "chapter1_prince_and_fox",
+    "title": "chapter1_prince_and_fox",
+    "version": "1.0.0",
+    "language": [
+      "en"
+    ],
+    "target_age": "4-8"
+  },
+  "config": {
+    "navigation": {
+      "type": "linear",
+      "show_progress": true,
+      "allow_skip": false,
+      "transition": "fade"
+    },
+    "ui": {
+      "theme": "night_sky",
+      "font_family": "Nunito"
+    }
+  },
+  "scenes": [
+    {
+      "id": "ch1_s1_visitor",
+      "title_zh": "星球来客",
+      "title_en": "The Visitor",
+      "data_url": "data/scenes/scene_01.json",
+      "thumbnail": null
+    },
+    {
+      "id": "ch1_s2_fox_appears",
+      "title_zh": "麦田边的狐狸",
+      "title_en": "The Fox by the Wheat Field",
+      "data_url": "data/scenes/scene_02.json",
+      "thumbnail": null
+    },
+    {
+      "id": "ch1_s3_tame_me",
+      "title_zh": "驯服我吧",
+      "title_en": "Tame Me",
+      "data_url": "data/scenes/scene_03.json",
+      "thumbnail": null
+    },
+    {
+      "id": "ch1_s4_feed",
+      "title_zh": "建立联结",
+      "title_en": "Establishing Ties",
+      "data_url": "data/scenes/scene_04.json",
+      "thumbnail": null
+    },
+    {
+      "id": "ch1_s5_secret",
+      "title_zh": "狐狸的秘密",
+      "title_en": "The Fox's Secret",
+      "data_url": "data/scenes/scene_05.json",
+      "thumbnail": null
+    },
+    {
+      "id": "ch1_s6_farewell",
+      "title_zh": "再见，朋友",
+      "title_en": "Goodbye, Friend",
+      "data_url": "data/scenes/scene_06.json",
+      "thumbnail": null
+    }
+  ],
+  "navigation_rules": {
+    "ch1_s1_visitor": {
+      "next": "ch1_s2_fox_appears",
+      "unlock_condition": null
+    },
+    "ch1_s2_fox_appears": {
+      "next": "ch1_s3_tame_me",
+      "unlock_condition": null
+    },
+    "ch1_s3_tame_me": {
+      "next": "ch1_s4_feed",
+      "unlock_condition": null
+    },
+    "ch1_s4_feed": {
+      "next": "ch1_s5_secret",
+      "unlock_condition": "interaction_success"
+    },
+    "ch1_s5_secret": {
+      "next": "ch1_s6_farewell",
+      "unlock_condition": null
+    },
+    "ch1_s6_farewell": {
+      "next": null,
+      "unlock_condition": null
+    }
+  }
+}

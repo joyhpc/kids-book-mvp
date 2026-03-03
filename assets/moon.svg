@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Cubist Moon: geometric crescent with faceted planes -->
+  <circle cx="60" cy="60" r="50" fill="#F4E6B0" stroke="#C9A83C" stroke-width="2"/>
+  <circle cx="78" cy="48" r="42" fill="#0A0E1A"/>
+  <!-- crater details on visible crescent -->
+  <circle cx="38" cy="55" r="6" fill="#E8D98A" stroke="#C9A83C" stroke-width="1" opacity="0.6"/>
+  <circle cx="45" cy="78" r="4" fill="#E8D98A" stroke="#C9A83C" stroke-width="1" opacity="0.5"/>
+  <circle cx="32" cy="42" r="3" fill="#DCC870" opacity="0.5"/>
+  <!-- glow -->
+  <circle cx="60" cy="60" r="52" fill="none" stroke="#F4E6B0" stroke-width="1" opacity="0.3"/>
+</svg>

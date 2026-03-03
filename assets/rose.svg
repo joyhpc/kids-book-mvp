@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 160">
+  <!-- Cubist Rose: geometric petals, angular stem, glass dome hint -->
+
+  <!-- stem: angular -->
+  <polygon points="47,82 53,82 55,148 45,148" fill="#2E7D32" stroke="#1B5E20" stroke-width="1"/>
+  <!-- thorns -->
+  <polygon points="47,100 38,95 46,93" fill="#388E3C"/>
+  <polygon points="53,115 62,110 54,108" fill="#2E7D32"/>
+  <!-- leaves -->
+  <polygon points="45,120 22,112 35,105" fill="#43A047" stroke="#2E7D32" stroke-width="1"/>
+  <polygon points="55,130 78,125 68,118" fill="#388E3C" stroke="#2E7D32" stroke-width="1"/>
+
+  <!-- petals: layered angular shapes, deep reds and pinks -->
+  <polygon points="50,42 30,62 25,48 35,30" fill="#C62828" stroke="#8E0000" stroke-width="1"/>
+  <polygon points="50,42 70,62 75,48 65,30" fill="#D32F2F" stroke="#8E0000" stroke-width="1"/>
+  <polygon points="50,42 20,55 35,75 50,65" fill="#E53935" stroke="#B71C1C" stroke-width="1"/>
+  <polygon points="50,42 80,55 65,75 50,65" fill="#EF5350" stroke="#B71C1C" stroke-width="1"/>
+  <polygon points="50,42 38,68 62,68" fill="#F44336" stroke="#C62828" stroke-width="1"/>
+  <!-- inner petals (lighter) -->
+  <polygon points="50,38 42,52 50,58 58,52" fill="#FF8A80" stroke="none"/>
+  <polygon points="50,32 46,42 50,48 54,42" fill="#FFCDD2" stroke="none"/>
+
+  <!-- center -->
+  <circle cx="50" cy="45" r="5" fill="#FFD54F" stroke="#F9A825" stroke-width="1"/>
+
+  <!-- glass dome (subtle) -->
+  <ellipse cx="50" cy="85" rx="38" ry="70" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-dasharray="4,4"/>
+</svg>

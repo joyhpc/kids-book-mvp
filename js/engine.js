@@ -13,7 +13,11 @@ const SceneLoader = (() => {
   let _data = null;
   let _stageEl = null;
 
-  async function load(url) {
+  async function load(url, directData) {
+    if (directData) {
+      _data = directData;
+      return _data;
+    }
     try {
       const resp = await fetch(url);
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
@@ -37,6 +41,8 @@ const SceneLoader = (() => {
 
     if (scene.background.type === 'css_gradient') {
       _stageEl.style.background = scene.background.value;
+    } else if (scene.background.type === 'image') {
+      _stageEl.style.background = `url('${scene.background.src}') center/cover no-repeat`;
     } else if (scene.background.type === 'canvas') {
       if (scene.background.gradient) {
         _stageEl.style.background = scene.background.gradient;
@@ -61,13 +67,14 @@ const SceneLoader = (() => {
       el.style.left = ch.position.x;
       el.style.top = ch.position.y;
 
-      const initState = ch.states[ch.initial_state];
-      if (initState) {
-        el.style.filter = initState.filter;
-        if (initState.animation) el.classList.add('anim-' + initState.animation);
+      if (ch.states && ch.initial_state) {
+        const initState = ch.states[ch.initial_state];
+        if (initState) {
+          if (initState.filter) el.style.filter = initState.filter;
+          if (initState.animation && initState.animation !== 'none') el.classList.add('anim-' + initState.animation);
+        }
+        el.dataset.states = JSON.stringify(ch.states);
       }
-
-      el.dataset.states = JSON.stringify(ch.states);
       _stageEl.appendChild(el);
     });
 
@@ -376,12 +383,13 @@ const DragDropEngine = (() => {
 
 
 /* ==================== AudioSyncEngine 模块 ==================== */
-/* ▼▼▼ 一行不动 ▼▼▼ */
+/* 支持真实音频文件同步（dialogue.audio）+ performance.now() 降级 */
 const AudioSyncEngine = (() => {
   let _playing = false;
   let _startTs = 0;
   let _words = [];
   let _rafId = null;
+  let _audio = null;
 
   function play(dialogue) {
     if (_playing) stop();
@@ -390,14 +398,28 @@ const AudioSyncEngine = (() => {
     if (_words.length === 0) return;
 
     _playing = true;
-    _startTs = performance.now();
-    _rafId = requestAnimationFrame(_tick);
+
+    if (dialogue.audio) {
+      _audio = new Audio(dialogue.audio);
+      _audio.play().then(() => {
+        _startTs = performance.now();
+        _rafId = requestAnimationFrame(_tick);
+      }).catch(() => {
+        _startTs = performance.now();
+        _rafId = requestAnimationFrame(_tick);
+      });
+    } else {
+      _startTs = performance.now();
+      _rafId = requestAnimationFrame(_tick);
+    }
   }
 
   function _tick(now) {
     if (!_playing) return;
 
-    const elapsed = (now - _startTs) / 1000;
+    const elapsed = _audio
+      ? _audio.currentTime
+      : (now - _startTs) / 1000;
     const spans = document.querySelectorAll('#subtitle-words .word-span');
 
     let allDone = true;
@@ -432,6 +454,10 @@ const AudioSyncEngine = (() => {
     if (_rafId) {
       cancelAnimationFrame(_rafId);
       _rafId = null;
+    }
+    if (_audio) {
+      _audio.pause();
+      _audio = null;
     }
   }
 
@@ -638,31 +664,273 @@ const ParticleSystem = (() => {
 })();
 
 
+/* ==================== BookEngine 多场景引擎 ==================== */
+const BookEngine = (() => {
+  let _bookData = null;
+  let _currentIndex = 0;
+  let _sceneCache = new Map();
+  let _progress = { completed_scenes: [] };
+  let _onSceneReady = null;
+  let _transitioning = false;
+
+  const STORAGE_KEY = 'storybook_progress';
+
+  async function loadBook(url) {
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      _bookData = await resp.json();
+    } catch (e) {
+      console.warn('book.json 加载失败:', e.message);
+      return null;
+    }
+    _progress = _loadProgress();
+    return _bookData;
+  }
+
+  async function loadScene(index) {
+    if (!_bookData || index < 0 || index >= _bookData.scenes.length) return null;
+
+    const sceneInfo = _bookData.scenes[index];
+    if (_sceneCache.has(sceneInfo.id)) {
+      return _sceneCache.get(sceneInfo.id);
+    }
+
+    try {
+      const resp = await fetch(sceneInfo.data_url);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const sceneData = await resp.json();
+      _sceneCache.set(sceneInfo.id, sceneData);
+      return sceneData;
+    } catch (e) {
+      console.error(`场景 ${sceneInfo.id} 加载失败:`, e);
+      return null;
+    }
+  }
+
+  function getCurrentIndex() { return _currentIndex; }
+  function getSceneCount() { return _bookData ? _bookData.scenes.length : 0; }
+  function getBookData() { return _bookData; }
+
+  function markCurrentComplete() {
+    if (!_bookData) return;
+    const sceneId = _bookData.scenes[_currentIndex].id;
+    if (!_progress.completed_scenes.includes(sceneId)) {
+      _progress.completed_scenes.push(sceneId);
+      _saveProgress();
+    }
+  }
+
+  function canAdvance() {
+    if (!_bookData) return false;
+    if (_currentIndex >= _bookData.scenes.length - 1) return false;
+
+    const sceneId = _bookData.scenes[_currentIndex].id;
+    const rule = _bookData.navigation_rules[sceneId];
+    if (!rule || !rule.unlock_condition) return true;
+
+    if (rule.unlock_condition === 'interaction_success') {
+      return _progress.completed_scenes.includes(sceneId);
+    }
+    return true;
+  }
+
+  async function nextScene() {
+    if (!canAdvance() || _transitioning) return null;
+    _currentIndex++;
+    return await loadScene(_currentIndex);
+  }
+
+  async function prevScene() {
+    if (_currentIndex <= 0 || _transitioning) return null;
+    _currentIndex--;
+    return await loadScene(_currentIndex);
+  }
+
+  async function goToScene(index) {
+    if (!_bookData || index < 0 || index >= _bookData.scenes.length || _transitioning) return null;
+    _currentIndex = index;
+    return await loadScene(_currentIndex);
+  }
+
+  function isLastScene() {
+    return _bookData && _currentIndex >= _bookData.scenes.length - 1;
+  }
+
+  function setTransitioning(val) { _transitioning = val; }
+
+  function _loadProgress() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : { completed_scenes: [] };
+    } catch { return { completed_scenes: [] }; }
+  }
+
+  function _saveProgress() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(_progress));
+    } catch { /* localStorage 不可用时静默失败 */ }
+  }
+
+  function preloadNext() {
+    if (_bookData && _currentIndex < _bookData.scenes.length - 1) {
+      loadScene(_currentIndex + 1);
+    }
+  }
+
+  return {
+    loadBook, loadScene, getCurrentIndex, getSceneCount, getBookData,
+    markCurrentComplete, canAdvance, nextScene, prevScene, goToScene,
+    isLastScene, setTransitioning, preloadNext
+  };
+})();
+
+
+/* ==================== PageTransition 场景切换动画 ==================== */
+const PageTransition = (() => {
+
+  async function fade(stageEl, renderFn, duration) {
+    duration = duration || 600;
+    stageEl.style.transition = `opacity ${duration / 2}ms ease`;
+    stageEl.style.opacity = '0';
+
+    await _wait(duration / 2);
+
+    _clearStageContent(stageEl);
+    await renderFn();
+
+    stageEl.style.opacity = '1';
+    await _wait(duration / 2);
+    stageEl.style.transition = '';
+  }
+
+  async function slideLeft(stageEl, renderFn, duration) {
+    duration = duration || 500;
+    stageEl.style.transition = `transform ${duration}ms ease, opacity ${duration}ms ease`;
+    stageEl.style.transform = 'translateX(-100%)';
+    stageEl.style.opacity = '0';
+
+    await _wait(duration);
+
+    _clearStageContent(stageEl);
+    await renderFn();
+
+    stageEl.style.transition = 'none';
+    stageEl.style.transform = 'translateX(100%)';
+    stageEl.style.opacity = '0';
+
+    await _wait(30);
+    stageEl.style.transition = `transform ${duration}ms ease, opacity ${duration}ms ease`;
+    stageEl.style.transform = 'translateX(0)';
+    stageEl.style.opacity = '1';
+
+    await _wait(duration);
+    stageEl.style.transition = '';
+    stageEl.style.transform = '';
+  }
+
+  async function slideRight(stageEl, renderFn, duration) {
+    duration = duration || 500;
+    stageEl.style.transition = `transform ${duration}ms ease, opacity ${duration}ms ease`;
+    stageEl.style.transform = 'translateX(100%)';
+    stageEl.style.opacity = '0';
+
+    await _wait(duration);
+
+    _clearStageContent(stageEl);
+    await renderFn();
+
+    stageEl.style.transition = 'none';
+    stageEl.style.transform = 'translateX(-100%)';
+    stageEl.style.opacity = '0';
+
+    await _wait(30);
+    stageEl.style.transition = `transform ${duration}ms ease, opacity ${duration}ms ease`;
+    stageEl.style.transform = 'translateX(0)';
+    stageEl.style.opacity = '1';
+
+    await _wait(duration);
+    stageEl.style.transition = '';
+    stageEl.style.transform = '';
+  }
+
+  function _clearStageContent(stageEl) {
+    const preserve = new Set(['bg-canvas', 'subtitle-panel', 'hint-bar', 'ending-overlay', 'progress-bar']);
+    Array.from(stageEl.children).forEach(child => {
+      if (!preserve.has(child.id)) {
+        child.remove();
+      }
+    });
+  }
+
+  function _wait(ms) {
+    return new Promise(r => setTimeout(r, ms));
+  }
+
+  return { fade, slideLeft, slideRight };
+})();
+
+
+/* ==================== ProgressBar 进度条 ==================== */
+const ProgressBar = (() => {
+  let _el = null;
+  let _dots = [];
+
+  function create(container, count) {
+    if (_el) _el.remove();
+
+    _el = document.createElement('div');
+    _el.id = 'progress-bar';
+    _dots = [];
+
+    for (let i = 0; i < count; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'progress-dot';
+      dot.dataset.index = i;
+      _el.appendChild(dot);
+      _dots.push(dot);
+    }
+
+    container.appendChild(_el);
+  }
+
+  function update(currentIndex) {
+    _dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentIndex);
+      dot.classList.toggle('completed', i < currentIndex);
+    });
+  }
+
+  function destroy() {
+    if (_el) { _el.remove(); _el = null; }
+    _dots = [];
+  }
+
+  return { create, update, destroy };
+})();
+
+
 /* ==================== App 入口 ==================== */
 const App = (() => {
+  let _stage = null;
+  let _mode = 'single';
 
   async function boot() {
     const loadingScreen = document.getElementById('loading-screen');
 
     try {
-      const data = await SceneLoader.load('data/scene.json');
+      _stage = document.getElementById('stage');
+      if (!_stage) throw new Error('找不到 #stage 元素');
 
-      const stage = document.getElementById('stage');
-      if (!stage) throw new Error('找不到 #stage 元素');
+      const bookData = await BookEngine.loadBook('data/book.json');
 
-      SceneLoader.render(stage);
-
-      const bgCanvas = document.getElementById('bg-canvas');
-      if (bgCanvas && data.scene.background.particles) {
-        ParticleSystem.init(bgCanvas);
+      if (bookData && bookData.scenes && bookData.scenes.length > 0) {
+        _mode = 'book';
+        await _bootBookMode(bookData);
+      } else {
+        _mode = 'single';
+        await _bootSingleMode();
       }
-
-      DragDropEngine.init(stage, data.interaction, () => {
-        const hintBar = document.getElementById('hint-bar');
-        if (hintBar) hintBar.classList.remove('visible');
-
-        _scheduleEnding(data.ending);
-      });
 
       if (loadingScreen) {
         loadingScreen.classList.add('fade-out');
@@ -678,6 +946,152 @@ const App = (() => {
         if (text) text.textContent = '加载失败，请刷新重试';
       }
     }
+  }
+
+  async function _bootSingleMode() {
+    const data = await SceneLoader.load('data/scene.json');
+
+    SceneLoader.render(_stage);
+
+    const bgCanvas = document.getElementById('bg-canvas');
+    if (bgCanvas && data.scene.background.particles) {
+      ParticleSystem.init(bgCanvas);
+    }
+
+    DragDropEngine.init(_stage, data.interaction, () => {
+      const hintBar = document.getElementById('hint-bar');
+      if (hintBar) hintBar.classList.remove('visible');
+      _scheduleEnding(data.ending);
+    });
+  }
+
+  async function _bootBookMode(bookData) {
+    ProgressBar.create(_stage, bookData.scenes.length);
+
+    const firstScene = await BookEngine.loadScene(0);
+    if (!firstScene) throw new Error('首个场景加载失败');
+
+    await _renderScene(firstScene);
+    ProgressBar.update(0);
+
+    _setupBookNavigation();
+
+    BookEngine.preloadNext();
+  }
+
+  async function _renderScene(sceneData) {
+    _cancelAutoAdvance();
+    AudioSyncEngine.stop();
+    DragDropEngine.destroy();
+
+    await SceneLoader.load(null, sceneData);
+    SceneLoader.render(_stage);
+
+    const bgCanvas = document.getElementById('bg-canvas');
+    if (bgCanvas && sceneData.scene.background.particles) {
+      ParticleSystem.destroy();
+      ParticleSystem.init(bgCanvas);
+    }
+
+    const isInteractive = sceneData.interaction && sceneData.interaction.type;
+
+    if (isInteractive) {
+      DragDropEngine.init(_stage, sceneData.interaction, () => {
+        const hintBar = document.getElementById('hint-bar');
+        if (hintBar) hintBar.classList.remove('visible');
+
+        BookEngine.markCurrentComplete();
+
+        if (BookEngine.isLastScene() && sceneData.ending) {
+          _scheduleEnding(sceneData.ending);
+        } else if (sceneData.ending && sceneData.ending.auto_advance) {
+          _autoAdvance(sceneData.ending.delay_after_success_ms || 3000);
+        }
+      });
+    } else {
+      BookEngine.markCurrentComplete();
+      if (BookEngine.isLastScene() && sceneData.ending) {
+        _scheduleEnding(sceneData.ending);
+      } else if (sceneData.ending && sceneData.ending.auto_advance) {
+        _autoAdvance(sceneData.ending.delay_after_success_ms || 3000);
+      }
+    }
+  }
+
+  let _autoAdvanceTimer = null;
+
+  function _autoAdvance(delayMs) {
+    _cancelAutoAdvance();
+    _autoAdvanceTimer = setTimeout(async () => {
+      _autoAdvanceTimer = null;
+      if (!BookEngine.canAdvance()) return;
+      await _navigateNext();
+    }, delayMs);
+  }
+
+  function _cancelAutoAdvance() {
+    if (_autoAdvanceTimer) {
+      clearTimeout(_autoAdvanceTimer);
+      _autoAdvanceTimer = null;
+    }
+  }
+
+  async function _navigateNext() {
+    _cancelAutoAdvance();
+    const sceneData = await BookEngine.nextScene();
+    if (!sceneData) return;
+
+    BookEngine.setTransitioning(true);
+    await PageTransition.fade(_stage, async () => {
+      await _renderScene(sceneData);
+      ProgressBar.update(BookEngine.getCurrentIndex());
+    });
+    BookEngine.setTransitioning(false);
+    BookEngine.preloadNext();
+  }
+
+  async function _navigatePrev() {
+    _cancelAutoAdvance();
+    const sceneData = await BookEngine.prevScene();
+    if (!sceneData) return;
+
+    BookEngine.setTransitioning(true);
+    await PageTransition.fade(_stage, async () => {
+      await _renderScene(sceneData);
+      ProgressBar.update(BookEngine.getCurrentIndex());
+    });
+    BookEngine.setTransitioning(false);
+  }
+
+  function _setupBookNavigation() {
+    let _touchStartX = 0;
+    let _touchStartY = 0;
+
+    _stage.addEventListener('touchstart', e => {
+      _touchStartX = e.touches[0].clientX;
+      _touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    _stage.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - _touchStartX;
+      const dy = e.changedTouches[0].clientY - _touchStartY;
+      if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+
+      if (dx < 0 && BookEngine.canAdvance()) {
+        _navigateNext();
+      } else if (dx > 0) {
+        _navigatePrev();
+      }
+    }, { passive: true });
+
+    document.addEventListener('keydown', e => {
+      if (_mode !== 'book') return;
+      if (e.key === 'ArrowRight' && BookEngine.canAdvance()) {
+        _navigateNext();
+      } else if (e.key === 'ArrowLeft') {
+        _navigatePrev();
+      }
+    });
   }
 
   function _scheduleEnding(cfg) {
@@ -705,13 +1119,6 @@ const App = (() => {
 
       const subtitlePanel = document.getElementById('subtitle-panel');
       if (subtitlePanel) subtitlePanel.style.opacity = '0';
-
-      const foxEl = document.getElementById('fox');
-      if (foxEl) {
-        foxEl.style.transition = 'opacity 1.5s ease, transform 1.5s ease';
-        foxEl.style.opacity = '0.15';
-        foxEl.style.transform = 'translate(-50%, -50%) scale(0.85)';
-      }
 
       overlay.classList.add('visible');
 

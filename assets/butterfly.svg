@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 140">
+  <!-- Cubist Butterfly: geometric wing planes, bold color blocks -->
+  <!-- left upper wing -->
+  <polygon points="80,70 30,20 10,65 50,80" fill="#9C27B0" stroke="#4A148C" stroke-width="2"/>
+  <polygon points="80,70 30,20 55,45" fill="#CE93D8" stroke="none" opacity="0.5"/>
+  <!-- left lower wing -->
+  <polygon points="80,70 20,90 40,130 65,95" fill="#E91E63" stroke="#880E4F" stroke-width="2"/>
+  <polygon points="80,70 40,130 55,100" fill="#F48FB1" stroke="none" opacity="0.4"/>
+  <!-- right upper wing -->
+  <polygon points="80,70 130,20 150,65 110,80" fill="#7B1FA2" stroke="#4A148C" stroke-width="2"/>
+  <polygon points="80,70 130,20 105,48" fill="#BA68C8" stroke="none" opacity="0.5"/>
+  <!-- right lower wing -->
+  <polygon points="80,70 140,90 120,130 95,95" fill="#C2185B" stroke="#880E4F" stroke-width="2"/>
+  <!-- wing spots -->
+  <circle cx="42" cy="52" r="8" fill="#FFC107" stroke="#F57F17" stroke-width="1" opacity="0.8"/>
+  <circle cx="120" cy="52" r="7" fill="#FF9800" stroke="#E65100" stroke-width="1" opacity="0.7"/>
+  <circle cx="45" cy="100" r="5" fill="#2196F3" opacity="0.6"/>
+  <circle cx="118" cy="98" r="6" fill="#03A9F4" opacity="0.6"/>
+  <!-- body -->
+  <ellipse cx="80" cy="72" rx="6" ry="28" fill="#1A1A2E" stroke="#0D0D1A" stroke-width="1.5"/>
+  <!-- antennae -->
+  <path d="M78 46 Q68 25 58 18" fill="none" stroke="#1A1A2E" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M82 46 Q92 25 102 18" fill="none" stroke="#1A1A2E" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="58" cy="18" r="3" fill="#FFC107"/>
+  <circle cx="102" cy="18" r="3" fill="#FFC107"/>
+</svg>
