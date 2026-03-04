@@ -92,6 +92,11 @@
           "emoji": "🌊",
           "count": 12,
           "duration_ms": 1500
+        },
+        {
+          "type": "set_var",
+          "var_key": "saved_prince",
+          "var_value": true
         }
       ]
     }

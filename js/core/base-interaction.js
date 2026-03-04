@@ -63,6 +63,13 @@ export class BaseInteraction {
         case 'show_particles':
           this.bus.emit('particles:burst', { action, targetEl });
           break;
+        case 'set_var':
+          // [Tale-js 微 DSL] 执行全局变量修改
+          import('./store.js').then(({ store }) => {
+            store.variables = { ...store.variables, [action.var_key]: action.var_value };
+            console.log(`[微 DSL] 变量突变: ${action.var_key} = ${action.var_value}`);
+          });
+          break;
       }
     });
   }

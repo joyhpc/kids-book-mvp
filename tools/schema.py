@@ -80,6 +80,9 @@ class InteractionAction(BaseModel):
     emoji: Optional[str] = None
     count: Optional[int] = None
     duration_ms: Optional[int] = None
+    # [Tale-js 微 DSL] 用于修改全局变量
+    var_key: Optional[str] = None
+    var_value: Optional[Any] = None
 
     class Config:
         extra = "ignore"
@@ -187,9 +190,15 @@ class BookScene(BaseModel):
     data_url: str
     thumbnail: Optional[str] = None
 
+class NavBranch(BaseModel):
+    condition: str  # 例如: "saved_prince == true"
+    next: str
+
 class NavRule(BaseModel):
     next: Optional[str] = None
     unlock_condition: Optional[str] = None
+    # [Tale-js 微 DSL] 条件分支寻路
+    branches: Optional[List[NavBranch]] = None
 
 class BookConfig(BaseModel):
     meta: Meta

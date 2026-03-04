@@ -26,7 +26,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent))
 
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyDhJ4wpmDGI139p-bC4dmB_A2MIFAlT1R4")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyAyDK2hUAC2gdx059vrx9CkcrUBrnaBpRI")
 ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "YOUR_ELEVENLABS_API_KEY_HERE")
 ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
 
@@ -63,7 +63,7 @@ def generate_image(scene_description: str, output_path: Path) -> Path:
     prompt = AESTHETIC_PREFIX + " Core visual concept: " + scene_description
 
     response = client.models.generate_images(
-        model="imagen-3.0-generate-002",
+        model="imagen-4.0-generate-001",
         prompt=prompt,
         config=types.GenerateImagesConfig(
             number_of_images=1,
@@ -303,6 +303,20 @@ def build_book(config: dict, voice_id: str) -> dict:
                 bg_rel = None
 
         if text_en and ELEVENLABS_API_KEY != "YOUR_ELEVENLABS_API_KEY_HERE":
+            try:
+                word_timings = generate_speech_with_timestamps(
+                    text=text_en,
+                    voice_id=voice_id,
+                    output_path=audio_path,
+                )
+            except Exception as e:
+                print(f"        [WARN] TTS 失败: {e}")
+                audio_rel = None
+        elif text_en:
+            word_timings = _fake_word_timings(text_en)
+            audio_rel = None
+
+        scene_json = _build_scene_data(
             scene_id=scene_id,
             title_zh=scene_title_zh,
             title_en=scene_title_en,
@@ -348,11 +362,19 @@ def build_book(config: dict, voice_id: str) -> dict:
             "thumbnail": None,
         })
 
-        next_id = scenes_cfg[idx + 1].get("id", f"scene_{scene_num + 1:02d}") if idx < len(scenes_cfg) - 1 else None
+        next_id = None
+        if idx < len(scenes_cfg) - 1:
+            next_id = scenes_cfg[idx + 1].get("id", f"scene_{scene_num + 1:02d}")
+            
         unlock = sc.get("unlock_condition", "interaction_success" if sc.get("interaction") else None)
+        
+        # [Tale-js 借鉴] 支持分支路由配置
+        branches = sc.get("branches")
+        
         nav_rules[scene_id] = {
             "next": next_id,
             "unlock_condition": unlock,
+            "branches": branches
         }
 
         print()

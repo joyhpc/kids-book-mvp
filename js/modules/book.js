@@ -182,7 +182,50 @@ class BookEngine {
 
   async nextScene() {
     if (!this.canAdvance()) return;
+    
+    // [Tale-js 微 DSL] 条件分支寻路逻辑
+    const currentId = store.bookData.scenes[store.currentIndex].id;
+    const rule = store.bookData.navigation_rules?.[currentId];
+    
+    if (rule && rule.branches && rule.branches.length > 0) {
+      console.log(`[微 DSL] 正在评估分支条件... 当前变量状态:`, store.variables);
+      for (const branch of rule.branches) {
+        if (this._evaluateCondition(branch.condition, store.variables)) {
+          console.log(`[微 DSL] 条件匹配成功: ${branch.condition} -> 跳转至 ${branch.next}`);
+          const nextIndex = store.bookData.scenes.findIndex(s => s.id === branch.next);
+          if (nextIndex !== -1) {
+            await this.goToScene(nextIndex);
+            return;
+          }
+        }
+      }
+    }
+    
+    // 默认线性寻路
     await this.goToScene(store.currentIndex + 1);
+  }
+
+  // [Tale-js 微 DSL] 安全的条件评估器 (极简版 Parser，替代危险的 eval)
+  _evaluateCondition(conditionStr, variables) {
+    if (!conditionStr || conditionStr === 'default') return true;
+    
+    // 简单支持 "key == value" 格式 (目前仅支持 bool / string)
+    const match = conditionStr.match(/^\s*([a-zA-Z0-9_]+)\s*(==|!=)\s*(true|false|['"]?[a-zA-Z0-9_]+['"]?)\s*$/);
+    if (match) {
+      const [, key, op, valStr] = match;
+      let targetValue = valStr;
+      if (valStr === 'true') targetValue = true;
+      else if (valStr === 'false') targetValue = false;
+      else targetValue = valStr.replace(/['"]/g, ''); // 移除引号
+
+      const actualValue = variables[key];
+      
+      if (op === '==') return actualValue === targetValue;
+      if (op === '!=') return actualValue !== targetValue;
+    }
+    
+    console.warn(`[微 DSL] 无法解析或不支持的条件语法: ${conditionStr}`);
+    return false;
   }
 
   async prevScene() {

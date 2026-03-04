@@ -127,6 +127,12 @@ scenes:
           - { type: change_state, target: prince_drowning, to_state: saved }
           - { type: play_dialogue, dialogue_id: after_feed }
           - { type: show_particles, emoji: "🌊", count: 12, duration_ms: 1500 }
+          # [Tale-js DSL 植入] 玩家行为产生状态突变
+          - { type: set_var, var_key: "saved_prince", var_value: true }
+    # [Tale-js DSL 植入] 根据变量决定走向哪个结局
+    branches:
+      - condition: "saved_prince == true"
+        next: "lm_s4_beach"
     ending:
       auto_advance: true
       delay_after_success_ms: 5000

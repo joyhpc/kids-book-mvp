@@ -55,7 +55,13 @@
     },
     "lm_s3_rescue": {
       "next": "lm_s4_beach",
-      "unlock_condition": "interaction_success"
+      "unlock_condition": "interaction_success",
+      "branches": [
+        {
+          "condition": "saved_prince == true",
+          "next": "lm_s4_beach"
+        }
+      ]
     },
     "lm_s4_beach": {}
   }
