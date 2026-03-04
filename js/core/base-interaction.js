@@ -37,18 +37,15 @@ export class BaseInteraction {
   _triggerSuccess(sourceEl, targetEl) {
     if (!this.config || !this.config.on_success) return;
     const actions = this.config.on_success.actions || [];
-    
-    // E2E test flag
     window.__E2E_INTERACTION_SUCCESS = true;
+    this.bus.emit('interaction:success', { sourceEl, targetEl, actions });
+    this._runActions(actions, sourceEl, targetEl);
+  }
 
-    // 把 actions 发布出去，不同模块 (UI, Audio, Particles) 自行响应
-    this.bus.emit('interaction:success', {
-      sourceEl, 
-      targetEl, 
-      actions
-    });
-
-    // 为向下兼容：在此处直接发起副作用请求
+  /**
+   * [微 DSL] 执行动作列表，供 _triggerSuccess 与 ClickInteraction 共用
+   */
+  _runActions(actions, sourceEl, targetEl) {
     actions.forEach(action => {
       switch (action.type) {
         case 'hide_item':
@@ -61,13 +58,12 @@ export class BaseInteraction {
           setTimeout(() => this.bus.emit('scene:switchDialogue', action.dialogue_id), 500);
           break;
         case 'show_particles':
-          this.bus.emit('particles:burst', { action, targetEl });
+          this.bus.emit('particles:burst', { action, targetEl: targetEl || sourceEl });
           break;
         case 'set_var':
-          // [Tale-js 微 DSL] 执行全局变量修改
           import('./store.js').then(({ store }) => {
             store.variables = { ...store.variables, [action.var_key]: action.var_value };
-            console.log(`[微 DSL] 变量突变: ${action.var_key} = ${action.var_value}`);
+            console.log(`[微 DSL] 变量: ${action.var_key} = ${action.var_value}`);
           });
           break;
       }

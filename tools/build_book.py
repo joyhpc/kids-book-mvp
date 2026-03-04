@@ -49,10 +49,55 @@ AESTHETIC_PREFIX = (
 )
 
 # =====================================================================
-# Step 1 — Gemini Imagen 3 生图
+# Step 1 — Gemini Imagen 3 生图 / OOD 离线管线
 # =====================================================================
-def generate_image(scene_description: str, output_path: Path) -> Path:
-    """调用 Imagen 3 生成 16:9 绘本背景图并保存为 JPEG。"""
+def generate_image(scene_description: str, output_path: Path, ood_assets: dict = None) -> Path:
+    """调用 Imagen 3 生成 16:9 绘本背景图并保存为 JPEG。或者调用 OOD 管线。"""
+    if ood_assets:
+        # 激活 2.5D Data Forge + Masked Runtime 平台
+        from ood_pipeline import RuntimeMaskedPipeline
+        runtime = RuntimeMaskedPipeline()
+        runtime.setup_pipeline()
+        
+        anchor_img = ood_assets["anchor"]
+        lora_path = ood_assets["lora_path"]
+        fluid_mask = ood_assets["mask_fluid"]
+        geo_mask = ood_assets["mask_geo"]
+        
+        # 提取或查找深度的动作条件 (可以用另一张参考图或动作描述)
+        action_depth_cond = "mock_depth_condition"
+        
+        # 将 scene_description 当作 Prompt 传入掩码管线
+        out_img = runtime.generate_storyboard_page(
+            prompt=scene_description,
+            lora_path=lora_path,
+            action_depth_cond=action_depth_cond,
+            anchor_img=anchor_img,
+            fluid_mask=fluid_mask,
+            geo_mask=geo_mask
+        )
+        
+        # 这里仅作 Mock，真实环境应该是保存 Pillow Image
+        if out_img == "mock_generated_image.jpg":
+            from PIL import Image, ImageDraw
+            img = Image.new('RGB', (1024, 576), color = (0, 30, 80)) # 深海蓝
+            d = ImageDraw.Draw(img)
+            # 添加一点星光/水母点缀
+            import random
+            for _ in range(50):
+                x = random.randint(0, 1024)
+                y = random.randint(0, 576)
+                r = random.randint(1, 3)
+                d.ellipse((x, y, x+r, y+r), fill=(100, 200, 255, random.randint(50, 200)))
+            
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            img.save(str(output_path))
+            print(f"        -> [OOD 管线接管 - Mock] 生成唯美纯色背景到 {output_path}")
+        else:
+            out_img.save(str(output_path))
+            print(f"        -> [OOD 管线接管] {output_path}")
+        return output_path
+
     from google import genai
     from google.genai import types
 
@@ -240,6 +285,21 @@ def build_book(config: dict, voice_id: str) -> dict:
     print(f"  场景数: {len(scenes_cfg)}")
     print()
 
+    # [OOD 平台初始化] 第 1 阶段：创世抽卡与精确解构（金锚）
+    ood_assets = None
+    ood_anchor = config.get("ood_character_anchor")
+    if ood_anchor:
+        print(f"  [ARCH] 检测到极度抽象符号设定图 ({ood_anchor})，激活 2.5D Data Forge！")
+        from ood_pipeline import OODDataForge
+        forge = OODDataForge()
+        lora_path, mask_fluid, mask_geo = forge.bootstrap_abstract_character_assets(ood_anchor)
+        ood_assets = {
+            "anchor": ood_anchor,
+            "lora_path": lora_path,
+            "mask_fluid": mask_fluid,
+            "mask_geo": mask_geo
+        }
+
     book_scenes = []
     nav_rules = {}
 
@@ -295,9 +355,12 @@ def build_book(config: dict, voice_id: str) -> dict:
              sc["scene_description"] = resolved_full_prompt
         # ==========================================
 
-        if sc.get("scene_description") and GEMINI_API_KEY and not GEMINI_API_KEY.startswith("YOUR_"):
+        # 如果开启了 OOD 离线生图管线，或者有 Gemini API 密钥，则触发图片生成
+        can_generate_img = ood_assets is not None or (GEMINI_API_KEY and not GEMINI_API_KEY.startswith("YOUR_"))
+        
+        if sc.get("scene_description") and can_generate_img:
             try:
-                generate_image(sc["scene_description"], bg_path)
+                generate_image(sc["scene_description"], bg_path, ood_assets)
             except Exception as e:
                 print(f"        [WARN] 生图失败: {e}")
                 bg_rel = None

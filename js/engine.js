@@ -14,7 +14,7 @@ import 'modules/book.js';
 export function initBook() {
   console.log('Kids Book Engine Native Modules Started 🚀');
   
-  fetch('data/book.json')
+  fetch('data/book.json?v=' + Date.now())
     .then(r => r.ok ? r.json() : null)
     .then(data => {
       if (data && data.scenes && data.scenes.length > 0) {

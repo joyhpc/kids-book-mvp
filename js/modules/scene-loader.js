@@ -1,5 +1,6 @@
 import { bus } from 'core/bus.js';
 import { store } from 'core/store.js';
+import { interpolate } from 'utils/interpolate.js';
 
 class SceneLoader {
   constructor() {
@@ -39,6 +40,7 @@ class SceneLoader {
         const initState = ch.states[ch.initial_state];
         if (initState) {
           if (initState.filter) el.style.filter = initState.filter;
+          // [架构理念] 20% 的微动态 + 80% 的精美静态：尽量使用极缓的光影与呼吸动画，或者仅根据环境给予极小的浮动。
           if (initState.animation && initState.animation !== 'none') el.classList.add('anim-' + initState.animation);
         }
         el.dataset.states = JSON.stringify(ch.states);
@@ -91,7 +93,7 @@ class SceneLoader {
       el.appendChild(sprite);
     } else if (config.img_src) {
       const img = document.createElement('img');
-      img.src = config.img_src;
+      img.src = config.img_src + '?v=' + Date.now(); // 强制突破浏览器图片缓存
       img.alt = config.label || '';
       img.draggable = false;
       // 引擎级防御：如果图片加载失败，绝不显示原生的破图图标，替换为容错组件
@@ -111,21 +113,27 @@ class SceneLoader {
     const panel = document.getElementById('subtitle-panel');
     if (!panel || !dialogue) return;
     
+    // [Tale-js 微 DSL] 变量插值：对 dialogue 文本做 {{var}} 替换
+    const vars = store.variables || {};
+    const textOriginal = interpolate(dialogue.text_original || '', vars);
+    const textEn = interpolate(dialogue.text_en || '', vars);
+    const textZh = interpolate(dialogue.text_zh || '', vars);
+    
     // 通知音频模块停止上一次播放
     bus.emit('audio:stop');
     
     panel.innerHTML = '';
 
     // 原文
-    if (dialogue.text_original) {
+    if (textOriginal) {
       const originalLine = document.createElement('div');
       originalLine.className = 'subtitle-original';
-      originalLine.textContent = dialogue.text_original;
+      originalLine.textContent = textOriginal;
       panel.appendChild(originalLine);
     }
 
     // 英文卡拉OK区
-    if (!dialogue.text_original) {
+    if (!textOriginal) {
       const wordContainer = document.createElement('div');
       wordContainer.id = 'subtitle-words';
       wordContainer.style.display = 'flex';
@@ -138,31 +146,31 @@ class SceneLoader {
         dialogue.words.forEach((w, i) => {
           const span = document.createElement('span');
           span.className = 'word-span';
-          span.textContent = w.word;
+          span.textContent = interpolate(w.word, vars);
           span.dataset.index = i;
           span.dataset.start = w.start_time;
           span.dataset.end = w.end_time;
           wordContainer.appendChild(span);
         });
         panel.appendChild(wordContainer);
-      } else if (dialogue.text_en) {
+      } else if (textEn) {
         const fallback = document.createElement('div');
         fallback.className = 'subtitle-original';
-        fallback.textContent = dialogue.text_en;
+        fallback.textContent = textEn;
         panel.appendChild(fallback);
       }
     }
 
     // 中文翻译
-    if (dialogue.text_zh) {
+    if (textZh) {
       const zhLine = document.createElement('div');
       zhLine.id = 'subtitle-zh';
-      zhLine.textContent = dialogue.text_zh;
+      zhLine.textContent = textZh;
       panel.appendChild(zhLine);
     }
 
-    // 配置音频按钮并自动播放
-    bus.emit('audio:setupSubtitle', dialogue);
+    // 配置音频按钮并自动播放（传入插值后的文案，供 TTS 朗读）
+    bus.emit('audio:setupSubtitle', { ...dialogue, text_zh: textZh, text_en: textEn, text_original: textOriginal });
   }
 
   switchDialogue(dialogueId) {

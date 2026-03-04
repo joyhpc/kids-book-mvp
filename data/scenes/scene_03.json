@@ -1,248 +1,90 @@
 {
   "meta": {
-    "title": "拯救王子 | Saving the Prince",
+    "title": "风暴 | The Storm",
     "version": "1.0.0",
     "language": [
       "en",
       "zh"
     ],
     "target_age": "4-8",
-    "scene_id": "lm_s3_rescue"
+    "scene_id": "scene_03"
   },
-  "location_id": "ocean_surface",
-  "time_of_day": "dark storm",
-  "action_prompt": "The stark horizon line is broken by chaos. A heavy geometric shape is sinking into the abyssal void below. Visual poetry of sacrifice.",
-  "resolved_bg_prompt": "A stark horizontal line dividing two worlds. A turbulent sea, desaturated cold colors, a solitary sharp triangular silhouette of a distant ship, visual poetry, time: dark storm, cold moonlight piercing storm clouds",
-  "resolved_full_prompt": "A stark horizontal line dividing two worlds. A turbulent sea, desaturated cold colors, a solitary sharp triangular silhouette of a distant ship, visual poetry, time: dark storm, cold moonlight piercing storm clouds | Soul expression: The stark horizon line is broken by chaos. A heavy geometric shape is sinking into the abyssal void below. Visual poetry of sacrifice.",
+  "time_of_day": "day",
+  "resolved_bg_prompt": "The little mermaid diving into the stormy waves, her semi-transparent fluid body glowing to rescue a falling prince among the lightning.",
+  "resolved_full_prompt": "The little mermaid diving into the stormy waves, her semi-transparent fluid body glowing to rescue a falling prince among the lightning.",
   "scene": {
-    "id": "lm_s3_rescue",
+    "id": "scene_03",
     "background": {
       "type": "image",
-      "src": "assets/scenes/lm_s3_rescue_bg.jpg",
+      "src": "assets/scenes/scene_03_bg.jpg",
       "particles": true
     },
     "characters": [
       {
-        "id": "prince_drowning",
-        "img_src": "assets/prince.svg",
-        "label": "Prince Drowning",
+        "id": "mermaid",
+        "img_src": "assets/mermaid_transparent.png",
         "position": {
-          "x": "70%",
-          "y": "60%"
+          "x": "55%",
+          "y": "45%"
         },
-        "width": "120px",
-        "height": "120px",
+        "width": "250px",
+        "height": "250px",
         "states": {
-          "drowning": {
-            "filter": "brightness(0.7)",
-            "animation": "none"
-          },
-          "saved": {
-            "filter": "brightness(1.5) drop-shadow(0 0 20px #fff)",
-            "animation": "item-bounce"
+          "idle": {
+            "filter": "none",
+            "animation": "shake"
           }
         },
-        "initial_state": "drowning"
+        "initial_state": "idle"
       }
     ],
-    "items": [
-      {
-        "id": "mermaid_savior",
-        "img_src": "assets/mermaid.svg",
-        "label": "Mermaid Savior",
-        "position": {
-          "x": "20%",
-          "y": "80%"
-        },
-        "width": "140px",
-        "height": "140px",
-        "draggable": true,
-        "animation": "float-gentle"
-      }
-    ]
-  },
-  "interaction": {
-    "type": "drag_and_drop",
-    "draggable_id": "mermaid_savior",
-    "target_id": "prince_drowning",
-    "hit_tolerance": 50,
-    "on_fail": {
-      "action": "spring_back",
-      "duration_ms": 400,
-      "easing": "cubic-bezier(0.34, 1.56, 0.64, 1)"
-    },
-    "on_success": {
-      "actions": [
-        {
-          "type": "hide_item",
-          "target": "mermaid_savior",
-          "animation": "pop-vanish"
-        },
-        {
-          "type": "change_state",
-          "target": "prince_drowning",
-          "to_state": "saved"
-        },
-        {
-          "type": "play_dialogue",
-          "dialogue_id": "after_feed"
-        },
-        {
-          "type": "show_particles",
-          "emoji": "🌊",
-          "count": 12,
-          "duration_ms": 1500
-        },
-        {
-          "type": "set_var",
-          "var_key": "saved_prince",
-          "var_value": true
-        }
-      ]
-    }
+    "items": []
   },
   "dialogues": {
     "intro": {
       "id": "intro",
-      "text_en": "A terrible storm wrecked the ship. The prince fell into the sea!",
-      "text_zh": "一场可怕的风暴摧毁了船。王子掉进了海里！",
+      "text_en": "Hold on! I won't let you sink.",
+      "text_zh": "坚持住！我不会让你沉下去的。",
       "words": [
         {
-          "word": "A",
+          "word": "Hold",
           "start_time": 0.0,
-          "end_time": 0.2
+          "end_time": 0.32
         },
         {
-          "word": "terrible",
-          "start_time": 0.3,
-          "end_time": 0.94
+          "word": "on!",
+          "start_time": 0.42,
+          "end_time": 0.66
         },
         {
-          "word": "storm",
-          "start_time": 1.04,
-          "end_time": 1.44
+          "word": "I",
+          "start_time": 0.76,
+          "end_time": 0.96
         },
         {
-          "word": "wrecked",
-          "start_time": 1.54,
-          "end_time": 2.1
+          "word": "won't",
+          "start_time": 1.06,
+          "end_time": 1.46
         },
         {
-          "word": "the",
-          "start_time": 2.2,
-          "end_time": 2.44
+          "word": "let",
+          "start_time": 1.56,
+          "end_time": 1.8
         },
         {
-          "word": "ship.",
-          "start_time": 2.54,
-          "end_time": 2.94
+          "word": "you",
+          "start_time": 1.9,
+          "end_time": 2.14
         },
         {
-          "word": "The",
-          "start_time": 3.04,
-          "end_time": 3.28
-        },
-        {
-          "word": "prince",
-          "start_time": 3.38,
-          "end_time": 3.86
-        },
-        {
-          "word": "fell",
-          "start_time": 3.96,
-          "end_time": 4.28
-        },
-        {
-          "word": "into",
-          "start_time": 4.38,
-          "end_time": 4.7
-        },
-        {
-          "word": "the",
-          "start_time": 4.8,
-          "end_time": 5.04
-        },
-        {
-          "word": "sea!",
-          "start_time": 5.14,
-          "end_time": 5.46
+          "word": "sink.",
+          "start_time": 2.24,
+          "end_time": 2.64
         }
       ],
       "auto_play": true,
       "display_on": "scene_ready"
-    },
-    "after_feed": {
-      "id": "after_feed",
-      "text_en": "The little mermaid held him tight and swam to the shore.",
-      "text_zh": "小美人鱼紧紧抱住他，向岸边游去。",
-      "words": [
-        {
-          "word": "The",
-          "start_time": 0.0,
-          "end_time": 0.24
-        },
-        {
-          "word": "little",
-          "start_time": 0.34,
-          "end_time": 0.82
-        },
-        {
-          "word": "mermaid",
-          "start_time": 0.92,
-          "end_time": 1.48
-        },
-        {
-          "word": "held",
-          "start_time": 1.58,
-          "end_time": 1.9
-        },
-        {
-          "word": "him",
-          "start_time": 2.0,
-          "end_time": 2.24
-        },
-        {
-          "word": "tight",
-          "start_time": 2.34,
-          "end_time": 2.74
-        },
-        {
-          "word": "and",
-          "start_time": 2.84,
-          "end_time": 3.08
-        },
-        {
-          "word": "swam",
-          "start_time": 3.18,
-          "end_time": 3.5
-        },
-        {
-          "word": "to",
-          "start_time": 3.6,
-          "end_time": 3.8
-        },
-        {
-          "word": "the",
-          "start_time": 3.9,
-          "end_time": 4.14
-        },
-        {
-          "word": "shore.",
-          "start_time": 4.24,
-          "end_time": 4.72
-        }
-      ],
-      "auto_play": false
     }
-  },
-  "ending": {
-    "delay_after_success_ms": 5000,
-    "title_en": "",
-    "title_zh": "",
-    "subtitle_zh": "",
-    "button_text": "再读一遍",
-    "particles_emoji": "✨",
-    "auto_advance": true
   },
   "ui": {
     "subtitle_panel": {

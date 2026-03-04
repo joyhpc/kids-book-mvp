@@ -1,12 +1,14 @@
 import { bus } from 'core/bus.js';
 import { store } from 'core/store.js';
 import { DragDropInteraction } from './drag-drop.js';
+import { ClickInteraction } from './click.js';
 
 /**
  * 插件注册表: 新增玩法只需在这里加上类映射即可，无需修改核心
  */
 const PluginRegistry = {
-  'drag_and_drop': DragDropInteraction
+  'drag_and_drop': DragDropInteraction,
+  'click': ClickInteraction
 };
 
 class InteractionManager {

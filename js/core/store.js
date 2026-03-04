@@ -27,3 +27,11 @@ export const store = new Proxy({
     return true;
   }
 });
+
+/** [Tale-js 微 DSL] 便捷封装 */
+export function getVar(key) {
+  return store.variables[key];
+}
+export function setVar(key, value) {
+  store.variables = { ...store.variables, [key]: value };
+}

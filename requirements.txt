@@ -1,0 +1,12 @@
+# Kids-Book-MVP 构建管线依赖
+# pip install -r requirements.txt
+
+# 基础（必需）
+pyyaml>=6.0
+pydantic>=2.0
+
+# AIGC 可选（生图）
+# google-genai>=0.3.0
+
+# HTTP 请求（TTS 等）
+# requests>=2.28.0

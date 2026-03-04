@@ -2,6 +2,8 @@
 
 > JSON-driven interactive bilingual storybook engine for children aged 4–8.
 
+**项目交接**：参见 [HANDOVER.md](./HANDOVER.md) 及 [docs/CLAUDE_CODE_QUICKSTART.md](./docs/CLAUDE_CODE_QUICKSTART.md)。
+
 ## What It Does
 
 A single `engine.js` renders any storybook from JSON config — no code changes needed.

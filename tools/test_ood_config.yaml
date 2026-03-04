@@ -1,0 +1,22 @@
+book_id: "ood_abstract_test"
+title: "The Dream of Fluid & Geometry"
+language: ["en", "zh"]
+target_age: "7-12"
+
+# 激活极度抽象符号（OOD）角色的离线资产管线
+ood_character_anchor: "assets/ood_anchor_reference.jpg"
+
+scenes:
+  - id: scene_01
+    title_en: "Awakening"
+    title_zh: "觉醒"
+    scene_description: "The semi-transparent fluid upper body stands on a barren alien beach, looking at the distant dual suns."
+    dialogue_text: "Where do my sharp edges end, and where does my fluid soul begin?"
+    dialogue_text_zh: "我尖锐的边缘在哪里结束，我流动的灵魂又在哪里开始？"
+
+  - id: scene_02
+    title_en: "Running"
+    title_zh: "奔跑"
+    scene_description: "Running across the cracked desert. The sharp geometry lower body shatters the ground, while the fluid upper body stretches backward in the wind."
+    dialogue_text: "Running brings clarity to the chaos."
+    dialogue_text_zh: "奔跑给混沌带来清晰。"

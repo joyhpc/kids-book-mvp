@@ -1,154 +1,80 @@
 {
   "meta": {
-    "title": "浮出水面 | The Surface",
+    "title": "海面 | The Surface",
     "version": "1.0.0",
     "language": [
       "en",
       "zh"
     ],
     "target_age": "4-8",
-    "scene_id": "lm_s2_surface"
+    "scene_id": "scene_02"
   },
-  "location_id": "ocean_surface",
   "time_of_day": "day",
-  "action_prompt": "Looking up from the dark depths towards a distant, unreachable sharp monolithic shape floating on the stark horizon line.",
-  "resolved_bg_prompt": "A stark horizontal line dividing two worlds. A turbulent sea, desaturated cold colors, a solitary sharp triangular silhouette of a distant ship, visual poetry, time: day, cold moonlight piercing storm clouds",
-  "resolved_full_prompt": "A stark horizontal line dividing two worlds. A turbulent sea, desaturated cold colors, a solitary sharp triangular silhouette of a distant ship, visual poetry, time: day, cold moonlight piercing storm clouds | Soul expression: Looking up from the dark depths towards a distant, unreachable sharp monolithic shape floating on the stark horizon line.",
+  "resolved_bg_prompt": "The little mermaid breaching the ocean surface, her sharp crystalline tail breaking the waves, looking at a distant ship under the starry night sky.",
+  "resolved_full_prompt": "The little mermaid breaching the ocean surface, her sharp crystalline tail breaking the waves, looking at a distant ship under the starry night sky.",
   "scene": {
-    "id": "lm_s2_surface",
+    "id": "scene_02",
     "background": {
       "type": "image",
-      "src": "assets/scenes/lm_s2_surface_bg.jpg",
+      "src": "assets/scenes/scene_02_bg.jpg",
       "particles": true
     },
     "characters": [
       {
-        "id": "ship",
-        "img_src": "assets/ship.svg",
-        "label": "Ship",
+        "id": "mermaid",
+        "img_src": "assets/mermaid_transparent.png",
         "position": {
-          "x": "70%",
-          "y": "45%"
+          "x": "40%",
+          "y": "60%"
         },
-        "width": "220px",
-        "height": "220px"
+        "width": "250px",
+        "height": "250px",
+        "states": {
+          "idle": {
+            "filter": "none",
+            "animation": "float"
+          }
+        },
+        "initial_state": "idle"
       }
     ],
-    "items": [
-      {
-        "id": "mermaid_looking",
-        "img_src": "assets/mermaid.svg",
-        "label": "Mermaid",
-        "position": {
-          "x": "20%",
-          "y": "70%"
-        },
-        "width": "120px",
-        "height": "120px",
-        "draggable": false,
-        "animation": "float-gentle"
-      }
-    ]
+    "items": []
   },
   "dialogues": {
     "intro": {
       "id": "intro",
-      "text_en": "When she turned fifteen, she swam to the surface and saw a prince on a ship.",
-      "text_zh": "当她满十五岁时，她游出水面，看到了一艘船上的王子。",
+      "text_en": "It's so beautiful up here.",
+      "text_zh": "这上面真是太美了。",
       "words": [
         {
-          "word": "When",
+          "word": "It's",
           "start_time": 0.0,
           "end_time": 0.32
         },
         {
-          "word": "she",
+          "word": "so",
           "start_time": 0.42,
-          "end_time": 0.66
+          "end_time": 0.62
         },
         {
-          "word": "turned",
-          "start_time": 0.76,
-          "end_time": 1.24
+          "word": "beautiful",
+          "start_time": 0.72,
+          "end_time": 1.44
         },
         {
-          "word": "fifteen,",
-          "start_time": 1.34,
-          "end_time": 1.98
+          "word": "up",
+          "start_time": 1.54,
+          "end_time": 1.74
         },
         {
-          "word": "she",
-          "start_time": 2.08,
-          "end_time": 2.32
-        },
-        {
-          "word": "swam",
-          "start_time": 2.42,
-          "end_time": 2.74
-        },
-        {
-          "word": "to",
-          "start_time": 2.84,
-          "end_time": 3.04
-        },
-        {
-          "word": "the",
-          "start_time": 3.14,
-          "end_time": 3.38
-        },
-        {
-          "word": "surface",
-          "start_time": 3.48,
-          "end_time": 4.04
-        },
-        {
-          "word": "and",
-          "start_time": 4.14,
-          "end_time": 4.38
-        },
-        {
-          "word": "saw",
-          "start_time": 4.48,
-          "end_time": 4.72
-        },
-        {
-          "word": "a",
-          "start_time": 4.82,
-          "end_time": 5.02
-        },
-        {
-          "word": "prince",
-          "start_time": 5.12,
-          "end_time": 5.6
-        },
-        {
-          "word": "on",
-          "start_time": 5.7,
-          "end_time": 5.9
-        },
-        {
-          "word": "a",
-          "start_time": 6.0,
-          "end_time": 6.2
-        },
-        {
-          "word": "ship.",
-          "start_time": 6.3,
-          "end_time": 6.7
+          "word": "here.",
+          "start_time": 1.84,
+          "end_time": 2.24
         }
       ],
       "auto_play": true,
       "display_on": "scene_ready"
     }
-  },
-  "ending": {
-    "delay_after_success_ms": 6000,
-    "title_en": "",
-    "title_zh": "",
-    "subtitle_zh": "",
-    "button_text": "再读一遍",
-    "particles_emoji": "✨",
-    "auto_advance": true
   },
   "ui": {
     "subtitle_panel": {

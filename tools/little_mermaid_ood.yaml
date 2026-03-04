@@ -1,0 +1,56 @@
+book_id: "little_mermaid_ood"
+title: "The Little Mermaid"
+language: ["en", "zh"]
+target_age: "4-8"
+
+# 激活极度抽象符号（OOD）角色的离线资产管线
+ood_character_anchor: "assets/mermaid_transparent.png"
+
+scenes:
+  - id: scene_01
+    title_en: "Deep Sea"
+    title_zh: "深海"
+    scene_description: "A little mermaid with a semi-transparent fluid body and a sharp, crystalline coral tail, swimming gracefully among the colorful reefs of the deep ocean."
+    dialogue_text: "I want to see the world above."
+    dialogue_text_zh: "我想去看看上面的世界。"
+    characters:
+      - id: mermaid
+        img_src: assets/mermaid_transparent.png
+        position: { x: "50%", y: "50%" }
+        width: "250px"
+        height: "250px"
+        states:
+          idle: { filter: "none", animation: float }
+        initial_state: idle
+
+  - id: scene_02
+    title_en: "The Surface"
+    title_zh: "海面"
+    scene_description: "The little mermaid breaching the ocean surface, her sharp crystalline tail breaking the waves, looking at a distant ship under the starry night sky."
+    dialogue_text: "It's so beautiful up here."
+    dialogue_text_zh: "这上面真是太美了。"
+    characters:
+      - id: mermaid
+        img_src: assets/mermaid_transparent.png
+        position: { x: "40%", y: "60%" }
+        width: "250px"
+        height: "250px"
+        states:
+          idle: { filter: "none", animation: float }
+        initial_state: idle
+    
+  - id: scene_03
+    title_en: "The Storm"
+    title_zh: "风暴"
+    scene_description: "The little mermaid diving into the stormy waves, her semi-transparent fluid body glowing to rescue a falling prince among the lightning."
+    dialogue_text: "Hold on! I won't let you sink."
+    dialogue_text_zh: "坚持住！我不会让你沉下去的。"
+    characters:
+      - id: mermaid
+        img_src: assets/mermaid_transparent.png
+        position: { x: "55%", y: "45%" }
+        width: "250px"
+        height: "250px"
+        states:
+          idle: { filter: "none", animation: shake }
+        initial_state: idle

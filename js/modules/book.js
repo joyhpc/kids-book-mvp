@@ -31,7 +31,7 @@ class BookEngine {
 
   async loadBook(url) {
     try {
-      const resp = await fetch(url);
+      const resp = await fetch(url + '?v=' + Date.now());
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const bookData = await resp.json();
       
@@ -43,6 +43,16 @@ class BookEngine {
       
       store.bookData = bookData;
       store.mode = 'book';
+      
+      // [微 DSL] 合并 initial_vars，并可选提示玩家名称
+      const cfg = bookData.config || {};
+      if (cfg.initial_vars && Object.keys(cfg.initial_vars).length) {
+        store.variables = { ...store.variables, ...cfg.initial_vars };
+      }
+      if (cfg.prompt_player_name && !store.variables.playerName) {
+        const name = window.prompt('请输入你的名字～', '')?.trim();
+        if (name) store.variables = { ...store.variables, playerName: name };
+      }
       
       bus.emit('book:loaded'); // 通知其他模块 bookData 已准备好
 
@@ -100,7 +110,7 @@ class BookEngine {
     }
 
     try {
-      const resp = await fetch(sceneInfo.data_url);
+      const resp = await fetch(sceneInfo.data_url + '?v=' + Date.now());
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const sceneData = await resp.json();
       this.sceneCache.set(sceneInfo.id, sceneData);

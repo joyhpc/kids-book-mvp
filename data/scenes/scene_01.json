@@ -1,37 +1,41 @@
 {
   "meta": {
-    "title": "海底宫殿 | Under the Sea",
+    "title": "深海 | Deep Sea",
     "version": "1.0.0",
     "language": [
       "en",
       "zh"
     ],
     "target_age": "4-8",
-    "scene_id": "lm_s1_ocean"
+    "scene_id": "scene_01"
   },
-  "location_id": "ocean_palace",
   "time_of_day": "day",
-  "action_prompt": "A solitary silhouette of a tiny, fluid-shaped girl floating in the vastness of the abyss.",
-  "resolved_bg_prompt": "Abyssal depth, oppressive yet vast, extreme negative space, a few towering sharp monolithic structures piercing the darkness, melancholy deep indigo, pure emotion, time: day, dim, ethereal light fading into black",
-  "resolved_full_prompt": "Abyssal depth, oppressive yet vast, extreme negative space, a few towering sharp monolithic structures piercing the darkness, melancholy deep indigo, pure emotion, time: day, dim, ethereal light fading into black | Soul expression: A solitary silhouette of a tiny, fluid-shaped girl floating in the vastness of the abyss.",
+  "resolved_bg_prompt": "A little mermaid with a semi-transparent fluid body and a sharp, crystalline coral tail, swimming gracefully among the colorful reefs of the deep ocean.",
+  "resolved_full_prompt": "A little mermaid with a semi-transparent fluid body and a sharp, crystalline coral tail, swimming gracefully among the colorful reefs of the deep ocean.",
   "scene": {
-    "id": "lm_s1_ocean",
+    "id": "scene_01",
     "background": {
       "type": "image",
-      "src": "assets/scenes/lm_s1_ocean_bg.jpg",
+      "src": "assets/scenes/scene_01_bg.jpg",
       "particles": true
     },
     "characters": [
       {
         "id": "mermaid",
-        "img_src": "assets/mermaid.svg",
-        "label": "Mermaid",
+        "img_src": "assets/mermaid_transparent.png",
         "position": {
           "x": "50%",
-          "y": "60%"
+          "y": "50%"
         },
-        "width": "140px",
-        "height": "140px"
+        "width": "250px",
+        "height": "250px",
+        "states": {
+          "idle": {
+            "filter": "none",
+            "animation": "float"
+          }
+        },
+        "initial_state": "idle"
       }
     ],
     "items": []
@@ -39,92 +43,48 @@
   "dialogues": {
     "intro": {
       "id": "intro",
-      "text_en": "Deep below the ocean waves, the little mermaid lived in a beautiful coral palace.",
-      "text_zh": "在深深的海浪之下，小美人鱼住在美丽的珊瑚宫殿里。",
+      "text_en": "I want to see the world above.",
+      "text_zh": "我想去看看上面的世界。",
       "words": [
         {
-          "word": "Deep",
+          "word": "I",
           "start_time": 0.0,
-          "end_time": 0.32
+          "end_time": 0.2
         },
         {
-          "word": "below",
-          "start_time": 0.42,
-          "end_time": 0.82
+          "word": "want",
+          "start_time": 0.3,
+          "end_time": 0.62
         },
         {
-          "word": "the",
-          "start_time": 0.92,
-          "end_time": 1.16
+          "word": "to",
+          "start_time": 0.72,
+          "end_time": 0.92
         },
         {
-          "word": "ocean",
-          "start_time": 1.26,
-          "end_time": 1.66
-        },
-        {
-          "word": "waves,",
-          "start_time": 1.76,
-          "end_time": 2.24
+          "word": "see",
+          "start_time": 1.02,
+          "end_time": 1.26
         },
         {
           "word": "the",
-          "start_time": 2.34,
-          "end_time": 2.58
+          "start_time": 1.36,
+          "end_time": 1.6
         },
         {
-          "word": "little",
-          "start_time": 2.68,
-          "end_time": 3.16
+          "word": "world",
+          "start_time": 1.7,
+          "end_time": 2.1
         },
         {
-          "word": "mermaid",
-          "start_time": 3.26,
-          "end_time": 3.82
-        },
-        {
-          "word": "lived",
-          "start_time": 3.92,
-          "end_time": 4.32
-        },
-        {
-          "word": "in",
-          "start_time": 4.42,
-          "end_time": 4.62
-        },
-        {
-          "word": "a",
-          "start_time": 4.72,
-          "end_time": 4.92
-        },
-        {
-          "word": "beautiful",
-          "start_time": 5.02,
-          "end_time": 5.74
-        },
-        {
-          "word": "coral",
-          "start_time": 5.84,
-          "end_time": 6.24
-        },
-        {
-          "word": "palace.",
-          "start_time": 6.34,
-          "end_time": 6.9
+          "word": "above.",
+          "start_time": 2.2,
+          "end_time": 2.68
         }
       ],
       "auto_play": true,
       "display_on": "scene_ready"
     }
-  },
-  "ending": {
-    "delay_after_success_ms": 6000,
-    "title_en": "",
-    "title_zh": "",
-    "subtitle_zh": "",
-    "button_text": "再读一遍",
-    "particles_emoji": "✨",
-    "auto_advance": true
   },
   "ui": {
     "subtitle_panel": {

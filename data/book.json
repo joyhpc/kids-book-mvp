@@ -1,12 +1,13 @@
 {
   "meta": {
-    "title": "little_mermaid",
+    "title": "The Little Mermaid",
     "version": "1.0.0",
     "language": [
-      "en"
+      "en",
+      "zh"
     ],
     "target_age": "4-8",
-    "book_id": "little_mermaid"
+    "book_id": "little_mermaid_ood"
   },
   "config": {
     "navigation": {
@@ -22,47 +23,31 @@
   },
   "scenes": [
     {
-      "id": "lm_s1_ocean",
-      "title_zh": "海底宫殿",
-      "title_en": "Under the Sea",
+      "id": "scene_01",
+      "title_zh": "深海",
+      "title_en": "Deep Sea",
       "data_url": "data/scenes/scene_01.json"
     },
     {
-      "id": "lm_s2_surface",
-      "title_zh": "浮出水面",
+      "id": "scene_02",
+      "title_zh": "海面",
       "title_en": "The Surface",
       "data_url": "data/scenes/scene_02.json"
     },
     {
-      "id": "lm_s3_rescue",
-      "title_zh": "拯救王子",
-      "title_en": "Saving the Prince",
+      "id": "scene_03",
+      "title_zh": "风暴",
+      "title_en": "The Storm",
       "data_url": "data/scenes/scene_03.json"
-    },
-    {
-      "id": "lm_s4_beach",
-      "title_zh": "沙滩上的离别",
-      "title_en": "The Beach",
-      "data_url": "data/scenes/scene_04.json"
     }
   ],
   "navigation_rules": {
-    "lm_s1_ocean": {
-      "next": "lm_s2_surface"
+    "scene_01": {
+      "next": "scene_02"
     },
-    "lm_s2_surface": {
-      "next": "lm_s3_rescue"
+    "scene_02": {
+      "next": "scene_03"
     },
-    "lm_s3_rescue": {
-      "next": "lm_s4_beach",
-      "unlock_condition": "interaction_success",
-      "branches": [
-        {
-          "condition": "saved_prince == true",
-          "next": "lm_s4_beach"
-        }
-      ]
-    },
-    "lm_s4_beach": {}
+    "scene_03": {}
   }
 }

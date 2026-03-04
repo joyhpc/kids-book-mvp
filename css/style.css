@@ -68,7 +68,7 @@ html, body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: max(2.2rem, env(safe-area-inset-top)) 1.4rem 1.6rem;
+  padding: max(3.5rem, env(safe-area-inset-top)) 1.4rem 1.6rem;
   /* 电影级的顶部暗角渐变，完美融合深空背景 */
   background: linear-gradient(to bottom, rgba(1, 2, 8, 0.95) 0%, rgba(5, 10, 25, 0.6) 60%, transparent 100%);
   border-bottom: none;
@@ -314,13 +314,32 @@ html, body {
   animation: item-bounce 3s ease-in-out infinite;
 }
 
+/* ---------- 极度克制的呼吸浮动：20%动态，80%静态（适配 OOD 流体模型） ---------- */
+@keyframes float {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); filter: drop-shadow(0 0 5px rgba(255,255,255,0.05)); }
+  50%      { transform: translate(-50%, -50%) translateY(-6px); filter: drop-shadow(0 0 15px rgba(255,255,255,0.15)); }
+}
+.anim-float {
+  /* 放慢到 8s，营造深海庄重感，绝不“为了动而动” */
+  animation: float 8s ease-in-out infinite;
+}
+
+/* ---------- 极度克制的轻微摇摆 ---------- */
+@keyframes shake {
+  0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+  50%      { transform: translate(-50%, -50%) rotate(1.5deg); }
+}
+.anim-shake {
+  animation: shake 7s ease-in-out infinite;
+}
+
 /* ---------- 轻柔浮动（鲸鱼/蝴蝶等） ---------- */
 @keyframes float-gentle {
   0%, 100% { transform: translate(-50%, -50%) translateY(0); filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
   50%      { transform: translate(-50%, -50%) translateY(-10px); filter: drop-shadow(0 0 25px rgba(255,255,255,0.6)); }
 }
 .anim-float-gentle {
-  animation: float-gentle 4s ease-in-out infinite;
+  animation: float-gentle 6s ease-in-out infinite;
 }
 
 /* ---------- 狐狸空闲呼吸（更缓慢） ---------- */

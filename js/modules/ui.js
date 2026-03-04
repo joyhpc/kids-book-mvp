@@ -1,6 +1,7 @@
 import { bus } from 'core/bus.js';
 import { store } from 'core/store.js';
 import { wait } from 'utils/helpers.js';
+import { interpolate } from 'utils/interpolate.js';
 
 class UIController {
   constructor() {
@@ -28,7 +29,7 @@ class UIController {
 
     bus.on('ui:showHint', (hint) => {
       if (this.hintBar && hint) {
-        this.hintBar.textContent = hint.text_zh;
+        this.hintBar.textContent = interpolate(hint.text_zh || '', store.variables || {});
         setTimeout(() => this.hintBar.classList.add('visible'), hint.show_after_ms || 2000);
       }
     });
@@ -174,7 +175,7 @@ class UIController {
       if (stars) stars.textContent = '✦  ✧  ✦';
       if (titleEn) titleEn.textContent = cfg.title_en || '';
       if (titleZh) titleZh.textContent = cfg.title_zh || '';
-      if (subtitle) subtitle.textContent = cfg.subtitle_zh || '';
+      if (subtitle) subtitle.textContent = interpolate(cfg.subtitle_zh || '', store.variables || {});
       if (btn) {
         btn.textContent = cfg.button_text || '再读一遍';
         btn.addEventListener('click', () => location.reload());
