@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+  <!-- Simple cardboard box - "the sheep is inside" -->
+  <rect x="10" y="25" width="100" height="55" rx="4" fill="#D7CCC8" stroke="#8D6E63" stroke-width="2"/>
+  <path d="M10,25 L60,5 L110,25" fill="none" stroke="#8D6E63" stroke-width="2"/>
+  <path d="M60,5 L60,60" fill="none" stroke="#8D6E63" stroke-width="1.5" opacity="0.6"/>
+  <rect x="10" y="25" width="100" height="30" fill="#BCAAA4" opacity="0.5"/>
+</svg>

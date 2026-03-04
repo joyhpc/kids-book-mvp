@@ -1,0 +1,196 @@
+{
+  "meta": {
+    "scene_id": "lp_11_secret",
+    "title": "狐狸的秘密 | The Fox's Secret",
+    "version": "1.0.0"
+  },
+  "scene": {
+    "id": "lp_11_secret",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 60%, #1c1028 0%, #120a20 40%, #08040f 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "fox11",
+        "img_src": "assets/fox.svg",
+        "label": "The Fox",
+        "position": {
+          "x": "38%",
+          "y": "58%"
+        },
+        "width": "110px",
+        "height": "110px",
+        "states": {
+          "wise": {
+            "filter": "saturate(1.2) brightness(1.15) drop-shadow(0 0 30px rgba(255,200,100,0.4))",
+            "animation": "float-gentle"
+          }
+        },
+        "initial_state": "wise"
+      },
+      {
+        "id": "rose11",
+        "img_src": "assets/rose.svg",
+        "label": "The Rose",
+        "position": {
+          "x": "70%",
+          "y": "55%"
+        },
+        "width": "70px",
+        "height": "110px"
+      }
+    ],
+    "items": []
+  },
+  "interaction": null,
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "\"Here is my secret. It is very simple: one sees clearly only with the heart. What is essential is invisible to the eye.\"",
+      "text_zh": "“这是我的秘密，很简单：只有用心才能看得清。真正重要的东西，眼睛是看不见的。”",
+      "words": [
+        {
+          "word": "\"Here",
+          "start_time": 0.0,
+          "end_time": 0.4
+        },
+        {
+          "word": "is",
+          "start_time": 0.5,
+          "end_time": 0.7
+        },
+        {
+          "word": "my",
+          "start_time": 0.8,
+          "end_time": 1.0
+        },
+        {
+          "word": "secret.",
+          "start_time": 1.1,
+          "end_time": 1.66
+        },
+        {
+          "word": "It",
+          "start_time": 1.76,
+          "end_time": 1.96
+        },
+        {
+          "word": "is",
+          "start_time": 2.06,
+          "end_time": 2.26
+        },
+        {
+          "word": "very",
+          "start_time": 2.36,
+          "end_time": 2.68
+        },
+        {
+          "word": "simple:",
+          "start_time": 2.78,
+          "end_time": 3.34
+        },
+        {
+          "word": "one",
+          "start_time": 3.44,
+          "end_time": 3.68
+        },
+        {
+          "word": "sees",
+          "start_time": 3.78,
+          "end_time": 4.1
+        },
+        {
+          "word": "clearly",
+          "start_time": 4.2,
+          "end_time": 4.76
+        },
+        {
+          "word": "only",
+          "start_time": 4.86,
+          "end_time": 5.18
+        },
+        {
+          "word": "with",
+          "start_time": 5.28,
+          "end_time": 5.6
+        },
+        {
+          "word": "the",
+          "start_time": 5.7,
+          "end_time": 5.94
+        },
+        {
+          "word": "heart.",
+          "start_time": 6.04,
+          "end_time": 6.52
+        },
+        {
+          "word": "What",
+          "start_time": 6.62,
+          "end_time": 6.94
+        },
+        {
+          "word": "is",
+          "start_time": 7.04,
+          "end_time": 7.24
+        },
+        {
+          "word": "essential",
+          "start_time": 7.34,
+          "end_time": 8.06
+        },
+        {
+          "word": "is",
+          "start_time": 8.16,
+          "end_time": 8.36
+        },
+        {
+          "word": "invisible",
+          "start_time": 8.46,
+          "end_time": 9.18
+        },
+        {
+          "word": "to",
+          "start_time": 9.28,
+          "end_time": 9.48
+        },
+        {
+          "word": "the",
+          "start_time": 9.58,
+          "end_time": 9.82
+        },
+        {
+          "word": "eye.\"",
+          "start_time": 9.92,
+          "end_time": 10.32
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready",
+      "text_original": "Voici mon secret. Il est très simple : on ne voit bien qu'avec le cœur. L'essentiel est invisible pour les yeux."
+    }
+  },
+  "ending": {
+    "auto_advance": true,
+    "delay_after_success_ms": 8000
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "show_after_ms": 2500,
+      "position": "bottom"
+    }
+  }
+}

@@ -17,12 +17,24 @@ A single `engine.js` renders any storybook from JSON config — no code changes 
 ## Quick Start
 
 ```bash
-# Serve locally
+# 1. 构建第一章（默认）
+npm test
+
+# 2. 启动服务
 python -m http.server 8888
 
-# Open in browser
+# 3. 打开
 http://localhost:8888/index.html
 ```
+
+## 测试
+
+| 命令 | 说明 |
+|------|------|
+| `npm test` | 构建 + 产出校验（跨平台，无 `&&`） |
+| `npm run test:smoke` | 轻量 HTTP 校验（无 Puppeteer，需先起服） |
+| `npm run test:e2e` | E2E 翻页/拖拽/有声 + 读者视角（画面可见、文字可读），需先起服 |
+| `npm run test:full` | 全闭环：构建 → 校验 → 起服(9876) → E2E |
 
 ## Generate a Book from YAML
 
@@ -30,7 +42,10 @@ http://localhost:8888/index.html
 # Install Python deps
 pip install pyyaml
 
-# Build the "Little Prince" chapter
+# Build the complete Little Prince (14 scenes)
+python tools/build_book.py book --config tools/little_prince_full.yaml
+
+# Or build Chapter 1 only (6 scenes: Draw Me a Sheep — 原著开篇)
 python tools/build_book.py book --config tools/chapter1_config.yaml
 
 # With AIGC APIs (optional)
@@ -50,14 +65,18 @@ python tools/build_book.py book --config tools/chapter1_config.yaml
 │   ├── fox.svg             # Fox (cubist style)
 │   ├── apple.svg           # Draggable apple
 │   ├── rose.svg            # Rose
+│   ├── snake.svg           # Desert snake
+│   ├── crown.svg           # The King
+│   ├── streetlamp.svg      # Lamplighter
 │   └── ...                 # whale, robot, butterfly, etc.
 ├── data/
 │   ├── book.json           # Multi-scene book manifest
 │   ├── scene.json          # Single-scene fallback
 │   └── scenes/             # Individual scene data
 ├── tools/
-│   ├── build_book.py       # AIGC pipeline (YAML → JSON)
-│   ├── chapter1_config.yaml    # Chapter 1: Prince & Fox (6 scenes)
+│   ├── build_book.py           # AIGC pipeline (YAML → JSON)
+│   ├── little_prince_full.yaml # Complete Little Prince (14 scenes)
+│   ├── chapter1_config.yaml    # Chapter 1: Draw Me a Sheep (6 scenes)
 │   ├── book_config.yaml        # Prince & Fox (3 scenes, compact)
 │   └── test_book_config.yaml   # Engine stress test (4 themes)
 └── reader.html             # Standalone reading prototype
@@ -84,18 +103,26 @@ python tools/build_book.py book --config tools/chapter1_config.yaml
     scene_XX.json         → build_book.py
 ```
 
-## Chapter 1 Demo: The Little Prince and the Fox
+## Complete Little Prince (14 Scenes)
 
-6-scene complete storybook with narrative arc:
+Full story from desert meeting to farewell:
 
-| # | Scene | Type | Key Feature |
+| # | Scene | Type | Key Moment |
 |---|-------|------|-------------|
-| 1 | The Visitor | narrative | Prince alone in starry sky |
-| 2 | Fox Appears | narrative | Two characters face each other |
-| 3 | Tame Me | narrative | Turning point — the fox's plea |
-| 4 | Establishing Ties | **interactive** | Drag apple → fox transforms + dialogue switch |
-| 5 | The Secret | narrative | Core quote: "invisible to the eye" |
-| 6 | Farewell | narrative | Emotional closure |
+| 1 | In the Desert | narrative | Pilot meets the prince |
+| 2 | The Prince's Planet | narrative | Prince + rose, small world |
+| 3 | The Proud Rose | narrative | "One could not die for you" |
+| 4 | The King | narrative | First planet visit |
+| 5 | The Lamplighter | narrative | "The only one I could have made my friend" |
+| 6 | On Earth | narrative | Prince in the desert |
+| 7 | The Snake | narrative | "I can help you go home" |
+| 8 | Meeting the Fox | narrative | "Who are you?" "I am a fox" |
+| 9 | Tame Me | narrative | The fox's plea |
+| 10 | Establishing Ties | **interactive** | Drag apple → fox transforms |
+| 11 | The Fox's Secret | narrative | "What is essential is invisible to the eye" |
+| 12 | Goodbye, Fox | narrative | "You become responsible, forever" |
+| 13 | The Well | narrative | "Stars are beautiful because of a flower" |
+| 14 | Going Home | narrative | "I shall be living on one of them, smiling" |
 
 ## YAML Config Format
 

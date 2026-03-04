@@ -1,0 +1,26 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Muted, ethereal ocean fade representing her fleeting existence -->
+    <linearGradient id="fade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#8b5cf6" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="2"/></filter>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- The Fluid Upper Body: Smooth, organic curve (Innocence) -->
+  <path d="M40 10 C 60 10, 70 30, 50 50" fill="none" stroke="url(#fade)" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/>
+  
+  <!-- Faceless Head: Loss of voice / Identity -->
+  <circle cx="45" cy="15" r="7" fill="#3b82f6" opacity="0.85" filter="url(#glow)"/>
+  
+  <!-- The Shattered Lower Body: Geometric sharp edges (The pain of walking / tragedy) -->
+  <polygon points="50,45 60,60 45,70" fill="#e11d48" opacity="0.75" filter="url(#glow)"/> <!-- The single stroke of crimson -->
+  <polygon points="45,60 30,80 50,90" fill="url(#fade)" filter="url(#blur)"/>
+  <polygon points="55,65 70,85 45,95" fill="url(#fade)" opacity="0.5"/>
+</svg>

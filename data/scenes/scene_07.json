@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "scene_id": "lp_07_snake",
+    "title": "蛇 | The Snake",
+    "version": "1.0.0"
+  },
+  "scene": {
+    "id": "lp_07_snake",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 70%, #1a1508 0%, #120f05 50%, #080604 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "prince7",
+        "img_src": "assets/prince.svg",
+        "label": "The Little Prince",
+        "position": {
+          "x": "35%",
+          "y": "55%"
+        },
+        "width": "95px",
+        "height": "130px"
+      },
+      {
+        "id": "snake",
+        "img_src": "assets/snake.svg",
+        "label": "The Snake",
+        "position": {
+          "x": "72%",
+          "y": "60%"
+        },
+        "width": "120px",
+        "height": "48px"
+      }
+    ],
+    "items": []
+  },
+  "interaction": null,
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "\"I can take you farther than any ship,\" said the snake. \"I can help you go home.\"",
+      "text_zh": "“我能带你去任何船都到不了的地方，”蛇说，“我能帮你回家。”",
+      "words": [
+        {
+          "word": "\"I",
+          "start_time": 0.0,
+          "end_time": 0.2
+        },
+        {
+          "word": "can",
+          "start_time": 0.3,
+          "end_time": 0.54
+        },
+        {
+          "word": "take",
+          "start_time": 0.64,
+          "end_time": 0.96
+        },
+        {
+          "word": "you",
+          "start_time": 1.06,
+          "end_time": 1.3
+        },
+        {
+          "word": "farther",
+          "start_time": 1.4,
+          "end_time": 1.96
+        },
+        {
+          "word": "than",
+          "start_time": 2.06,
+          "end_time": 2.38
+        },
+        {
+          "word": "any",
+          "start_time": 2.48,
+          "end_time": 2.72
+        },
+        {
+          "word": "ship,\"",
+          "start_time": 2.82,
+          "end_time": 3.3
+        },
+        {
+          "word": "said",
+          "start_time": 3.4,
+          "end_time": 3.72
+        },
+        {
+          "word": "the",
+          "start_time": 3.82,
+          "end_time": 4.06
+        },
+        {
+          "word": "snake.",
+          "start_time": 4.16,
+          "end_time": 4.64
+        },
+        {
+          "word": "\"I",
+          "start_time": 4.74,
+          "end_time": 4.94
+        },
+        {
+          "word": "can",
+          "start_time": 5.04,
+          "end_time": 5.28
+        },
+        {
+          "word": "help",
+          "start_time": 5.38,
+          "end_time": 5.7
+        },
+        {
+          "word": "you",
+          "start_time": 5.8,
+          "end_time": 6.04
+        },
+        {
+          "word": "go",
+          "start_time": 6.14,
+          "end_time": 6.34
+        },
+        {
+          "word": "home.\"",
+          "start_time": 6.44,
+          "end_time": 6.92
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready",
+      "text_original": "Je puis t'emporter plus loin qu'un navire. Je puis t'aider si tu regrettes ta planète."
+    }
+  },
+  "ending": {
+    "auto_advance": true,
+    "delay_after_success_ms": 6000
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "show_after_ms": 2500,
+      "position": "bottom"
+    }
+  }
+}

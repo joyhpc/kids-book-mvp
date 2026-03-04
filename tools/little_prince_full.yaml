@@ -1,0 +1,482 @@
+# ═══════════════════════════════════════════════════════════════
+#   小王子 · Le Petit Prince
+#   完整绘本 · 14 场景
+#   改编自 安托万·德·圣-埃克苏佩里 (1943)
+# ═══════════════════════════════════════════════════════════════
+
+book_id: little_prince_full
+book_title_zh: "小王子"
+book_title_en: "The Little Prince"
+author: "Antoine de Saint-Exupéry"
+target_age: "4-8"
+theme: night_sky
+font_family: Nunito
+
+scenes:
+
+  # ─── 第一幕：相遇 ─────────────────────────────────────────
+  - id: lp_01_sahara
+    title_zh: 沙漠相遇
+    title_en: In the Desert
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 80%, #2d1f0e 0%, #1a120a 50%, #0d0805 100%)"
+      particles: true
+    dialogue_text: '"It was in the desert that I first made the acquaintance of the little prince."'
+    dialogue_text_fr: "C'est dans le désert que j'ai fait la connaissance du petit prince."
+    dialogue_text_zh: "\u201c我是在沙漠中第一次结识小王子的。\u201d"
+    characters:
+      - id: prince
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "50%", y: "58%" }
+        width: "110px"
+        height: "150px"
+    items:
+      - id: star1
+        img_src: assets/star.svg
+        label: Star
+        position: { x: "85%", y: "20%" }
+        width: "28px"
+        height: "28px"
+        animation: float-gentle
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 5500
+
+  - id: lp_02_planet
+    title_zh: 小王子的星球
+    title_en: The Prince's Planet
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 30%, #1a1535 0%, #0d0a20 50%, #050310 100%)"
+      particles: true
+    dialogue_text: '"I come from a very small planet," said the little prince, "hardly bigger than a house."'
+    dialogue_text_fr: "J'habite une planète à peine plus grande qu'une maison."
+    dialogue_text_zh: "\u201c我来自一颗很小很小的星球，\u201d小王子说，\u201c它几乎只比一间房子大一点。\u201d"
+    characters:
+      - id: prince2
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "45%", y: "55%" }
+        width: "100px"
+        height: "140px"
+      - id: rose2
+        img_src: assets/rose.svg
+        label: The Rose
+        position: { x: "75%", y: "50%" }
+        width: "55px"
+        height: "90px"
+    items:
+      - id: star2
+        img_src: assets/star.svg
+        label: Star
+        position: { x: "18%", y: "25%" }
+        width: "22px"
+        height: "22px"
+        animation: float-gentle
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 6000
+
+  - id: lp_03_rose
+    title_zh: 骄傲的玫瑰
+    title_en: The Proud Rose
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 40% 50%, #1c1028 0%, #120a20 50%, #08040f 100%)"
+      particles: true
+    dialogue_text: '"You are beautiful, but you are empty," he thought. "One could not die for you."'
+    dialogue_text_fr: "Tu es belle mais tu es vide. On ne pourrait pas mourir pour toi."
+    dialogue_text_zh: "\u201c你很美，但你是空虚的，\u201d他想，\u201c没有人为你而死。\u201d"
+    characters:
+      - id: prince3
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "32%", y: "55%" }
+        width: "90px"
+        height: "125px"
+      - id: rose3
+        img_src: assets/rose.svg
+        label: The Rose
+        position: { x: "72%", y: "52%" }
+        width: "65px"
+        height: "105px"
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 6000
+
+  - id: lp_04_king
+    title_zh: 国王
+    title_en: The King
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 40%, #1a0a2e 0%, #0d0518 50%, #050210 100%)"
+      particles: true
+    dialogue_text: '"I am the only king on all these planets," said the king. "I order you to stay."'
+    dialogue_text_fr: "Je suis le seul roi sur toutes ces planètes. Je t'ordonne de rester."
+    dialogue_text_zh: "\u201c我是所有这些星球上唯一的国王，\u201d国王说，\u201c我命令你留下。\u201d"
+    characters:
+      - id: prince4
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "35%", y: "58%" }
+        width: "85px"
+        height: "120px"
+      - id: crown
+        img_src: assets/crown.svg
+        label: The King
+        position: { x: "68%", y: "45%" }
+        width: "80px"
+        height: "65px"
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 6000
+
+  - id: lp_05_lamplighter
+    title_zh: 点灯人
+    title_en: The Lamplighter
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 70%, #0f0d18 0%, #080610 60%, #030208 100%)"
+      particles: true
+    dialogue_text: '"The lamplighter is the only one I could have made my friend," said the prince.'
+    dialogue_text_fr: "Quand il allume son réverbère, c'est comme s'il faisait naître une étoile de plus."
+    dialogue_text_zh: "\u201c点灯人是唯一一个我可以和他交朋友的人。\u201d小王子说。"
+    characters:
+      - id: prince5
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "32%", y: "55%" }
+        width: "90px"
+        height: "125px"
+      - id: lamp
+        img_src: assets/streetlamp.svg
+        label: The Lamp
+        position: { x: "72%", y: "45%" }
+        width: "55px"
+        height: "125px"
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 6000
+
+  - id: lp_06_earth
+    title_zh: 来到地球
+    title_en: On Earth
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 80%, #2d1f0e 0%, #1a120a 40%, #0a0804 80%, #050302 100%)"
+      particles: true
+    dialogue_text: '"So the little prince found himself on Earth, in the middle of the desert."'
+    dialogue_text_fr: "Ainsi le petit prince arriva sur la Terre, au milieu du désert."
+    dialogue_text_zh: "\u201c于是小王子来到了地球，在沙漠中央。\u201d"
+    characters:
+      - id: prince6
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "50%", y: "58%" }
+        width: "100px"
+        height: "140px"
+    items:
+      - id: star6
+        img_src: assets/star.svg
+        label: Star
+        position: { x: "22%", y: "30%" }
+        width: "24px"
+        height: "24px"
+        animation: float-gentle
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 5500
+
+  - id: lp_07_snake
+    title_zh: 蛇
+    title_en: The Snake
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 70%, #1a1508 0%, #120f05 50%, #080604 100%)"
+      particles: true
+    dialogue_text: '"I can take you farther than any ship," said the snake. "I can help you go home."'
+    dialogue_text_fr: "Je puis t'emporter plus loin qu'un navire. Je puis t'aider si tu regrettes ta planète."
+    dialogue_text_zh: "\u201c我能带你去任何船都到不了的地方，\u201d蛇说，\u201c我能帮你回家。\u201d"
+    characters:
+      - id: prince7
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "35%", y: "55%" }
+        width: "95px"
+        height: "130px"
+      - id: snake
+        img_src: assets/snake.svg
+        label: The Snake
+        position: { x: "72%", y: "60%" }
+        width: "120px"
+        height: "48px"
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 6000
+
+  # ─── 第二幕：狐狸 ─────────────────────────────────────────
+  - id: lp_08_fox_meet
+    title_zh: 遇见狐狸
+    title_en: Meeting the Fox
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 70%, #1a1508 0%, #120f05 40%, #0a0804 80%, #050302 100%)"
+      particles: true
+    dialogue_text: '"Who are you?" said the prince. "I am a fox," said the fox.'
+    dialogue_text_fr: "Qui es-tu ? demanda le prince. Je suis un renard, dit le renard."
+    dialogue_text_zh: "\u201c你是谁？\u201d小王子问。\u201c我是一只狐狸。\u201d狐狸说。"
+    characters:
+      - id: prince8
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "28%", y: "55%" }
+        width: "90px"
+        height: "125px"
+      - id: fox8
+        img_src: assets/fox.svg
+        label: The Fox
+        position: { x: "72%", y: "62%" }
+        width: "90px"
+        height: "90px"
+        states:
+          shy:
+            filter: "brightness(0.75) saturate(0.6) drop-shadow(0 0 8px rgba(255,200,100,0.1))"
+            animation: fox-idle
+        initial_state: shy
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 6000
+
+  - id: lp_09_tame_me
+    title_zh: 驯服我吧
+    title_en: Tame Me
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 40% 50%, #141228 0%, #0d0a1e 50%, #060412 100%)"
+      particles: true
+    dialogue_text: '"Please — tame me!" said the fox. "What does that mean — tame?"'
+    dialogue_text_fr: "S'il te plaît... Apprivoise-moi ! dit le renard. Qu'est-ce que signifie « apprivoiser » ?"
+    dialogue_text_zh: "\u201c求你\u2014\u2014驯服我吧！\u201d狐狸说。\u201c驯服是什么意思？\u201d"
+    characters:
+      - id: fox9
+        img_src: assets/fox.svg
+        label: The Fox
+        position: { x: "50%", y: "58%" }
+        width: "120px"
+        height: "120px"
+        states:
+          pleading:
+            filter: "brightness(0.9) drop-shadow(0 0 15px rgba(255,180,80,0.25))"
+            animation: fox-idle
+        initial_state: pleading
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 6500
+
+  - id: lp_10_feed
+    title_zh: 建立联结
+    title_en: Establishing Ties
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 40%, #0f0d22 0%, #0a0818 50%, #04030c 100%)"
+      particles: true
+    dialogue_text: '"To establish ties, you must be very patient," said the fox.'
+    dialogue_text_fr: "Pour créer des liens, il faut être très patient, dit le renard."
+    dialogue_text_zh: "\u201c要建立联结，你必须非常有耐心。\u201d狐狸说。"
+    after_success_text: '"Now I am no longer just any fox. I am your fox."'
+    after_success_text_fr: "Maintenant je ne suis plus un renard comme les autres. Je suis ton renard."
+    after_success_text_zh: "\u201c现在我不再只是一只普通的狐狸。我是你的狐狸。\u201d"
+    characters:
+      - id: fox10
+        img_src: assets/fox.svg
+        label: The Fox
+        position: { x: "68%", y: "60%" }
+        width: "110px"
+        height: "110px"
+        states:
+          hungry:
+            filter: "grayscale(0.6) brightness(0.75) drop-shadow(0 0 8px rgba(255,255,255,0.08))"
+            animation: fox-idle
+          happy:
+            filter: "saturate(1.4) brightness(1.2) drop-shadow(0 0 25px rgba(255,200,100,0.5))"
+            animation: fox-jump
+        initial_state: hungry
+    items:
+      - id: apple
+        img_src: assets/apple.svg
+        label: Apple
+        position: { x: "22%", y: "65%" }
+        width: "65px"
+        height: "65px"
+        draggable: true
+        animation: item-bounce
+    interaction:
+      type: drag_and_drop
+      draggable_id: apple
+      target_id: fox10
+      hit_tolerance: 70
+      on_fail:
+        action: spring_back
+        duration_ms: 400
+        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)"
+      on_success:
+        actions:
+          - { type: hide_item, target: apple, animation: pop-vanish }
+          - { type: change_state, target: fox10, to_state: happy }
+          - { type: play_dialogue, dialogue_id: after_feed }
+          - { type: show_particles, emoji: "\u2728", count: 12, duration_ms: 1500 }
+    ending:
+      auto_advance: false
+      delay_after_success_ms: 5000
+
+  - id: lp_11_secret
+    title_zh: 狐狸的秘密
+    title_en: The Fox's Secret
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 60%, #1c1028 0%, #120a20 40%, #08040f 100%)"
+      particles: true
+    dialogue_text: '"Here is my secret. It is very simple: one sees clearly only with the heart. What is essential is invisible to the eye."'
+    dialogue_text_fr: "Voici mon secret. Il est très simple : on ne voit bien qu'avec le cœur. L'essentiel est invisible pour les yeux."
+    dialogue_text_zh: "\u201c这是我的秘密，很简单：只有用心才能看得清。真正重要的东西，眼睛是看不见的。\u201d"
+    characters:
+      - id: fox11
+        img_src: assets/fox.svg
+        label: The Fox
+        position: { x: "38%", y: "58%" }
+        width: "110px"
+        height: "110px"
+        states:
+          wise:
+            filter: "saturate(1.2) brightness(1.15) drop-shadow(0 0 30px rgba(255,200,100,0.4))"
+            animation: float-gentle
+        initial_state: wise
+      - id: rose11
+        img_src: assets/rose.svg
+        label: The Rose
+        position: { x: "70%", y: "55%" }
+        width: "70px"
+        height: "110px"
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 8000
+
+  - id: lp_12_farewell
+    title_zh: 再见，狐狸
+    title_en: Goodbye, Fox
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 80%, #1a1020 0%, #120818 40%, #08040f 80%, #030208 100%)"
+      particles: true
+    dialogue_text: '"Goodbye," said the fox. "Here is my secret again: you become responsible, forever, for what you have tamed."'
+    dialogue_text_fr: "Adieu, dit le renard. Tu deviens responsable pour toujours de ce que tu as apprivoisé."
+    dialogue_text_zh: "\u201c再见。\u201d狐狸说。\u201c这还是我的秘密：你要对你驯服的东西负责到底。\u201d"
+    characters:
+      - id: fox12
+        img_src: assets/fox.svg
+        label: The Fox
+        position: { x: "65%", y: "62%" }
+        width: "100px"
+        height: "100px"
+        states:
+          farewell:
+            filter: "brightness(1.0) saturate(1.1) drop-shadow(0 0 20px rgba(255,200,100,0.3))"
+            animation: float-gentle
+        initial_state: farewell
+      - id: prince12
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "30%", y: "52%" }
+        width: "95px"
+        height: "130px"
+    items:
+      - id: star12
+        img_src: assets/star.svg
+        label: Star
+        position: { x: "50%", y: "18%" }
+        width: "40px"
+        height: "40px"
+        animation: float-gentle
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 7000
+
+  # ─── 第三幕：告别 ─────────────────────────────────────────
+  - id: lp_13_well
+    title_zh: 沙漠中的井
+    title_en: The Well in the Desert
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 80%, #1a1208 0%, #0f0a05 50%, #080604 100%)"
+      particles: true
+    dialogue_text: '"The stars are beautiful because of a flower that cannot be seen," said the prince.'
+    dialogue_text_fr: "Ce qui embellit le désert, c'est qu'il cache un puits quelque part."
+    dialogue_text_zh: "\u201c星星之所以美丽，是因为有一朵我们看不见的花。\u201d小王子说。"
+    characters:
+      - id: prince13
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "50%", y: "58%" }
+        width: "105px"
+        height: "145px"
+    items:
+      - id: star13
+        img_src: assets/star.svg
+        label: Star
+        position: { x: "75%", y: "25%" }
+        width: "35px"
+        height: "35px"
+        animation: float-gentle
+    ending:
+      auto_advance: true
+      delay_after_success_ms: 6500
+
+  - id: lp_14_goodbye
+    title_zh: 回家
+    title_en: Going Home
+    background_override:
+      type: canvas
+      gradient: "radial-gradient(ellipse at 50% 20%, #1a1535 0%, #0d0a20 50%, #050310 80%, #020108 100%)"
+      particles: true
+    dialogue_text: '"Look up at the stars. Whenever you look at them, I shall be living on one of them, smiling."'
+    dialogue_text_fr: "Quand tu regarderas le ciel, la nuit, ce sera pour toi comme si riaient toutes les étoiles."
+    dialogue_text_zh: "\u201c每当你看星空的时候，你就会看到我在其中的一颗星星上微笑。\u201d"
+    characters:
+      - id: prince14
+        img_src: assets/prince.svg
+        label: The Little Prince
+        position: { x: "42%", y: "55%" }
+        width: "100px"
+        height: "140px"
+      - id: snake14
+        img_src: assets/snake.svg
+        label: The Snake
+        position: { x: "72%", y: "62%" }
+        width: "100px"
+        height: "40px"
+    items:
+      - id: star14a
+        img_src: assets/star.svg
+        label: Star
+        position: { x: "20%", y: "22%" }
+        width: "32px"
+        height: "32px"
+        animation: float-gentle
+      - id: star14b
+        img_src: assets/star.svg
+        label: Star
+        position: { x: "80%", y: "18%" }
+        width: "28px"
+        height: "28px"
+        animation: float-gentle
+      - id: star14c
+        img_src: assets/star.svg
+        label: Star
+        position: { x: "50%", y: "12%" }
+        width: "24px"
+        height: "24px"
+        animation: float-gentle
+    ending:
+      auto_advance: false

@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "scene_id": "lp_08_fox_meet",
+    "title": "遇见狐狸 | Meeting the Fox",
+    "version": "1.0.0"
+  },
+  "scene": {
+    "id": "lp_08_fox_meet",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 70%, #1a1508 0%, #120f05 40%, #0a0804 80%, #050302 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "prince8",
+        "img_src": "assets/prince.svg",
+        "label": "The Little Prince",
+        "position": {
+          "x": "28%",
+          "y": "55%"
+        },
+        "width": "90px",
+        "height": "125px"
+      },
+      {
+        "id": "fox8",
+        "img_src": "assets/fox.svg",
+        "label": "The Fox",
+        "position": {
+          "x": "72%",
+          "y": "62%"
+        },
+        "width": "90px",
+        "height": "90px",
+        "states": {
+          "shy": {
+            "filter": "brightness(0.75) saturate(0.6) drop-shadow(0 0 8px rgba(255,200,100,0.1))",
+            "animation": "fox-idle"
+          }
+        },
+        "initial_state": "shy"
+      }
+    ],
+    "items": []
+  },
+  "interaction": null,
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "\"Who are you?\" said the prince. \"I am a fox,\" said the fox.",
+      "text_zh": "“你是谁？”小王子问。“我是一只狐狸。”狐狸说。",
+      "words": [
+        {
+          "word": "\"Who",
+          "start_time": 0.0,
+          "end_time": 0.32
+        },
+        {
+          "word": "are",
+          "start_time": 0.42,
+          "end_time": 0.66
+        },
+        {
+          "word": "you?\"",
+          "start_time": 0.76,
+          "end_time": 1.16
+        },
+        {
+          "word": "said",
+          "start_time": 1.26,
+          "end_time": 1.58
+        },
+        {
+          "word": "the",
+          "start_time": 1.68,
+          "end_time": 1.92
+        },
+        {
+          "word": "prince.",
+          "start_time": 2.02,
+          "end_time": 2.58
+        },
+        {
+          "word": "\"I",
+          "start_time": 2.68,
+          "end_time": 2.88
+        },
+        {
+          "word": "am",
+          "start_time": 2.98,
+          "end_time": 3.18
+        },
+        {
+          "word": "a",
+          "start_time": 3.28,
+          "end_time": 3.48
+        },
+        {
+          "word": "fox,\"",
+          "start_time": 3.58,
+          "end_time": 3.98
+        },
+        {
+          "word": "said",
+          "start_time": 4.08,
+          "end_time": 4.4
+        },
+        {
+          "word": "the",
+          "start_time": 4.5,
+          "end_time": 4.74
+        },
+        {
+          "word": "fox.",
+          "start_time": 4.84,
+          "end_time": 5.16
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready",
+      "text_original": "Qui es-tu ? demanda le prince. Je suis un renard, dit le renard."
+    }
+  },
+  "ending": {
+    "auto_advance": true,
+    "delay_after_success_ms": 6000
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "show_after_ms": 2500,
+      "position": "bottom"
+    }
+  }
+}

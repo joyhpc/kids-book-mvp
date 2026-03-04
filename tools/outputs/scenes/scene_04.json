@@ -1,0 +1,162 @@
+{
+  "meta": {
+    "title": "沙滩上的离别 | The Beach",
+    "version": "1.0.0",
+    "language": [
+      "en",
+      "zh"
+    ],
+    "target_age": "4-8",
+    "scene_id": "lm_s4_beach"
+  },
+  "scene": {
+    "id": "lm_s4_beach",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 60%, #F4A460 0%, #DEB887 40%, #87CEEB 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "prince_sleeping",
+        "img_src": "assets/prince.svg",
+        "label": "Prince",
+        "position": {
+          "x": "40%",
+          "y": "70%"
+        },
+        "width": "120px",
+        "height": "120px"
+      },
+      {
+        "id": "mermaid_hiding",
+        "img_src": "assets/mermaid.svg",
+        "label": "Mermaid",
+        "position": {
+          "x": "85%",
+          "y": "65%"
+        },
+        "width": "80px",
+        "height": "80px",
+        "states": {
+          "hiding": {
+            "filter": "brightness(0.6)",
+            "animation": "none"
+          }
+        },
+        "initial_state": "hiding"
+      }
+    ],
+    "items": []
+  },
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "She left him safely on the beach, watching from afar as he woke up.",
+      "text_zh": "她将他安全地放在沙滩上，在远处看着他醒来。",
+      "words": [
+        {
+          "word": "She",
+          "start_time": 0.0,
+          "end_time": 0.24
+        },
+        {
+          "word": "left",
+          "start_time": 0.34,
+          "end_time": 0.66
+        },
+        {
+          "word": "him",
+          "start_time": 0.76,
+          "end_time": 1.0
+        },
+        {
+          "word": "safely",
+          "start_time": 1.1,
+          "end_time": 1.58
+        },
+        {
+          "word": "on",
+          "start_time": 1.68,
+          "end_time": 1.88
+        },
+        {
+          "word": "the",
+          "start_time": 1.98,
+          "end_time": 2.22
+        },
+        {
+          "word": "beach,",
+          "start_time": 2.32,
+          "end_time": 2.8
+        },
+        {
+          "word": "watching",
+          "start_time": 2.9,
+          "end_time": 3.54
+        },
+        {
+          "word": "from",
+          "start_time": 3.64,
+          "end_time": 3.96
+        },
+        {
+          "word": "afar",
+          "start_time": 4.06,
+          "end_time": 4.38
+        },
+        {
+          "word": "as",
+          "start_time": 4.48,
+          "end_time": 4.68
+        },
+        {
+          "word": "he",
+          "start_time": 4.78,
+          "end_time": 4.98
+        },
+        {
+          "word": "woke",
+          "start_time": 5.08,
+          "end_time": 5.4
+        },
+        {
+          "word": "up.",
+          "start_time": 5.5,
+          "end_time": 5.74
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready"
+    }
+  },
+  "ending": {
+    "delay_after_success_ms": 4000,
+    "title_en": "End of Chapter 1",
+    "title_zh": "第一章 · 完",
+    "subtitle_zh": "她的爱，如同泡沫般静默无声...",
+    "button_text": "重读本章",
+    "particles_emoji": "🫧",
+    "auto_advance": false
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "text_en": "",
+      "text_zh": "",
+      "show_after_ms": 2500,
+      "position": "bottom",
+      "font_size": "1.05rem"
+    }
+  }
+}

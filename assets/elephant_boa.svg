@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">
+  <!-- Mon dessin numéro 2 (boa digesting elephant) -->
+  <!-- Boa outline -->
+  <path d="M20,80 Q50,80 60,60 Q80,20 120,20 Q140,20 150,60 Q160,80 180,80 L190,80 L10,80 Z" fill="none" stroke="#5D4037" stroke-width="3" stroke-dasharray="6,4"/>
+  <!-- Elephant inside -->
+  <path d="M70,75 L70,50 Q70,40 90,40 L110,40 Q130,40 130,50 L130,75 M120,50 Q140,50 145,65 L145,75 M75,75 L85,75 M115,75 L125,75 M70,50 Q60,50 55,65" fill="none" stroke="#757575" stroke-width="3"/>
+  <circle cx="125" cy="48" r="1.5" fill="#424242"/>
+</svg>

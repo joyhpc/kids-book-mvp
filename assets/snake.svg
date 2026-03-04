@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80">
+  <!-- Cubist Desert Snake: golden, geometric coils -->
+  <path d="M20,40 Q50,20 80,40 Q110,60 140,40 Q170,25 195,40" fill="none" stroke="#C9A227" stroke-width="14" stroke-linecap="round"/>
+  <path d="M20,40 Q50,20 80,40 Q110,60 140,40 Q170,25 195,40" fill="none" stroke="#E8C547" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
+  <!-- head -->
+  <ellipse cx="12" cy="40" rx="14" ry="12" fill="#D4AF37" stroke="#8B7355" stroke-width="1.5"/>
+  <ellipse cx="10" cy="38" rx="6" ry="5" fill="#1A1A2E"/>
+  <path d="M6,40 L2,36 M6,40 L2,44" fill="none" stroke="#8B7355" stroke-width="1" stroke-linecap="round"/>
+</svg>

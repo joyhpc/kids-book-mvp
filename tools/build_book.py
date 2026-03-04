@@ -22,7 +22,11 @@ import os
 import sys
 from pathlib import Path
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY_HERE")
+# Add tools directory to sys.path so we can import schema.py
+sys.path.append(str(Path(__file__).resolve().parent))
+
+
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyDhJ4wpmDGI139p-bC4dmB_A2MIFAlT1R4")
 ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "YOUR_ELEVENLABS_API_KEY_HERE")
 ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
 
@@ -33,12 +37,16 @@ SCENE_JSON_PATH = PROJECT_ROOT / "data" / "scene.json"
 SCENE_JS_PATH = PROJECT_ROOT / "data" / "scene.js"
 BOOK_JSON_PATH = PROJECT_ROOT / "data" / "book.json"
 
-STYLE_PREFIX = (
-    "Masterpiece, breathtaking children's storybook illustration, "
-    "magical glowing forest, soft cinematic lighting, "
-    "Studio Ghibli style, vibrant colors, clean background. "
+# =====================================================================
+# The Aesthetic Constraint Filter (顶级审美约束层)
+# 打破 AI 的平庸化，强制留白、克制、视觉诗意、反常识渲染
+# =====================================================================
+AESTHETIC_PREFIX = (
+    "A minimalist conceptual art, extreme negative space, visual poetry, "
+    "symbolic illustration, pure emotion, traditional ink and gouache style, "
+    "melancholic ambiance, shape theory, bauhaus composition. "
+    "--no hyper-realism, 3d render, busy background, clutter, disney style, highly detailed. "
 )
-
 
 # =====================================================================
 # Step 1 — Gemini Imagen 3 生图
@@ -50,7 +58,9 @@ def generate_image(scene_description: str, output_path: Path) -> Path:
 
     print("  [IMG] 正在调用 Gemini Imagen 3 生成背景图 ...")
     client = genai.Client(api_key=GEMINI_API_KEY)
-    prompt = STYLE_PREFIX + scene_description
+    
+    # 强制融合高维审美滤镜
+    prompt = AESTHETIC_PREFIX + " Core visual concept: " + scene_description
 
     response = client.models.generate_images(
         model="imagen-3.0-generate-002",
@@ -254,7 +264,38 @@ def build_book(config: dict, voice_id: str) -> dict:
 
         bg_override = sc.get("background_override")
 
-        if sc.get("scene_description") and GEMINI_API_KEY != "YOUR_GEMINI_API_KEY_HERE":
+        # ==========================================
+        # [AIGC Pipeline Pass 1] 状态机与上下文继承
+        # 1. 提取当前页配置
+        location_id = sc.get("location_id")
+        time_of_day = sc.get("time_of_day", "day")
+        action_prompt = sc.get("action_prompt")
+        
+        # 2. 从全局 Lorebook 中锁定背景 Prompt
+        resolved_bg_prompt = None
+        lorebook = config.get("lorebook", {})
+        if location_id and "locations" in lorebook and location_id in lorebook["locations"]:
+            loc_data = lorebook["locations"][location_id]
+            resolved_bg_prompt = f"{loc_data.get('visual_prompt', '')}, time: {time_of_day}, {loc_data.get('lighting', '')}"
+        elif sc.get("scene_description"):
+             resolved_bg_prompt = sc.get("scene_description")
+             
+        # 3. 拼接终极生图 Prompt (Two-Pass Storyboarding 雏形)
+        resolved_full_prompt = None
+        if resolved_bg_prompt:
+             resolved_full_prompt = resolved_bg_prompt
+             if action_prompt:
+                 resolved_full_prompt += f" | Soul expression: {action_prompt}"
+                 
+        if resolved_full_prompt:
+             print(f"        [Pass 1 Soul Extracted] {resolved_full_prompt[:80]}...")
+             
+        # 将组合好的 prompt 交给生图引擎
+        if resolved_full_prompt and "scene_description" not in sc:
+             sc["scene_description"] = resolved_full_prompt
+        # ==========================================
+
+        if sc.get("scene_description") and GEMINI_API_KEY and not GEMINI_API_KEY.startswith("YOUR_"):
             try:
                 generate_image(sc["scene_description"], bg_path)
             except Exception as e:
@@ -262,20 +303,6 @@ def build_book(config: dict, voice_id: str) -> dict:
                 bg_rel = None
 
         if text_en and ELEVENLABS_API_KEY != "YOUR_ELEVENLABS_API_KEY_HERE":
-            try:
-                word_timings = generate_speech_with_timestamps(
-                    text=text_en,
-                    voice_id=voice_id,
-                    output_path=audio_path,
-                )
-            except Exception as e:
-                print(f"        [WARN] TTS 失败: {e}")
-                audio_rel = None
-        elif text_en:
-            word_timings = _fake_word_timings(text_en)
-            audio_rel = None
-
-        scene_json = _build_scene_data(
             scene_id=scene_id,
             title_zh=scene_title_zh,
             title_en=scene_title_en,
@@ -291,9 +318,26 @@ def build_book(config: dict, voice_id: str) -> dict:
             after_success_text=sc.get("after_success_text"),
             after_success_text_zh=sc.get("after_success_text_zh"),
             background_override=bg_override,
+            text_original=sc.get("dialogue_text_fr") or sc.get("dialogue_text_original"),
+            after_success_text_original=sc.get("after_success_text_fr") or sc.get("after_success_text_original"),
+            location_id=location_id,
+            time_of_day=time_of_day,
+            action_prompt=action_prompt,
+            resolved_bg_prompt=resolved_bg_prompt,
+            resolved_full_prompt=resolved_full_prompt,
         )
 
         scene_file = SCENES_DIR / f"scene_{scene_num:02d}.json"
+        
+        # [NEW] 强制通过 Pydantic 校验和洗绿
+        import schema
+        try:
+            validated_scene = schema.SceneConfig.model_validate(scene_json)
+            scene_json = json.loads(validated_scene.model_dump_json(exclude_none=True))
+        except Exception as e:
+            print(f"        [ERROR] 场景 {scene_id} 数据校验失败: {e}")
+            raise
+            
         _write_json(scene_file, scene_json)
 
         book_scenes.append({
@@ -337,6 +381,15 @@ def build_book(config: dict, voice_id: str) -> dict:
         "navigation_rules": nav_rules,
     }
 
+    # [NEW] 强制通过 Pydantic 校验 book.json
+    try:
+        import schema
+        validated_book = schema.BookConfig.model_validate(book_json)
+        book_json = json.loads(validated_book.model_dump_json(exclude_none=True))
+    except Exception as e:
+        print(f"  [ERROR] 书籍数据校验失败: {e}")
+        raise
+
     _write_json(BOOK_JSON_PATH, book_json)
     return book_json
 
@@ -348,6 +401,9 @@ def _build_scene_data(
     characters, items, interaction, ending,
     after_success_text=None, after_success_text_zh=None,
     background_override=None,
+    text_original=None, after_success_text_original=None,
+    location_id=None, time_of_day="day", action_prompt=None,
+    resolved_bg_prompt=None, resolved_full_prompt=None,
 ) -> dict:
     """组装单个场景的完整 JSON 数据。"""
     bg_cfg = {"type": "canvas", "gradient": "radial-gradient(circle at 50% 40%, #050a14 0%, #010205 100%)", "particles": True}
@@ -357,28 +413,32 @@ def _build_scene_data(
         bg_cfg = {"type": "image", "src": bg_rel, "particles": True}
 
     dialogues = {}
-    if text_en:
+    if text_en or text_original:
         intro_dlg = {
             "id": "intro",
-            "text_en": text_en,
+            "text_en": text_en or "",
             "text_zh": text_zh or "",
             "words": word_timings,
             "auto_play": True,
             "display_on": "scene_ready",
         }
+        if text_original:
+            intro_dlg["text_original"] = text_original
         if audio_rel:
             intro_dlg["audio"] = audio_rel
         dialogues["intro"] = intro_dlg
 
-    if after_success_text:
-        after_timings = _fake_word_timings(after_success_text)
+    if after_success_text or after_success_text_original:
+        after_timings = _fake_word_timings(after_success_text or "")
         dialogues["after_feed"] = {
             "id": "after_feed",
-            "text_en": after_success_text,
+            "text_en": after_success_text or "",
             "text_zh": after_success_text_zh or "",
             "words": after_timings,
             "auto_play": False,
         }
+        if after_success_text_original:
+            dialogues["after_feed"]["text_original"] = after_success_text_original
 
     scene_data = {
         "meta": {
@@ -386,6 +446,11 @@ def _build_scene_data(
             "title": f"{title_zh} | {title_en}",
             "version": "1.0.0",
         },
+        "location_id": location_id,
+        "time_of_day": time_of_day,
+        "action_prompt": action_prompt,
+        "resolved_bg_prompt": resolved_bg_prompt,
+        "resolved_full_prompt": resolved_full_prompt,
         "scene": {
             "id": scene_id,
             "background": bg_cfg,

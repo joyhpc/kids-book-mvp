@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100">
+  <!-- Cubist Crown: angular, golden -->
+  <path d="M60,18 L75,45 L60,38 L45,45 Z" fill="#FFD54F" stroke="#F9A825" stroke-width="2"/>
+  <path d="M45,45 L60,55 L75,45" fill="#FFE082" stroke="#F9A825" stroke-width="1"/>
+  <rect x="35" y="55" width="50" height="12" rx="3" fill="#FFC107" stroke="#F9A825" stroke-width="1"/>
+  <circle cx="60" cy="28" r="6" fill="#FFF59D"/>
+  <path d="M25,55 L35,45 M95,55 L85,45" fill="none" stroke="#B7950B" stroke-width="1.5"/>
+</svg>

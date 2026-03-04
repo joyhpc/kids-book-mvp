@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "title": "海底宫殿 | Under the Sea",
+    "version": "1.0.0",
+    "language": [
+      "en",
+      "zh"
+    ],
+    "target_age": "4-8",
+    "scene_id": "lm_s1_ocean"
+  },
+  "scene": {
+    "id": "lm_s1_ocean",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 80%, #006994 0%, #000080 80%, #000033 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "mermaid",
+        "img_src": "assets/mermaid.svg",
+        "label": "Mermaid",
+        "position": {
+          "x": "50%",
+          "y": "60%"
+        },
+        "width": "120px",
+        "height": "120px"
+      }
+    ],
+    "items": []
+  },
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "Deep below the ocean waves, the little mermaid lived in a beautiful coral palace.",
+      "text_zh": "在深深的海浪之下，小美人鱼住在美丽的珊瑚宫殿里。",
+      "words": [
+        {
+          "word": "Deep",
+          "start_time": 0.0,
+          "end_time": 0.32
+        },
+        {
+          "word": "below",
+          "start_time": 0.42,
+          "end_time": 0.82
+        },
+        {
+          "word": "the",
+          "start_time": 0.92,
+          "end_time": 1.16
+        },
+        {
+          "word": "ocean",
+          "start_time": 1.26,
+          "end_time": 1.66
+        },
+        {
+          "word": "waves,",
+          "start_time": 1.76,
+          "end_time": 2.24
+        },
+        {
+          "word": "the",
+          "start_time": 2.34,
+          "end_time": 2.58
+        },
+        {
+          "word": "little",
+          "start_time": 2.68,
+          "end_time": 3.16
+        },
+        {
+          "word": "mermaid",
+          "start_time": 3.26,
+          "end_time": 3.82
+        },
+        {
+          "word": "lived",
+          "start_time": 3.92,
+          "end_time": 4.32
+        },
+        {
+          "word": "in",
+          "start_time": 4.42,
+          "end_time": 4.62
+        },
+        {
+          "word": "a",
+          "start_time": 4.72,
+          "end_time": 4.92
+        },
+        {
+          "word": "beautiful",
+          "start_time": 5.02,
+          "end_time": 5.74
+        },
+        {
+          "word": "coral",
+          "start_time": 5.84,
+          "end_time": 6.24
+        },
+        {
+          "word": "palace.",
+          "start_time": 6.34,
+          "end_time": 6.9
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready"
+    }
+  },
+  "ending": {
+    "delay_after_success_ms": 6000,
+    "title_en": "",
+    "title_zh": "",
+    "subtitle_zh": "",
+    "button_text": "再读一遍",
+    "particles_emoji": "✨",
+    "auto_advance": true
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "text_en": "",
+      "text_zh": "",
+      "show_after_ms": 2500,
+      "position": "bottom",
+      "font_size": "1.05rem"
+    }
+  }
+}

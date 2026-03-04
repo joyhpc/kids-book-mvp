@@ -1,118 +1,243 @@
 {
   "meta": {
-    "scene_id": "ch1_s3_tame_me",
-    "title": "驯服我吧 | Tame Me",
-    "version": "1.0.0"
+    "title": "拯救王子 | Saving the Prince",
+    "version": "1.0.0",
+    "language": [
+      "en",
+      "zh"
+    ],
+    "target_age": "4-8",
+    "scene_id": "lm_s3_rescue"
   },
+  "location_id": "ocean_surface",
+  "time_of_day": "dark storm",
+  "action_prompt": "The stark horizon line is broken by chaos. A heavy geometric shape is sinking into the abyssal void below. Visual poetry of sacrifice.",
+  "resolved_bg_prompt": "A stark horizontal line dividing two worlds. A turbulent sea, desaturated cold colors, a solitary sharp triangular silhouette of a distant ship, visual poetry, time: dark storm, cold moonlight piercing storm clouds",
+  "resolved_full_prompt": "A stark horizontal line dividing two worlds. A turbulent sea, desaturated cold colors, a solitary sharp triangular silhouette of a distant ship, visual poetry, time: dark storm, cold moonlight piercing storm clouds | Soul expression: The stark horizon line is broken by chaos. A heavy geometric shape is sinking into the abyssal void below. Visual poetry of sacrifice.",
   "scene": {
-    "id": "ch1_s3_tame_me",
+    "id": "lm_s3_rescue",
     "background": {
-      "type": "canvas",
-      "gradient": "radial-gradient(ellipse at 40% 50%, #141228 0%, #0d0a1e 50%, #060412 100%)",
+      "type": "image",
+      "src": "assets/scenes/lm_s3_rescue_bg.jpg",
       "particles": true
     },
     "characters": [
       {
-        "id": "fox3",
-        "img_src": "assets/fox.svg",
-        "label": "The Fox",
+        "id": "prince_drowning",
+        "img_src": "assets/prince.svg",
+        "label": "Prince Drowning",
         "position": {
-          "x": "50%",
-          "y": "58%"
+          "x": "70%",
+          "y": "60%"
         },
         "width": "120px",
         "height": "120px",
         "states": {
-          "pleading": {
-            "filter": "brightness(0.9) drop-shadow(0 0 15px rgba(255,180,80,0.25))",
-            "animation": "fox-idle"
+          "drowning": {
+            "filter": "brightness(0.7)",
+            "animation": "none"
+          },
+          "saved": {
+            "filter": "brightness(1.5) drop-shadow(0 0 20px #fff)",
+            "animation": "item-bounce"
           }
         },
-        "initial_state": "pleading"
+        "initial_state": "drowning"
       }
     ],
-    "items": []
+    "items": [
+      {
+        "id": "mermaid_savior",
+        "img_src": "assets/mermaid.svg",
+        "label": "Mermaid Savior",
+        "position": {
+          "x": "20%",
+          "y": "80%"
+        },
+        "width": "140px",
+        "height": "140px",
+        "draggable": true,
+        "animation": "float-gentle"
+      }
+    ]
   },
-  "interaction": null,
+  "interaction": {
+    "type": "drag_and_drop",
+    "draggable_id": "mermaid_savior",
+    "target_id": "prince_drowning",
+    "hit_tolerance": 50,
+    "on_fail": {
+      "action": "spring_back",
+      "duration_ms": 400,
+      "easing": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+    },
+    "on_success": {
+      "actions": [
+        {
+          "type": "hide_item",
+          "target": "mermaid_savior",
+          "animation": "pop-vanish"
+        },
+        {
+          "type": "change_state",
+          "target": "prince_drowning",
+          "to_state": "saved"
+        },
+        {
+          "type": "play_dialogue",
+          "dialogue_id": "after_feed"
+        },
+        {
+          "type": "show_particles",
+          "emoji": "🌊",
+          "count": 12,
+          "duration_ms": 1500
+        }
+      ]
+    }
+  },
   "dialogues": {
     "intro": {
       "id": "intro",
-      "text_en": "\"Please — tame me!\" said the fox. \"What does that mean — tame?\"",
-      "text_zh": "“求你——驯服我吧！”狐狸说。“驯服是什么意思？”",
+      "text_en": "A terrible storm wrecked the ship. The prince fell into the sea!",
+      "text_zh": "一场可怕的风暴摧毁了船。王子掉进了海里！",
       "words": [
         {
-          "word": "\"Please",
+          "word": "A",
           "start_time": 0.0,
-          "end_time": 0.56
+          "end_time": 0.2
         },
         {
-          "word": "—",
-          "start_time": 0.66,
-          "end_time": 0.86
+          "word": "terrible",
+          "start_time": 0.3,
+          "end_time": 0.94
         },
         {
-          "word": "tame",
-          "start_time": 0.96,
-          "end_time": 1.28
+          "word": "storm",
+          "start_time": 1.04,
+          "end_time": 1.44
         },
         {
-          "word": "me!\"",
-          "start_time": 1.38,
-          "end_time": 1.7
-        },
-        {
-          "word": "said",
-          "start_time": 1.8,
-          "end_time": 2.12
+          "word": "wrecked",
+          "start_time": 1.54,
+          "end_time": 2.1
         },
         {
           "word": "the",
-          "start_time": 2.22,
-          "end_time": 2.46
+          "start_time": 2.2,
+          "end_time": 2.44
         },
         {
-          "word": "fox.",
-          "start_time": 2.56,
-          "end_time": 2.88
+          "word": "ship.",
+          "start_time": 2.54,
+          "end_time": 2.94
         },
         {
-          "word": "\"What",
-          "start_time": 2.98,
-          "end_time": 3.38
+          "word": "The",
+          "start_time": 3.04,
+          "end_time": 3.28
         },
         {
-          "word": "does",
-          "start_time": 3.48,
-          "end_time": 3.8
+          "word": "prince",
+          "start_time": 3.38,
+          "end_time": 3.86
         },
         {
-          "word": "that",
-          "start_time": 3.9,
-          "end_time": 4.22
+          "word": "fell",
+          "start_time": 3.96,
+          "end_time": 4.28
         },
         {
-          "word": "mean",
-          "start_time": 4.32,
-          "end_time": 4.64
+          "word": "into",
+          "start_time": 4.38,
+          "end_time": 4.7
         },
         {
-          "word": "—",
-          "start_time": 4.74,
-          "end_time": 4.94
+          "word": "the",
+          "start_time": 4.8,
+          "end_time": 5.04
         },
         {
-          "word": "tame?\"",
-          "start_time": 5.04,
-          "end_time": 5.52
+          "word": "sea!",
+          "start_time": 5.14,
+          "end_time": 5.46
         }
       ],
       "auto_play": true,
       "display_on": "scene_ready"
+    },
+    "after_feed": {
+      "id": "after_feed",
+      "text_en": "The little mermaid held him tight and swam to the shore.",
+      "text_zh": "小美人鱼紧紧抱住他，向岸边游去。",
+      "words": [
+        {
+          "word": "The",
+          "start_time": 0.0,
+          "end_time": 0.24
+        },
+        {
+          "word": "little",
+          "start_time": 0.34,
+          "end_time": 0.82
+        },
+        {
+          "word": "mermaid",
+          "start_time": 0.92,
+          "end_time": 1.48
+        },
+        {
+          "word": "held",
+          "start_time": 1.58,
+          "end_time": 1.9
+        },
+        {
+          "word": "him",
+          "start_time": 2.0,
+          "end_time": 2.24
+        },
+        {
+          "word": "tight",
+          "start_time": 2.34,
+          "end_time": 2.74
+        },
+        {
+          "word": "and",
+          "start_time": 2.84,
+          "end_time": 3.08
+        },
+        {
+          "word": "swam",
+          "start_time": 3.18,
+          "end_time": 3.5
+        },
+        {
+          "word": "to",
+          "start_time": 3.6,
+          "end_time": 3.8
+        },
+        {
+          "word": "the",
+          "start_time": 3.9,
+          "end_time": 4.14
+        },
+        {
+          "word": "shore.",
+          "start_time": 4.24,
+          "end_time": 4.72
+        }
+      ],
+      "auto_play": false
     }
   },
   "ending": {
-    "auto_advance": true,
-    "delay_after_success_ms": 6500
+    "delay_after_success_ms": 5000,
+    "title_en": "",
+    "title_zh": "",
+    "subtitle_zh": "",
+    "button_text": "再读一遍",
+    "particles_emoji": "✨",
+    "auto_advance": true
   },
   "ui": {
     "subtitle_panel": {
@@ -127,8 +252,11 @@
       "border_radius": "16px"
     },
     "hint": {
+      "text_en": "",
+      "text_zh": "",
       "show_after_ms": 2500,
-      "position": "bottom"
+      "position": "bottom",
+      "font_size": "1.05rem"
     }
   }
 }

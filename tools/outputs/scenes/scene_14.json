@@ -1,0 +1,205 @@
+{
+  "meta": {
+    "scene_id": "lp_14_goodbye",
+    "title": "回家 | Going Home",
+    "version": "1.0.0"
+  },
+  "scene": {
+    "id": "lp_14_goodbye",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 20%, #1a1535 0%, #0d0a20 50%, #050310 80%, #020108 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "prince14",
+        "img_src": "assets/prince.svg",
+        "label": "The Little Prince",
+        "position": {
+          "x": "42%",
+          "y": "55%"
+        },
+        "width": "100px",
+        "height": "140px"
+      },
+      {
+        "id": "snake14",
+        "img_src": "assets/snake.svg",
+        "label": "The Snake",
+        "position": {
+          "x": "72%",
+          "y": "62%"
+        },
+        "width": "100px",
+        "height": "40px"
+      }
+    ],
+    "items": [
+      {
+        "id": "star14a",
+        "img_src": "assets/star.svg",
+        "label": "Star",
+        "position": {
+          "x": "20%",
+          "y": "22%"
+        },
+        "width": "32px",
+        "height": "32px",
+        "animation": "float-gentle"
+      },
+      {
+        "id": "star14b",
+        "img_src": "assets/star.svg",
+        "label": "Star",
+        "position": {
+          "x": "80%",
+          "y": "18%"
+        },
+        "width": "28px",
+        "height": "28px",
+        "animation": "float-gentle"
+      },
+      {
+        "id": "star14c",
+        "img_src": "assets/star.svg",
+        "label": "Star",
+        "position": {
+          "x": "50%",
+          "y": "12%"
+        },
+        "width": "24px",
+        "height": "24px",
+        "animation": "float-gentle"
+      }
+    ]
+  },
+  "interaction": null,
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "\"Look up at the stars. Whenever you look at them, I shall be living on one of them, smiling.\"",
+      "text_zh": "“每当你看星空的时候，你就会看到我在其中的一颗星星上微笑。”",
+      "words": [
+        {
+          "word": "\"Look",
+          "start_time": 0.0,
+          "end_time": 0.4
+        },
+        {
+          "word": "up",
+          "start_time": 0.5,
+          "end_time": 0.7
+        },
+        {
+          "word": "at",
+          "start_time": 0.8,
+          "end_time": 1.0
+        },
+        {
+          "word": "the",
+          "start_time": 1.1,
+          "end_time": 1.34
+        },
+        {
+          "word": "stars.",
+          "start_time": 1.44,
+          "end_time": 1.92
+        },
+        {
+          "word": "Whenever",
+          "start_time": 2.02,
+          "end_time": 2.66
+        },
+        {
+          "word": "you",
+          "start_time": 2.76,
+          "end_time": 3.0
+        },
+        {
+          "word": "look",
+          "start_time": 3.1,
+          "end_time": 3.42
+        },
+        {
+          "word": "at",
+          "start_time": 3.52,
+          "end_time": 3.72
+        },
+        {
+          "word": "them,",
+          "start_time": 3.82,
+          "end_time": 4.22
+        },
+        {
+          "word": "I",
+          "start_time": 4.32,
+          "end_time": 4.52
+        },
+        {
+          "word": "shall",
+          "start_time": 4.62,
+          "end_time": 5.02
+        },
+        {
+          "word": "be",
+          "start_time": 5.12,
+          "end_time": 5.32
+        },
+        {
+          "word": "living",
+          "start_time": 5.42,
+          "end_time": 5.9
+        },
+        {
+          "word": "on",
+          "start_time": 6.0,
+          "end_time": 6.2
+        },
+        {
+          "word": "one",
+          "start_time": 6.3,
+          "end_time": 6.54
+        },
+        {
+          "word": "of",
+          "start_time": 6.64,
+          "end_time": 6.84
+        },
+        {
+          "word": "them,",
+          "start_time": 6.94,
+          "end_time": 7.34
+        },
+        {
+          "word": "smiling.\"",
+          "start_time": 7.44,
+          "end_time": 8.16
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready",
+      "text_original": "Quand tu regarderas le ciel, la nuit, ce sera pour toi comme si riaient toutes les étoiles."
+    }
+  },
+  "ending": {
+    "auto_advance": false
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "show_after_ms": 2500,
+      "position": "bottom"
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "meta": {
+    "scene_id": "lp_13_well",
+    "title": "沙漠中的井 | The Well in the Desert",
+    "version": "1.0.0"
+  },
+  "scene": {
+    "id": "lp_13_well",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 80%, #1a1208 0%, #0f0a05 50%, #080604 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "prince13",
+        "img_src": "assets/prince.svg",
+        "label": "The Little Prince",
+        "position": {
+          "x": "50%",
+          "y": "58%"
+        },
+        "width": "105px",
+        "height": "145px"
+      }
+    ],
+    "items": [
+      {
+        "id": "star13",
+        "img_src": "assets/star.svg",
+        "label": "Star",
+        "position": {
+          "x": "75%",
+          "y": "25%"
+        },
+        "width": "35px",
+        "height": "35px",
+        "animation": "float-gentle"
+      }
+    ]
+  },
+  "interaction": null,
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "\"The stars are beautiful because of a flower that cannot be seen,\" said the prince.",
+      "text_zh": "“星星之所以美丽，是因为有一朵我们看不见的花。”小王子说。",
+      "words": [
+        {
+          "word": "\"The",
+          "start_time": 0.0,
+          "end_time": 0.32
+        },
+        {
+          "word": "stars",
+          "start_time": 0.42,
+          "end_time": 0.82
+        },
+        {
+          "word": "are",
+          "start_time": 0.92,
+          "end_time": 1.16
+        },
+        {
+          "word": "beautiful",
+          "start_time": 1.26,
+          "end_time": 1.98
+        },
+        {
+          "word": "because",
+          "start_time": 2.08,
+          "end_time": 2.64
+        },
+        {
+          "word": "of",
+          "start_time": 2.74,
+          "end_time": 2.94
+        },
+        {
+          "word": "a",
+          "start_time": 3.04,
+          "end_time": 3.24
+        },
+        {
+          "word": "flower",
+          "start_time": 3.34,
+          "end_time": 3.82
+        },
+        {
+          "word": "that",
+          "start_time": 3.92,
+          "end_time": 4.24
+        },
+        {
+          "word": "cannot",
+          "start_time": 4.34,
+          "end_time": 4.82
+        },
+        {
+          "word": "be",
+          "start_time": 4.92,
+          "end_time": 5.12
+        },
+        {
+          "word": "seen,\"",
+          "start_time": 5.22,
+          "end_time": 5.7
+        },
+        {
+          "word": "said",
+          "start_time": 5.8,
+          "end_time": 6.12
+        },
+        {
+          "word": "the",
+          "start_time": 6.22,
+          "end_time": 6.46
+        },
+        {
+          "word": "prince.",
+          "start_time": 6.56,
+          "end_time": 7.12
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready",
+      "text_original": "Ce qui embellit le désert, c'est qu'il cache un puits quelque part."
+    }
+  },
+  "ending": {
+    "auto_advance": true,
+    "delay_after_success_ms": 6500
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "show_after_ms": 2500,
+      "position": "bottom"
+    }
+  }
+}

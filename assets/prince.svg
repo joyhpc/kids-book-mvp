@@ -1,57 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 220">
-  <!-- Cubist Little Prince: geometric planes, golden hair, green outfit, long scarf -->
-
-  <!-- scarf: flowing geometric ribbon -->
-  <path d="M95,78 Q120,95 135,130 Q140,150 125,175 Q118,185 110,190" fill="none" stroke="#E53935" stroke-width="6" stroke-linecap="round"/>
-  <path d="M95,78 Q125,90 140,125 Q145,148 130,172 Q120,183 115,188" fill="none" stroke="#C62828" stroke-width="4" stroke-linecap="round"/>
-
-  <!-- body: green angular coat -->
-  <polygon points="55,105 105,105 115,180 45,180" fill="#2E7D32" stroke="#1B5E20" stroke-width="1.5"/>
-  <!-- coat light plane -->
-  <polygon points="55,105 80,105 80,180 45,180" fill="#388E3C" stroke="none"/>
-  <!-- belt -->
-  <rect x="50" y="140" width="60" height="6" rx="2" fill="#F9A825" stroke="#F57F17" stroke-width="1"/>
-
-  <!-- legs -->
-  <rect x="55" y="178" width="18" height="28" rx="3" fill="#5D4037" stroke="#3E2723" stroke-width="1.5"/>
-  <rect x="87" y="178" width="18" height="28" rx="3" fill="#4E342E" stroke="#3E2723" stroke-width="1.5"/>
-  <!-- boots -->
-  <rect x="52" y="200" width="24" height="10" rx="4" fill="#3E2723"/>
-  <rect x="84" y="200" width="24" height="10" rx="4" fill="#3E2723"/>
-
-  <!-- head: round-ish but with cubist planes -->
-  <circle cx="80" cy="65" r="32" fill="#FFE0B2" stroke="#E6A97E" stroke-width="1.5"/>
-  <!-- face plane split (cubist) -->
-  <path d="M80,33 L80,97" fill="none" stroke="#F5C89A" stroke-width="0.8" opacity="0.3"/>
-
-  <!-- golden hair: wild cubist spikes -->
-  <polygon points="52,52 60,18 72,42" fill="#FFD54F" stroke="#F9A825" stroke-width="1"/>
-  <polygon points="64,42 75,10 88,38" fill="#FFCA28" stroke="#F9A825" stroke-width="1"/>
-  <polygon points="80,36 92,8 102,38" fill="#FFD54F" stroke="#F9A825" stroke-width="1"/>
-  <polygon points="95,42 105,16 112,48" fill="#FFC107" stroke="#F9A825" stroke-width="1"/>
-  <polygon points="48,58 55,30 65,52" fill="#FFE082" stroke="none"/>
-
-  <!-- eyes: cubist asymmetric (large, wondering) -->
-  <ellipse cx="70" cy="62" rx="7" ry="8" fill="#FFF8E1" stroke="#5D4037" stroke-width="1.2"/>
-  <circle cx="70" cy="63" r="4" fill="#1565C0"/>
-  <circle cx="68" cy="61" r="1.5" fill="#FFF"/>
-  <polygon points="88,56 100,56 94,68" fill="#FFF8E1" stroke="#5D4037" stroke-width="1.2"/>
-  <circle cx="94" cy="61" r="3.5" fill="#1565C0"/>
-  <circle cx="93" cy="59" r="1.2" fill="#FFF"/>
-
-  <!-- nose -->
-  <polygon points="78,72 82,72 80,78" fill="#E6A97E"/>
-
-  <!-- mouth: gentle smile -->
-  <path d="M72 82 Q80 88 88 82" fill="none" stroke="#AD7157" stroke-width="1.5" stroke-linecap="round"/>
-
-  <!-- cheek blush -->
-  <ellipse cx="62" cy="78" rx="6" ry="3.5" fill="#FFAB91" opacity="0.5"/>
-  <ellipse cx="98" cy="76" rx="5" ry="3" fill="#FFAB91" opacity="0.4"/>
-
-  <!-- collar detail -->
-  <polygon points="65,100 80,92 95,100" fill="#1B5E20" stroke="#0D3B0F" stroke-width="1"/>
-
-  <!-- star pin (signature element) -->
-  <polygon points="80,118 83,126 91,126 85,131 87,139 80,134 73,139 75,131 69,126 77,126" fill="#FFD54F" stroke="#F9A825" stroke-width="0.8"/>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Muted Earth Tones -->
+    <linearGradient id="earth" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- The Stoic, Unreachable Idol -->
+  <!-- A rigid, immovable monolith comparing to the fluid, dissolving mermaid -->
+  <rect x="35" y="25" width="30" height="65" fill="url(#earth)" rx="3" filter="url(#glow)"/>
+  <!-- Faceless, disconnected head -->
+  <circle cx="50" cy="15" r="9" fill="#94a3b8" filter="url(#glow)"/>
 </svg>

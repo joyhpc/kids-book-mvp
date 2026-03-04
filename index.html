@@ -12,7 +12,7 @@
   <!-- 绘本字体：Nunito（儿童友好）+ Playfair Display（高级感标题） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;1,400&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -28,8 +28,11 @@
   <div id="stage">
     <!-- 全屏 Canvas 粒子背景（最底层） -->
     <canvas id="bg-canvas"></canvas>
-    <!-- 顶部字幕面板 -->
-    <div id="subtitle-panel"></div>
+    <!-- 阅读区：文字占 1/4+ 屏高，原文+译文，有声播放 -->
+    <div id="reading-zone">
+      <button id="audio-btn" class="hidden" type="button" aria-label="播放朗读">🔊</button>
+      <div id="subtitle-panel"></div>
+    </div>
     <!-- 底部操作提示 -->
     <div id="hint-bar"></div>
     <!-- 章节完成覆盖层 -->
@@ -44,9 +47,19 @@
     </div>
   </div>
 
-  <!-- file:// 协议兼容：预加载场景数据（服务器环境下引擎优先用 fetch） -->
+  <script type="importmap">
+  {
+    "imports": {
+      "core/": "./js/core/",
+      "modules/": "./js/modules/",
+      "plugins/": "./js/plugins/",
+      "utils/": "./js/utils/"
+    }
+  }
+  </script>
+  <!-- file:// 协议兼容：预加载场景数据（由于使用了原生 ESM，后续必须通过本地服务器运行才能正常加载模块） -->
   <script src="data/scene.js"></script>
-  <!-- 引擎脚本 -->
-  <script src="js/engine.js"></script>
+  <!-- 引擎入口 -->
+  <script type="module" src="js/engine.js"></script>
 </body>
 </html>

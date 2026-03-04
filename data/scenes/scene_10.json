@@ -1,0 +1,246 @@
+{
+  "meta": {
+    "scene_id": "lp_10_feed",
+    "title": "建立联结 | Establishing Ties",
+    "version": "1.0.0"
+  },
+  "scene": {
+    "id": "lp_10_feed",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 40%, #0f0d22 0%, #0a0818 50%, #04030c 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "fox10",
+        "img_src": "assets/fox.svg",
+        "label": "The Fox",
+        "position": {
+          "x": "68%",
+          "y": "60%"
+        },
+        "width": "110px",
+        "height": "110px",
+        "states": {
+          "hungry": {
+            "filter": "grayscale(0.6) brightness(0.75) drop-shadow(0 0 8px rgba(255,255,255,0.08))",
+            "animation": "fox-idle"
+          },
+          "happy": {
+            "filter": "saturate(1.4) brightness(1.2) drop-shadow(0 0 25px rgba(255,200,100,0.5))",
+            "animation": "fox-jump"
+          }
+        },
+        "initial_state": "hungry"
+      }
+    ],
+    "items": [
+      {
+        "id": "apple",
+        "img_src": "assets/apple.svg",
+        "label": "Apple",
+        "position": {
+          "x": "22%",
+          "y": "65%"
+        },
+        "width": "65px",
+        "height": "65px",
+        "draggable": true,
+        "animation": "item-bounce"
+      }
+    ]
+  },
+  "interaction": {
+    "type": "drag_and_drop",
+    "draggable_id": "apple",
+    "target_id": "fox10",
+    "hit_tolerance": 70,
+    "on_fail": {
+      "action": "spring_back",
+      "duration_ms": 400,
+      "easing": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+    },
+    "on_success": {
+      "actions": [
+        {
+          "type": "hide_item",
+          "target": "apple",
+          "animation": "pop-vanish"
+        },
+        {
+          "type": "change_state",
+          "target": "fox10",
+          "to_state": "happy"
+        },
+        {
+          "type": "play_dialogue",
+          "dialogue_id": "after_feed"
+        },
+        {
+          "type": "show_particles",
+          "emoji": "✨",
+          "count": 12,
+          "duration_ms": 1500
+        }
+      ]
+    }
+  },
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "\"To establish ties, you must be very patient,\" said the fox.",
+      "text_zh": "“要建立联结，你必须非常有耐心。”狐狸说。",
+      "words": [
+        {
+          "word": "\"To",
+          "start_time": 0.0,
+          "end_time": 0.24
+        },
+        {
+          "word": "establish",
+          "start_time": 0.34,
+          "end_time": 1.06
+        },
+        {
+          "word": "ties,",
+          "start_time": 1.16,
+          "end_time": 1.56
+        },
+        {
+          "word": "you",
+          "start_time": 1.66,
+          "end_time": 1.9
+        },
+        {
+          "word": "must",
+          "start_time": 2.0,
+          "end_time": 2.32
+        },
+        {
+          "word": "be",
+          "start_time": 2.42,
+          "end_time": 2.62
+        },
+        {
+          "word": "very",
+          "start_time": 2.72,
+          "end_time": 3.04
+        },
+        {
+          "word": "patient,\"",
+          "start_time": 3.14,
+          "end_time": 3.86
+        },
+        {
+          "word": "said",
+          "start_time": 3.96,
+          "end_time": 4.28
+        },
+        {
+          "word": "the",
+          "start_time": 4.38,
+          "end_time": 4.62
+        },
+        {
+          "word": "fox.",
+          "start_time": 4.72,
+          "end_time": 5.04
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready",
+      "text_original": "Pour créer des liens, il faut être très patient, dit le renard."
+    },
+    "after_feed": {
+      "id": "after_feed",
+      "text_en": "\"Now I am no longer just any fox. I am your fox.\"",
+      "text_zh": "“现在我不再只是一只普通的狐狸。我是你的狐狸。”",
+      "words": [
+        {
+          "word": "\"Now",
+          "start_time": 0.0,
+          "end_time": 0.32
+        },
+        {
+          "word": "I",
+          "start_time": 0.42,
+          "end_time": 0.62
+        },
+        {
+          "word": "am",
+          "start_time": 0.72,
+          "end_time": 0.92
+        },
+        {
+          "word": "no",
+          "start_time": 1.02,
+          "end_time": 1.22
+        },
+        {
+          "word": "longer",
+          "start_time": 1.32,
+          "end_time": 1.8
+        },
+        {
+          "word": "just",
+          "start_time": 1.9,
+          "end_time": 2.22
+        },
+        {
+          "word": "any",
+          "start_time": 2.32,
+          "end_time": 2.56
+        },
+        {
+          "word": "fox.",
+          "start_time": 2.66,
+          "end_time": 2.98
+        },
+        {
+          "word": "I",
+          "start_time": 3.08,
+          "end_time": 3.28
+        },
+        {
+          "word": "am",
+          "start_time": 3.38,
+          "end_time": 3.58
+        },
+        {
+          "word": "your",
+          "start_time": 3.68,
+          "end_time": 4.0
+        },
+        {
+          "word": "fox.\"",
+          "start_time": 4.1,
+          "end_time": 4.5
+        }
+      ],
+      "auto_play": false,
+      "text_original": "Maintenant je ne suis plus un renard comme les autres. Je suis ton renard."
+    }
+  },
+  "ending": {
+    "auto_advance": false,
+    "delay_after_success_ms": 5000
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "show_after_ms": 2500,
+      "position": "bottom"
+    }
+  }
+}

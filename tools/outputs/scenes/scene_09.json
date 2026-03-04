@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "scene_id": "lp_09_tame_me",
+    "title": "驯服我吧 | Tame Me",
+    "version": "1.0.0"
+  },
+  "scene": {
+    "id": "lp_09_tame_me",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 40% 50%, #141228 0%, #0d0a1e 50%, #060412 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "fox9",
+        "img_src": "assets/fox.svg",
+        "label": "The Fox",
+        "position": {
+          "x": "50%",
+          "y": "58%"
+        },
+        "width": "120px",
+        "height": "120px",
+        "states": {
+          "pleading": {
+            "filter": "brightness(0.9) drop-shadow(0 0 15px rgba(255,180,80,0.25))",
+            "animation": "fox-idle"
+          }
+        },
+        "initial_state": "pleading"
+      }
+    ],
+    "items": []
+  },
+  "interaction": null,
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "\"Please — tame me!\" said the fox. \"What does that mean — tame?\"",
+      "text_zh": "“求你——驯服我吧！”狐狸说。“驯服是什么意思？”",
+      "words": [
+        {
+          "word": "\"Please",
+          "start_time": 0.0,
+          "end_time": 0.56
+        },
+        {
+          "word": "—",
+          "start_time": 0.66,
+          "end_time": 0.86
+        },
+        {
+          "word": "tame",
+          "start_time": 0.96,
+          "end_time": 1.28
+        },
+        {
+          "word": "me!\"",
+          "start_time": 1.38,
+          "end_time": 1.7
+        },
+        {
+          "word": "said",
+          "start_time": 1.8,
+          "end_time": 2.12
+        },
+        {
+          "word": "the",
+          "start_time": 2.22,
+          "end_time": 2.46
+        },
+        {
+          "word": "fox.",
+          "start_time": 2.56,
+          "end_time": 2.88
+        },
+        {
+          "word": "\"What",
+          "start_time": 2.98,
+          "end_time": 3.38
+        },
+        {
+          "word": "does",
+          "start_time": 3.48,
+          "end_time": 3.8
+        },
+        {
+          "word": "that",
+          "start_time": 3.9,
+          "end_time": 4.22
+        },
+        {
+          "word": "mean",
+          "start_time": 4.32,
+          "end_time": 4.64
+        },
+        {
+          "word": "—",
+          "start_time": 4.74,
+          "end_time": 4.94
+        },
+        {
+          "word": "tame?\"",
+          "start_time": 5.04,
+          "end_time": 5.52
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready",
+      "text_original": "S'il te plaît... Apprivoise-moi ! dit le renard. Qu'est-ce que signifie « apprivoiser » ?"
+    }
+  },
+  "ending": {
+    "auto_advance": true,
+    "delay_after_success_ms": 6500
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "show_after_ms": 2500,
+      "position": "bottom"
+    }
+  }
+}

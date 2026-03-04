@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100">
+  <!-- Mon dessin numéro 1 (looks like a hat) -->
+  <path d="M20,80 Q50,80 60,60 Q80,20 120,20 Q140,20 150,60 Q160,80 180,80" fill="#8D6E63" stroke="#5D4037" stroke-width="4" stroke-linecap="round"/>
+  <path d="M10,80 L190,80" fill="none" stroke="#5D4037" stroke-width="4" stroke-linecap="round"/>
+</svg>

@@ -27,7 +27,16 @@ html, body {
   position: relative;
   width: 100vw; height: 100vh;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 40%, #050a14 0%, #010205 100%);
+  background: #010205;
+}
+
+#stage::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at 50% 30%, transparent 20%, rgba(1, 2, 5, 0.8) 100%);
+  pointer-events: none;
+  z-index: 5;
 }
 
 /* ---------- Canvas 粒子层 ---------- */
@@ -40,28 +49,48 @@ html, body {
 }
 
 /* ============================================================
-   深色毛玻璃字幕面板（参考作品风格）
+   阅读区：文字占比 ≥25% 屏高，以阅读为核心 (电影宽银幕效果)
    ============================================================ */
-#subtitle-panel {
+#reading-zone {
   position: absolute;
-  top: 14px; left: 14px; right: 14px;
-  width: auto;
+  top: 0; left: 0; right: 0;
+  min-height: min(32vh, 260px);
   z-index: 100;
-  display: flex; flex-wrap: wrap;
-  justify-content: center; align-items: center;
-  gap: 0.35em;
-  padding: 1.3rem 1.6rem;
-  padding-top: max(1.3rem, calc(env(safe-area-inset-top) + 0.6rem));
-  background: rgba(5, 8, 15, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.9),
-    inset 0 0 30px rgba(255, 255, 255, 0.02);
-  min-height: 3.4rem;
-  transition: opacity 0.4s ease;
+  pointer-events: none; /* 让鼠标事件穿透给视差引擎 */
+}
+
+#subtitle-panel {
+  position: relative;
+  width: 100%;
+  min-height: min(32vh, 260px);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: max(2.2rem, env(safe-area-inset-top)) 1.4rem 1.6rem;
+  /* 电影级的顶部暗角渐变，完美融合深空背景 */
+  background: linear-gradient(to bottom, rgba(1, 2, 8, 0.95) 0%, rgba(5, 10, 25, 0.6) 60%, transparent 100%);
+  border-bottom: none;
+  box-shadow: none;
+  transition: opacity 0.6s ease;
+  pointer-events: auto; /* 恢复字幕面板自身的交互 */
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ---------- 原文区（法文等） ---------- */
+.subtitle-original {
+  width: 100%;
+  text-align: center;
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.6rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 }
 
 /* ---------- 字音词（柔和白色 → 金色高亮） ---------- */
@@ -69,7 +98,7 @@ html, body {
   display: inline-block;
   color: rgba(255, 255, 255, 0.5);
   font-family: 'Playfair Display', 'Nunito', serif;
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 400;
   letter-spacing: 1px;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 1);
@@ -78,7 +107,7 @@ html, body {
               text-shadow 0.3s ease;
   transform-origin: center bottom;
   padding: 0 0.06em;
-  line-height: 2;
+  line-height: 2.2;
 }
 
 .word-span.highlight {
@@ -95,21 +124,55 @@ html, body {
   text-shadow: 0 2px 10px rgba(0, 0, 0, 1);
 }
 
-/* ---------- 中文翻译行：薰衣草紫 ---------- */
+/* ---------- 中文翻译行：薰衣草紫，占位更大 ---------- */
 #subtitle-zh {
   width: 100%; text-align: center;
-  font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  font-size: 1.1rem; font-weight: 400;
-  color: rgba(167, 139, 250, 0.7);
-  margin-top: 0.4rem;
-  padding-top: 0.4rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-family: 'Noto Serif SC', 'PingFang SC', serif;
+  font-size: 1.4rem; font-weight: 300;
+  color: rgba(220, 210, 255, 0.85);
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   letter-spacing: 0.08em;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  line-height: 1.65;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+}
+
+/* ---------- 有声播放按钮 ---------- */
+#audio-btn {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.25);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: #d4af37;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+#audio-btn:hover { background: rgba(212, 175, 55, 0.4); transform: scale(1.08); }
+#audio-btn.playing { background: rgba(212, 175, 55, 0.35); box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+#audio-btn.hidden { display: none; }
+
+/* ============================================================
+   全局环境光照层 (Ambient Light 追踪鼠标)
+   ============================================================ */
+#ambient-light {
+  position: absolute; 
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; 
+  z-index: 5; /* 处于背景 (0) 粒子 (2) 和人物 (10) 之间 */
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), transparent 10%, rgba(0, 5, 20, 0.6) 120%);
+  mix-blend-mode: multiply; /* 形成类似聚光灯的舞台戏剧效果 */
+  transition: opacity 1s;
 }
 
 /* ============================================================
-   场景角色 / 物品
+   场景角色 / 物品 / 魔法 Glassmorphism Tokens
    ============================================================ */
 .scene-character,
 .scene-item {
@@ -119,6 +182,8 @@ html, body {
   z-index: 10;
   transition: filter 0.8s ease;
   line-height: 1;
+  /* 必须保证父容器透视，否则子元素的 rotate 不会有 3D 立体感 */
+  perspective: 800px;
 }
 
 .scene-character img,
@@ -127,6 +192,91 @@ html, body {
   display: block;
   object-fit: contain;
   pointer-events: none;
+  /* 供视差引擎操作 */
+  transition: transform 0.1s linear; 
+}
+
+/* ---------- 核心：Glassmorphism 魔法代币水晶球 ---------- */
+.emoji-sprite {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  /* 极限磨砂质感和内阴影 */
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.02) 100%);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+              inset 0 0 20px rgba(255, 255, 255, 0.2);
+  /* 允许 3D 转换 */
+  transform-style: preserve-3d;
+  /* 丝滑的回弹动画 */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.1s linear;
+}
+
+/* 添加一个贯穿魔法球表面的漂亮反光（Sweep） */
+.emoji-sprite::after {
+  content: ''; 
+  position: absolute; 
+  top: -50%; left: -50%; 
+  width: 200%; height: 200%;
+  background: linear-gradient(to bottom right, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 100%);
+  transform: rotate(30deg) translateY(-20%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Emoji 实体 */
+.emoji-sprite span {
+  /* 脱离容器光影层，加上沉重的下落投影 */
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+  transition: transform 0.3s ease;
+  z-index: 2;
+}
+
+/* ---------- 超强互动反馈 (悬浮 / 拖拽) ---------- */
+.scene-character:hover .emoji-sprite,
+.scene-item[data-draggable="true"]:hover .emoji-sprite,
+.scene-item.dragging .emoji-sprite {
+  background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 100%);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5),
+              inset 0 0 30px rgba(255, 255, 255, 0.5),
+              0 0 20px rgba(255, 255, 255, 0.3);
+  /* 拖拽或悬停时发亮，边框变得通透 */
+}
+
+/* 里面的 Emoji 要跃出水晶球的平面（使用 TranslateZ）！ */
+.scene-character:hover .emoji-sprite span,
+.scene-item[data-draggable="true"]:hover .emoji-sprite span,
+.scene-item.dragging .emoji-sprite span {
+  transform: scale(1.15) translateZ(30px) !important; 
+}
+
+/* ---------- 优雅降级骨架屏 ---------- */
+.fallback-sprite {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  text-align: center;
+  padding: 8px;
+  box-sizing: border-box;
+  backdrop-filter: blur(8px);
 }
 
 .scene-item[data-draggable="true"] {
@@ -139,24 +289,25 @@ html, body {
 /* ---------- 拖拽进行时：柔和暖光 ---------- */
 .scene-item.dragging {
   z-index: 999;
-  transform: translate(-50%, -50%) scale(1.1);
+  /* 取消原来的强制 scale，交给行内 translate 处理中心 */
   filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4))
           drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
-  transition: filter 0.15s ease, transform 0s;
+  transition: filter 0.15s ease;
   animation: none !important;
+  will-change: transform;
 }
 
 /* ---------- 苹果浮动：柔和呼吸发光 ---------- */
 @keyframes item-bounce {
   0%, 100% {
     transform: translate(-50%, -50%) scale(1);
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.15))
-            drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4))
+            drop-shadow(0 0 30px rgba(167, 139, 250, 0.4));
   }
   50% {
-    transform: translate(-50%, -54%) scale(1.03);
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.25))
-            drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
+    transform: translate(-50%, -54%) scale(1.05);
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8))
+            drop-shadow(0 0 50px rgba(167, 139, 250, 0.8));
   }
 }
 .anim-item-bounce {
@@ -165,8 +316,8 @@ html, body {
 
 /* ---------- 轻柔浮动（鲸鱼/蝴蝶等） ---------- */
 @keyframes float-gentle {
-  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-  50%      { transform: translate(-50%, -50%) translateY(-8px); }
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+  50%      { transform: translate(-50%, -50%) translateY(-10px); filter: drop-shadow(0 0 25px rgba(255,255,255,0.6)); }
 }
 .anim-float-gentle {
   animation: float-gentle 4s ease-in-out infinite;

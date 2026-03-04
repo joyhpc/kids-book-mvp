@@ -1,142 +1,116 @@
 {
   "meta": {
-    "scene_id": "ch1_s1_visitor",
-    "title": "星球来客 | The Visitor",
-    "version": "1.0.0"
+    "title": "海底宫殿 | Under the Sea",
+    "version": "1.0.0",
+    "language": [
+      "en",
+      "zh"
+    ],
+    "target_age": "4-8",
+    "scene_id": "lm_s1_ocean"
   },
+  "location_id": "ocean_palace",
+  "time_of_day": "day",
+  "action_prompt": "A solitary silhouette of a tiny, fluid-shaped girl floating in the vastness of the abyss.",
+  "resolved_bg_prompt": "Abyssal depth, oppressive yet vast, extreme negative space, a few towering sharp monolithic structures piercing the darkness, melancholy deep indigo, pure emotion, time: day, dim, ethereal light fading into black",
+  "resolved_full_prompt": "Abyssal depth, oppressive yet vast, extreme negative space, a few towering sharp monolithic structures piercing the darkness, melancholy deep indigo, pure emotion, time: day, dim, ethereal light fading into black | Soul expression: A solitary silhouette of a tiny, fluid-shaped girl floating in the vastness of the abyss.",
   "scene": {
-    "id": "ch1_s1_visitor",
+    "id": "lm_s1_ocean",
     "background": {
-      "type": "canvas",
-      "gradient": "radial-gradient(ellipse at 50% 30%, #1a1535 0%, #0d0a20 50%, #050310 100%)",
+      "type": "image",
+      "src": "assets/scenes/lm_s1_ocean_bg.jpg",
       "particles": true
     },
     "characters": [
       {
-        "id": "prince",
-        "img_src": "assets/prince.svg",
-        "label": "The Little Prince",
+        "id": "mermaid",
+        "img_src": "assets/mermaid.svg",
+        "label": "Mermaid",
         "position": {
           "x": "50%",
-          "y": "58%"
+          "y": "60%"
         },
-        "width": "110px",
-        "height": "150px"
+        "width": "140px",
+        "height": "140px"
       }
     ],
-    "items": [
-      {
-        "id": "star_deco1",
-        "img_src": "assets/star.svg",
-        "label": "Star",
-        "position": {
-          "x": "80%",
-          "y": "22%"
-        },
-        "width": "30px",
-        "height": "30px",
-        "animation": "float-gentle"
-      },
-      {
-        "id": "star_deco2",
-        "img_src": "assets/star.svg",
-        "label": "Star",
-        "position": {
-          "x": "18%",
-          "y": "15%"
-        },
-        "width": "22px",
-        "height": "22px",
-        "animation": "float-gentle"
-      }
-    ]
+    "items": []
   },
-  "interaction": null,
   "dialogues": {
     "intro": {
       "id": "intro",
-      "text_en": "\"I come from a very small planet,\" said the little prince, \"hardly bigger than a house.\"",
-      "text_zh": "“我来自一颗很小很小的星球，”小王子说，“它几乎只比一间房子大一点。”",
+      "text_en": "Deep below the ocean waves, the little mermaid lived in a beautiful coral palace.",
+      "text_zh": "在深深的海浪之下，小美人鱼住在美丽的珊瑚宫殿里。",
       "words": [
         {
-          "word": "\"I",
+          "word": "Deep",
           "start_time": 0.0,
-          "end_time": 0.2
+          "end_time": 0.32
         },
         {
-          "word": "come",
-          "start_time": 0.3,
-          "end_time": 0.62
-        },
-        {
-          "word": "from",
-          "start_time": 0.72,
-          "end_time": 1.04
-        },
-        {
-          "word": "a",
-          "start_time": 1.14,
-          "end_time": 1.34
-        },
-        {
-          "word": "very",
-          "start_time": 1.44,
-          "end_time": 1.76
-        },
-        {
-          "word": "small",
-          "start_time": 1.86,
-          "end_time": 2.26
-        },
-        {
-          "word": "planet,\"",
-          "start_time": 2.36,
-          "end_time": 3.0
-        },
-        {
-          "word": "said",
-          "start_time": 3.1,
-          "end_time": 3.42
+          "word": "below",
+          "start_time": 0.42,
+          "end_time": 0.82
         },
         {
           "word": "the",
-          "start_time": 3.52,
-          "end_time": 3.76
+          "start_time": 0.92,
+          "end_time": 1.16
+        },
+        {
+          "word": "ocean",
+          "start_time": 1.26,
+          "end_time": 1.66
+        },
+        {
+          "word": "waves,",
+          "start_time": 1.76,
+          "end_time": 2.24
+        },
+        {
+          "word": "the",
+          "start_time": 2.34,
+          "end_time": 2.58
         },
         {
           "word": "little",
-          "start_time": 3.86,
-          "end_time": 4.34
+          "start_time": 2.68,
+          "end_time": 3.16
         },
         {
-          "word": "prince,",
-          "start_time": 4.44,
-          "end_time": 5.0
+          "word": "mermaid",
+          "start_time": 3.26,
+          "end_time": 3.82
         },
         {
-          "word": "\"hardly",
-          "start_time": 5.1,
-          "end_time": 5.66
+          "word": "lived",
+          "start_time": 3.92,
+          "end_time": 4.32
         },
         {
-          "word": "bigger",
-          "start_time": 5.76,
-          "end_time": 6.24
-        },
-        {
-          "word": "than",
-          "start_time": 6.34,
-          "end_time": 6.66
+          "word": "in",
+          "start_time": 4.42,
+          "end_time": 4.62
         },
         {
           "word": "a",
-          "start_time": 6.76,
-          "end_time": 6.96
+          "start_time": 4.72,
+          "end_time": 4.92
         },
         {
-          "word": "house.\"",
-          "start_time": 7.06,
-          "end_time": 7.62
+          "word": "beautiful",
+          "start_time": 5.02,
+          "end_time": 5.74
+        },
+        {
+          "word": "coral",
+          "start_time": 5.84,
+          "end_time": 6.24
+        },
+        {
+          "word": "palace.",
+          "start_time": 6.34,
+          "end_time": 6.9
         }
       ],
       "auto_play": true,
@@ -144,8 +118,13 @@
     }
   },
   "ending": {
-    "auto_advance": true,
-    "delay_after_success_ms": 6000
+    "delay_after_success_ms": 6000,
+    "title_en": "",
+    "title_zh": "",
+    "subtitle_zh": "",
+    "button_text": "再读一遍",
+    "particles_emoji": "✨",
+    "auto_advance": true
   },
   "ui": {
     "subtitle_panel": {
@@ -160,8 +139,11 @@
       "border_radius": "16px"
     },
     "hint": {
+      "text_en": "",
+      "text_zh": "",
       "show_after_ms": 2500,
-      "position": "bottom"
+      "position": "bottom",
+      "font_size": "1.05rem"
     }
   }
 }

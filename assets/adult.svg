@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 180">
+  <!-- Grown-up / Adult figure -->
+  <circle cx="50" cy="30" r="18" fill="#FFCCBC" stroke="#D84315" stroke-width="2"/>
+  <!-- body with suit -->
+  <path d="M30,50 L70,50 L80,130 L20,130 Z" fill="#37474F" stroke="#263238" stroke-width="2"/>
+  <path d="M50,50 L50,130" fill="none" stroke="#263238" stroke-width="2"/>
+  <!-- tie -->
+  <path d="M45,50 L55,50 L52,80 L48,80 Z" fill="#C62828"/>
+  <!-- legs -->
+  <path d="M35,130 L35,170 M65,130 L65,170" fill="none" stroke="#37474F" stroke-width="12"/>
+</svg>

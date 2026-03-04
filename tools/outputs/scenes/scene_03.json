@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "title": "拯救王子 | Saving the Prince",
+    "version": "1.0.0",
+    "language": [
+      "en",
+      "zh"
+    ],
+    "target_age": "4-8",
+    "scene_id": "lm_s3_rescue"
+  },
+  "scene": {
+    "id": "lm_s3_rescue",
+    "background": {
+      "type": "canvas",
+      "gradient": "radial-gradient(ellipse at 50% 50%, #2F4F4F 0%, #191970 70%, #000000 100%)",
+      "particles": true
+    },
+    "characters": [
+      {
+        "id": "prince_drowning",
+        "img_src": "assets/prince.svg",
+        "label": "Prince",
+        "position": {
+          "x": "70%",
+          "y": "60%"
+        },
+        "width": "100px",
+        "height": "100px",
+        "states": {
+          "drowning": {
+            "filter": "brightness(0.7)",
+            "animation": "none"
+          },
+          "saved": {
+            "filter": "brightness(1.2)",
+            "animation": "item-bounce"
+          }
+        },
+        "initial_state": "drowning"
+      }
+    ],
+    "items": [
+      {
+        "id": "mermaid_savior",
+        "img_src": "assets/mermaid.svg",
+        "label": "Mermaid",
+        "position": {
+          "x": "20%",
+          "y": "80%"
+        },
+        "width": "100px",
+        "height": "100px",
+        "draggable": true,
+        "animation": "float-gentle"
+      }
+    ]
+  },
+  "interaction": {
+    "type": "drag_and_drop",
+    "draggable_id": "mermaid_savior",
+    "target_id": "prince_drowning",
+    "hit_tolerance": 50,
+    "on_fail": {
+      "action": "spring_back",
+      "duration_ms": 400,
+      "easing": "cubic-bezier(0.34, 1.56, 0.64, 1)"
+    },
+    "on_success": {
+      "actions": [
+        {
+          "type": "hide_item",
+          "target": "mermaid_savior",
+          "animation": "pop-vanish"
+        },
+        {
+          "type": "change_state",
+          "target": "prince_drowning",
+          "to_state": "saved"
+        },
+        {
+          "type": "play_dialogue",
+          "dialogue_id": "after_feed"
+        },
+        {
+          "type": "show_particles",
+          "emoji": "🌊",
+          "count": 12,
+          "duration_ms": 1500
+        }
+      ]
+    }
+  },
+  "dialogues": {
+    "intro": {
+      "id": "intro",
+      "text_en": "A terrible storm wrecked the ship. The prince fell into the sea!",
+      "text_zh": "一场可怕的风暴摧毁了船。王子掉进了海里！",
+      "words": [
+        {
+          "word": "A",
+          "start_time": 0.0,
+          "end_time": 0.2
+        },
+        {
+          "word": "terrible",
+          "start_time": 0.3,
+          "end_time": 0.94
+        },
+        {
+          "word": "storm",
+          "start_time": 1.04,
+          "end_time": 1.44
+        },
+        {
+          "word": "wrecked",
+          "start_time": 1.54,
+          "end_time": 2.1
+        },
+        {
+          "word": "the",
+          "start_time": 2.2,
+          "end_time": 2.44
+        },
+        {
+          "word": "ship.",
+          "start_time": 2.54,
+          "end_time": 2.94
+        },
+        {
+          "word": "The",
+          "start_time": 3.04,
+          "end_time": 3.28
+        },
+        {
+          "word": "prince",
+          "start_time": 3.38,
+          "end_time": 3.86
+        },
+        {
+          "word": "fell",
+          "start_time": 3.96,
+          "end_time": 4.28
+        },
+        {
+          "word": "into",
+          "start_time": 4.38,
+          "end_time": 4.7
+        },
+        {
+          "word": "the",
+          "start_time": 4.8,
+          "end_time": 5.04
+        },
+        {
+          "word": "sea!",
+          "start_time": 5.14,
+          "end_time": 5.46
+        }
+      ],
+      "auto_play": true,
+      "display_on": "scene_ready"
+    },
+    "after_feed": {
+      "id": "after_feed",
+      "text_en": "The little mermaid held him tight and swam to the shore.",
+      "text_zh": "小美人鱼紧紧抱住他，向岸边游去。",
+      "words": [
+        {
+          "word": "The",
+          "start_time": 0.0,
+          "end_time": 0.24
+        },
+        {
+          "word": "little",
+          "start_time": 0.34,
+          "end_time": 0.82
+        },
+        {
+          "word": "mermaid",
+          "start_time": 0.92,
+          "end_time": 1.48
+        },
+        {
+          "word": "held",
+          "start_time": 1.58,
+          "end_time": 1.9
+        },
+        {
+          "word": "him",
+          "start_time": 2.0,
+          "end_time": 2.24
+        },
+        {
+          "word": "tight",
+          "start_time": 2.34,
+          "end_time": 2.74
+        },
+        {
+          "word": "and",
+          "start_time": 2.84,
+          "end_time": 3.08
+        },
+        {
+          "word": "swam",
+          "start_time": 3.18,
+          "end_time": 3.5
+        },
+        {
+          "word": "to",
+          "start_time": 3.6,
+          "end_time": 3.8
+        },
+        {
+          "word": "the",
+          "start_time": 3.9,
+          "end_time": 4.14
+        },
+        {
+          "word": "shore.",
+          "start_time": 4.24,
+          "end_time": 4.72
+        }
+      ],
+      "auto_play": false
+    }
+  },
+  "ending": {
+    "delay_after_success_ms": 5000,
+    "title_en": "",
+    "title_zh": "",
+    "subtitle_zh": "",
+    "button_text": "再读一遍",
+    "particles_emoji": "✨",
+    "auto_advance": true
+  },
+  "ui": {
+    "subtitle_panel": {
+      "position": "top",
+      "height": "auto",
+      "padding": "1.2rem",
+      "font_size": "1.75rem",
+      "highlight_color": "#d4af37",
+      "highlight_scale": 1.15,
+      "normal_color": "#FFFFFF",
+      "bg_color": "rgba(5,8,15,0.7)",
+      "border_radius": "16px"
+    },
+    "hint": {
+      "text_en": "",
+      "text_zh": "",
+      "show_after_ms": 2500,
+      "position": "bottom",
+      "font_size": "1.05rem"
+    }
+  }
+}
