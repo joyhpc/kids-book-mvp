@@ -31,3 +31,6 @@ screenshots/
 # AIGC generated assets (uncomment to track)
 # assets/scenes/
 # assets/audio/
+
+# Canvas prompt pack outputs
+canvas_exports/
