@@ -1,0 +1,75 @@
+{
+  "book_id": "little-prince-static-v1",
+  "page_id": "lp_001",
+  "version": 1,
+  "story_text": {
+    "en": "\"Please — tame me!\" said the fox.",
+    "zh": "“求你——驯服我吧！”狐狸说。"
+  },
+  "visual_intent": {
+    "page_role": "character_relationship_intro",
+    "core_feeling": "quiet wonder",
+    "composition_mode": "paired",
+    "lead_subject": "fox",
+    "secondary_subject": "apple",
+    "negative_space_ratio": 0.58,
+    "subject_scale": "small_to_medium",
+    "camera_distance": "storybook_mid_wide"
+  },
+  "layout_constraints": {
+    "target_aspect_ratio": "16:9",
+    "reading_safe_zone": {
+      "top": 0.12,
+      "left": 0.12,
+      "right": 0.88,
+      "bottom": 0.42
+    },
+    "edge_safety": {
+      "left": 0.08,
+      "right": 0.92,
+      "top": 0.08,
+      "bottom": 0.9
+    },
+    "do_not_overlap_text": true,
+    "do_not_crop_subjects": true
+  },
+  "character_rules": {
+    "fox": {
+      "priority": "high",
+      "placement": "slightly_right_of_center",
+      "max_scale_ratio": 0.2
+    },
+    "apple": {
+      "priority": "medium",
+      "placement": "left_side_balance",
+      "max_scale_ratio": 0.12
+    }
+  },
+  "style_system": {
+    "palette": ["#0b0d1c", "#2a2255", "#d9d4f4"],
+    "keywords": ["restrained", "quiet", "storybook", "soft contrast"],
+    "negative_keywords": ["busy", "flashy", "high VFX", "game HUD", "chaotic framing"]
+  },
+  "canvas_prompt": {
+    "title": "Quiet storybook page with fox and apple",
+    "version_tag": "lp_001_v1"
+  },
+  "canvas_result": {
+    "share_url": "",
+    "exported_image": "",
+    "selected": false,
+    "notes": ""
+  },
+  "review": {
+    "status": "draft_spec",
+    "scores": {
+      "readability": 0,
+      "containment": 0,
+      "whitespace": 0,
+      "focus": 0,
+      "restraint": 0,
+      "consistency": 0
+    },
+    "reviewer_notes": ""
+  }
+}

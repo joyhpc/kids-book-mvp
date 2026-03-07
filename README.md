@@ -32,6 +32,8 @@ http://localhost:8888/editor.html
 
 ## Visual Scene Editor
 
+- `GEMINI_CANVAS_PROTOCOL.md` 定义了静态绘本优先的 Gemini Canvas 协作流程、页面 spec、导入导出契约和后续去 Canvas 的迁移路径。
+
 - `editor.html` 提供可视化 Scene Editor，支持实体拖拽、属性修改、JSON 导入导出。
 - 编辑器内置导演台、画面分析、自动建议与导演变体评分排序。
 - 第 2 阶段新增“导演台”：可用语义指令、构图预设、情绪预设、镜头/留白/主体尺寸滑杆和 3 个一键变体来快速迭代画面。
