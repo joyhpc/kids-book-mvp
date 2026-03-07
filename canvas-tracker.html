@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Result Tracker</title>
+  <link rel="stylesheet" href="css/canvas-tracker.css">
+</head>
+<body>
+  <div class="tracker-shell">
+    <header class="tracker-toolbar">
+      <div>
+        <strong>Canvas Result Tracker</strong>
+        <span>记录 Gemini Canvas 链接、静态页结果、评审分与锁定状态</span>
+      </div>
+      <div class="toolbar-actions">
+        <button id="refresh-pages-btn" type="button">刷新页面列表</button>
+        <button id="save-draft-btn" type="button">保存本地草稿</button>
+        <button id="copy-summary-btn" type="button">复制总结</button>
+        <button id="download-registry-btn" type="button">下载登记 JSON</button>
+        <button id="download-merged-spec-btn" type="button">下载合并 Spec</button>
+      </div>
+    </header>
+
+    <main class="tracker-layout">
+      <aside class="panel pages-panel">
+        <div class="panel-head">
+          <h1>Pages</h1>
+          <span id="pages-count" class="pill">0</span>
+        </div>
+        <div id="pages-list" class="pages-list"></div>
+      </aside>
+
+      <section class="panel detail-panel">
+        <div class="panel-head">
+          <div>
+            <h2 id="page-heading">未选择页面</h2>
+            <span id="page-meta" class="panel-subtitle">选择左侧页面开始登记 Canvas 结果</span>
+          </div>
+          <div class="head-links">
+            <a id="open-spec-link" href="spec-editor.html" target="_blank" rel="noreferrer">打开 Spec Editor</a>
+          </div>
+        </div>
+
+        <div class="panel-section grid-two">
+          <label>
+            <span>Canvas Title</span>
+            <input id="canvas-title-input" type="text">
+          </label>
+          <label>
+            <span>Version Tag</span>
+            <input id="canvas-version-tag-input" type="text">
+          </label>
+          <label class="span-two">
+            <span>Share URL</span>
+            <input id="canvas-share-url-input" type="text" placeholder="https://...">
+          </label>
+          <label class="span-two">
+            <span>Exported Image</span>
+            <input id="canvas-exported-image-input" type="text" placeholder="assets/pages/page_001_v3.png">
+          </label>
+          <label class="span-two">
+            <span>Canvas Notes</span>
+            <textarea id="canvas-notes-input" rows="3"></textarea>
+          </label>
+          <label class="check-field span-two">
+            <input id="canvas-selected-input" type="checkbox">
+            <span>当前结果已选为该页面候选</span>
+          </label>
+        </div>
+
+        <div class="panel-section grid-two">
+          <label>
+            <span>Status</span>
+            <select id="review-status-select">
+              <option value="draft_spec">draft_spec</option>
+              <option value="prompt_ready">prompt_ready</option>
+              <option value="canvas_in_progress">canvas_in_progress</option>
+              <option value="candidate_received">candidate_received</option>
+              <option value="reviewed">reviewed</option>
+              <option value="approved">approved</option>
+              <option value="locked">locked</option>
+            </select>
+          </label>
+          <label>
+            <span>Version Notes</span>
+            <textarea id="review-notes-input" rows="3"></textarea>
+          </label>
+        </div>
+
+        <div class="panel-section">
+          <div class="subhead">Review Scores</div>
+          <div class="grid-six compact-grid">
+            <label><span>Readability</span><input id="score-readability-input" type="number" min="0" max="100" step="1"></label>
+            <label><span>Containment</span><input id="score-containment-input" type="number" min="0" max="100" step="1"></label>
+            <label><span>Whitespace</span><input id="score-whitespace-input" type="number" min="0" max="100" step="1"></label>
+            <label><span>Focus</span><input id="score-focus-input" type="number" min="0" max="100" step="1"></label>
+            <label><span>Restraint</span><input id="score-restraint-input" type="number" min="0" max="100" step="1"></label>
+            <label><span>Consistency</span><input id="score-consistency-input" type="number" min="0" max="100" step="1"></label>
+          </div>
+        </div>
+
+        <div class="panel-section grid-two preview-grid">
+          <section class="preview-card">
+            <div class="subhead">Prompt Snapshot</div>
+            <pre id="prompt-preview" class="prompt-preview"></pre>
+          </section>
+          <section class="preview-card">
+            <div class="subhead">Review Summary</div>
+            <textarea id="summary-preview" class="summary-preview" readonly></textarea>
+          </section>
+          <section class="preview-card span-two">
+            <div class="subhead">Merged Spec JSON</div>
+            <textarea id="json-preview" class="json-preview" readonly></textarea>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/canvas-tracker-app.js"></script>
+</body>
+</html>

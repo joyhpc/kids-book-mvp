@@ -242,4 +242,10 @@ Build a tiny internal tool that:
 - stores chosen Canvas result links and images
 - tracks review scores and status
 
+Current repo prototype:
+
+- `spec-editor.html` for authoring static-first page specs
+- `canvas-tracker.html` for result review and lock-state tracking
+- `tools/build_page_spec_index.js` for rebuilding the page manifest
+
 That gives you a practical bridge from `Gemini Canvas` to a future independent pipeline.

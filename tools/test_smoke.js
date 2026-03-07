@@ -94,6 +94,16 @@ async function main() {
   if (!r.data.includes('download-spec-btn')) fail('spec-editor.html 缺少 Spec 导出按钮');
   ok('Page Spec Editor 导出按钮存在');
 
+  r = await fetch(BASE + '/canvas-tracker.html');
+  if (r.status !== 200) fail('canvas-tracker.html 返回 ' + r.status);
+  ok('canvas-tracker.html 可访问');
+
+  if (!r.data.includes('pages-list')) fail('canvas-tracker.html 缺少页面列表');
+  ok('Canvas Result Tracker 页面列表存在');
+
+  if (!r.data.includes('download-registry-btn')) fail('canvas-tracker.html 缺少登记导出按钮');
+  ok('Canvas Result Tracker 导出按钮存在');
+
   r = await fetch(BASE + '/editor-preview.html');
   if (r.status !== 200) fail('editor-preview.html 返回 ' + r.status);
   ok('editor-preview.html 可访问');
