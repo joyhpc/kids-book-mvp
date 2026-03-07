@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scene Editor | Kids Book MVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editor.css">
+</head>
+<body>
+  <div class="editor-shell">
+    <header class="toolbar">
+      <div class="toolbar-group">
+        <button id="load-default-btn" type="button">加载默认场景</button>
+        <label class="file-button" for="import-file">导入 JSON</label>
+        <input id="import-file" type="file" accept="application/json,.json" hidden>
+        <button id="export-btn" type="button">导出 JSON</button>
+      </div>
+      <div class="toolbar-group">
+        <button id="undo-btn" type="button">撤销</button>
+        <button id="redo-btn" type="button">重做</button>
+        <button id="add-character-btn" type="button">新增角色</button>
+        <button id="add-item-btn" type="button">新增物品</button>
+        <button id="duplicate-btn" type="button">复制选中</button>
+        <button id="delete-btn" type="button" class="danger">删除选中</button>
+      </div>
+      <div id="status-pill" class="status-pill">准备中</div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel panel-left">
+        <section class="panel-section">
+          <div class="section-title">场景</div>
+          <div class="field-grid compact">
+            <label>
+              <span>快速打开</span>
+              <select id="scene-preset-select">
+                <option value="">默认场景</option>
+              </select>
+            </label>
+            <label>
+              <span>场景 ID</span>
+              <input id="scene-id-input" type="text">
+            </label>
+            <label>
+              <span>背景类型</span>
+              <select id="background-type-select">
+                <option value="canvas">canvas</option>
+                <option value="css_gradient">css_gradient</option>
+                <option value="image">image</option>
+              </select>
+            </label>
+            <label>
+              <span>背景渐变</span>
+              <textarea id="background-gradient-input" rows="3"></textarea>
+            </label>
+            <label>
+              <span>背景图片</span>
+              <input id="background-src-input" type="text">
+            </label>
+            <label class="checkbox-field">
+              <input id="background-particles-input" type="checkbox">
+              <span>启用粒子背景</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-title">文案</div>
+          <div class="field-grid compact">
+            <label>
+              <span>英文</span>
+              <textarea id="intro-en-input" rows="4"></textarea>
+            </label>
+            <label>
+              <span>中文</span>
+              <textarea id="intro-zh-input" rows="4"></textarea>
+            </label>
+            <label>
+              <span>提示语</span>
+              <textarea id="hint-zh-input" rows="2"></textarea>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel-section grow">
+          <div class="section-title">实体</div>
+          <div id="entity-list" class="entity-list"></div>
+        </section>
+      </aside>
+
+      <section class="preview-shell">
+        <div class="preview-toolbar">
+          <div>
+            <strong>实时预览</strong>
+            <span>拖拽画面中的实体即可改位置；中间导演台负责语义级编排</span>
+          </div>
+          <div class="preview-actions">
+            <button id="focus-scene-btn" type="button">选中场景</button>
+            <button id="refresh-preview-btn" type="button">刷新预览</button>
+          </div>
+        </div>
+
+        <section class="director-studio">
+          <div class="section-title section-title-row">
+            <span>导演台</span>
+            <span class="section-kicker">Semantic Controls</span>
+          </div>
+          <div class="director-grid">
+            <label class="director-prompt">
+              <span>导演指令</span>
+              <textarea id="director-prompt-input" rows="3" placeholder="例：让狐狸更靠右下，画面更空灵一点，主角更大，氛围更梦幻。支持中英混写，Ctrl/Cmd+Enter 应用。"></textarea>
+            </label>
+            <div class="director-actions">
+              <button id="apply-director-prompt-btn" type="button">应用导演指令</button>
+              <button id="focus-lead-btn" type="button">聚焦主角</button>
+              <button id="generate-variants-btn" type="button">生成 3 个导演变体</button>
+              <button id="capture-snapshot-btn" type="button">截图评估</button>
+              <button id="auto-fix-btn" type="button">一键修正</button>
+            </div>
+            <label>
+              <span>构图预设</span>
+              <select id="composition-preset-select">
+                <option value="rule_left">左侧三分构图</option>
+                <option value="rule_right">右侧三分构图</option>
+                <option value="centered">中心英雄镜头</option>
+                <option value="wide">远景建立镜头</option>
+                <option value="dialogue">对话双主体</option>
+              </select>
+            </label>
+            <label>
+              <span>情绪预设</span>
+              <select id="mood-preset-select">
+                <option value="dreamy">梦幻</option>
+                <option value="warm">温暖</option>
+                <option value="tense">紧张</option>
+                <option value="lonely">孤独</option>
+                <option value="magical">魔法感</option>
+              </select>
+            </label>
+            <label class="range-field">
+              <span>镜头强度 <strong id="camera-strength-value">55%</strong></span>
+              <input id="camera-strength-input" type="range" min="0" max="100" value="55">
+            </label>
+            <label class="range-field">
+              <span>留白 <strong id="negative-space-value">48%</strong></span>
+              <input id="negative-space-input" type="range" min="0" max="100" value="48">
+            </label>
+            <label class="range-field">
+              <span>主体尺寸 <strong id="subject-scale-value">58%</strong></span>
+              <input id="subject-scale-input" type="range" min="0" max="100" value="58">
+            </label>
+          </div>
+          <div id="variants-list" class="variants-list">
+            <button id="variant-a-btn" type="button" class="variant-card" disabled>
+              <strong>变体 A</strong>
+              <span>主角靠左 · 更叙事</span>
+            </button>
+            <button id="variant-b-btn" type="button" class="variant-card" disabled>
+              <strong>变体 B</strong>
+              <span>中心聚焦 · 更情绪</span>
+            </button>
+            <button id="variant-c-btn" type="button" class="variant-card" disabled>
+              <strong>变体 C</strong>
+              <span>更远景 · 更电影</span>
+            </button>
+          </div>
+          
+          <section class="auto-iterate-panel">
+            <div class="section-title section-title-row">
+              <span>自动优化器</span>
+              <span id="iterate-status" class="section-kicker">Idle</span>
+            </div>
+            <div class="auto-iterate-actions">
+              <label>
+                <span>迭代轮数</span>
+                <select id="iterate-rounds-select">
+                  <option value="3">3 轮</option>
+                  <option value="5" selected>5 轮</option>
+                  <option value="8">8 轮</option>
+                </select>
+              </label>
+              <button id="run-auto-iterate-btn" type="button">自动优化</button>
+              <button id="apply-best-iteration-btn" type="button" disabled>应用最佳结果</button>
+            </div>
+            <div class="auto-iterate-summary">
+              <div class="metric-chip">
+                <strong id="iterate-current-round">0/0</strong>
+                <span>当前轮次</span>
+              </div>
+              <div class="metric-chip">
+                <strong id="iterate-best-score">--</strong>
+                <span>最佳分数</span>
+              </div>
+            </div>
+            <div id="iterate-results" class="iterate-results">
+              <div class="helper-text">点击“自动优化”后，这里会记录每轮候选和最佳方案。</div>
+            </div>
+          </section>
+
+          <section class="snapshot-review" aria-label="Preview Snapshot Review">
+            <div class="section-title section-title-row">
+              <span>预览快照</span>
+              <span class="section-kicker">Snapshot Review</span>
+            </div>
+            <div class="snapshot-grid">
+              <div id="snapshot-thumbnail" class="snapshot-thumbnail is-empty">
+                <div class="snapshot-placeholder">
+                  <strong>等待截图</strong>
+                  <span>点击“截图评估”后，这里会显示当前预览缩略图。</span>
+                </div>
+              </div>
+              <div id="visual-metrics" class="visual-metrics">
+                <div class="visual-metric-card">
+                  <strong id="visual-brightness-value">--</strong>
+                  <span>亮度</span>
+                </div>
+                <div class="visual-metric-card">
+                  <strong id="visual-contrast-value">--</strong>
+                  <span>对比</span>
+                </div>
+                <div class="visual-metric-card">
+                  <strong id="visual-balance-value">--</strong>
+                  <span>左右重心</span>
+                </div>
+                <div class="visual-metric-card">
+                  <strong id="visual-top-noise-value">--</strong>
+                  <span>顶部干扰</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <div class="preview-frame-wrap">
+          <iframe id="preview-frame" title="Scene Preview" src="editor-preview.html"></iframe>
+        </div>
+      </section>
+
+      <aside class="panel panel-right">
+        <section class="panel-section grow">
+          <div class="section-title">属性</div>
+          <div id="inspector" class="inspector-empty">先选择一个实体，或点击“选中场景”。</div>
+        </section>
+
+        <section class="panel-section analysis-section">
+          <div class="section-title section-title-row">
+            <span>画面分析</span>
+            <span id="analysis-score" class="analysis-score">--</span>
+          </div>
+          <div id="analysis-metrics" class="analysis-metrics"></div>
+          <div class="section-title section-title-row visual-analysis-title-row">
+            <span>视觉评估</span>
+            <span id="visual-score" class="analysis-score visual-score">--</span>
+          </div>
+          <div id="visual-analysis-metrics" class="analysis-metrics visual-analysis-metrics">
+            <div class="metric-chip visual-chip">
+              <strong id="visual-luma-summary">--</strong>
+              <span>亮度倾向</span>
+            </div>
+            <div class="metric-chip visual-chip">
+              <strong id="visual-contrast-summary">--</strong>
+              <span>对比层次</span>
+            </div>
+            <div class="metric-chip visual-chip">
+              <strong id="visual-focus-summary">--</strong>
+              <span>主体偏向</span>
+            </div>
+            <div class="metric-chip visual-chip">
+              <strong id="visual-top-summary">--</strong>
+              <span>顶部干扰</span>
+            </div>
+          </div>
+          <div id="visual-analysis-suggestions" class="analysis-suggestions visual-analysis-suggestions">
+            <div class="suggestion-card" data-level="low">
+              <strong>等待截图分析</strong>
+              <p>完成截图后，这里会显示基于真实预览画面的视觉建议。</p>
+            </div>
+          </div>
+          <div id="analysis-visual-metrics" class="analysis-metrics analysis-metrics-visual"></div>
+          <div class="snapshot-preview-wrap">
+            <img id="snapshot-preview" alt="预览截图缩略图" class="snapshot-preview" />
+          </div>
+          <div id="analysis-suggestions" class="analysis-suggestions"></div>
+        </section>
+
+        <section class="panel-section json-section">
+          <div class="section-title section-title-row">
+            <span>JSON</span>
+            <div class="inline-actions">
+              <button id="format-json-btn" type="button">格式化</button>
+              <button id="apply-json-btn" type="button">应用 JSON</button>
+            </div>
+          </div>
+          <textarea id="json-editor" spellcheck="false"></textarea>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script type="module" src="js/editor/editor-app.js"></script>
+</body>
+</html>

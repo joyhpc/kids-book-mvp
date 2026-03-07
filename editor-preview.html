@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Scene Preview</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/editor-preview.css">
+</head>
+<body>
+  <div id="stage">
+    <canvas id="bg-canvas"></canvas>
+    <div id="reading-zone">
+      <button id="audio-btn" class="hidden" type="button" aria-label="播放朗读">🔊</button>
+      <div id="subtitle-panel"></div>
+    </div>
+    <div id="hint-bar"></div>
+    <div id="ending-overlay">
+      <div class="ending-card">
+        <div class="ending-stars" aria-hidden="true"></div>
+        <div class="ending-title-en"></div>
+        <div class="ending-title-zh"></div>
+        <div class="ending-subtitle"></div>
+        <button class="ending-btn"></button>
+      </div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "core/": "./js/core/",
+      "modules/": "./js/modules/",
+      "plugins/": "./js/plugins/",
+      "utils/": "./js/utils/"
+    }
+  }
+  </script>
+  <script type="module" src="js/editor/preview-runtime.js"></script>
+</body>
+</html>

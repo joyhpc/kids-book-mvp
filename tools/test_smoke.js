@@ -28,6 +28,10 @@ function fetch(url) {
   });
 }
 
+function countId(html, id) {
+  return (html.match(new RegExp(`id="${id}"`, 'g')) || []).length;
+}
+
 async function main() {
   console.log('\n=== Smoke 测试 ===\n');
 
@@ -46,6 +50,43 @@ async function main() {
 
   if (!r.data.includes('engine.js')) fail('index.html 未加载 engine.js');
   ok('engine.js 已引用');
+
+  r = await fetch(BASE + '/editor.html');
+  if (r.status !== 200) fail('editor.html 返回 ' + r.status);
+  ok('editor.html 可访问');
+
+  if (!r.data.includes('preview-frame')) fail('editor.html 缺少预览 iframe');
+  ok('编辑器预览 iframe 存在');
+
+  if (!r.data.includes('director-prompt-input')) fail('editor.html 缺少导演指令区');
+  ok('导演指令区存在');
+
+  if (!r.data.includes('analysis-score')) fail('editor.html 缺少画面分析区');
+  ok('画面分析区存在');
+
+  if (!r.data.includes('capture-snapshot-btn')) fail('editor.html 缺少截图评估按钮');
+  ok('截图评估按钮存在');
+
+  if (!r.data.includes('run-auto-iterate-btn')) fail('editor.html 缺少自动优化按钮');
+  ok('自动优化按钮存在');
+
+  [
+    'run-auto-iterate-btn',
+    'apply-best-iteration-btn',
+    'iterate-rounds-select',
+    'iterate-status',
+    'iterate-current-round',
+    'iterate-best-score',
+    'iterate-results',
+  ].forEach((id) => {
+    const count = countId(r.data, id);
+    if (count !== 1) fail(`editor.html 中 #${id} 出现 ${count} 次`);
+  });
+  ok('自动优化面板关键 ID 唯一');
+
+  r = await fetch(BASE + '/editor-preview.html');
+  if (r.status !== 200) fail('editor-preview.html 返回 ' + r.status);
+  ok('editor-preview.html 可访问');
 
   r = await fetch(BASE + '/data/book.json');
   if (r.status !== 200) fail('book.json 返回 ' + r.status);

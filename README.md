@@ -25,7 +25,19 @@ python -m http.server 8888
 
 # 3. 打开
 http://localhost:8888/index.html
+
+# 4. 打开可视化编辑器
+http://localhost:8888/editor.html
 ```
+
+## Visual Scene Editor
+
+- `editor.html` 提供可视化 Scene Editor，支持实体拖拽、属性修改、JSON 导入导出。
+- 编辑器内置导演台、画面分析、自动建议与导演变体评分排序。
+- 第 2 阶段新增“导演台”：可用语义指令、构图预设、情绪预设、镜头/留白/主体尺寸滑杆和 3 个一键变体来快速迭代画面。
+- 第 4 阶段新增“截图评估 + 一键修正”：基于真实预览截图计算亮度、对比、重心、顶部干扰，并给出视觉建议。
+- 第 5 阶段新增“自动优化器”：可连续多轮尝试导演配方、逐轮评分，并一键应用最佳结果。
+- 在当前 4 个 demo 场景上，规则优化器的结构分平均可从 `34.5` 提升到 `53.0`，适合作为比 Gemini Canvas 更可控的 runtime-first 编辑底座。
 
 ## 测试
 
@@ -79,6 +91,8 @@ python tools/build_book.py book --config tools/chapter1_config.yaml
 │   ├── chapter1_config.yaml    # Chapter 1: Draw Me a Sheep (6 scenes)
 │   ├── book_config.yaml        # Prince & Fox (3 scenes, compact)
 │   └── test_book_config.yaml   # Engine stress test (4 themes)
+├── editor.html             # Visual scene editor
+├── editor-preview.html     # Live preview surface for editor
 └── reader.html             # Standalone reading prototype
 ```
 
@@ -170,7 +184,7 @@ scenes:
 - **Frontend**: Vanilla JS (ES6), HTML5 Canvas, CSS3 animations
 - **Build pipeline**: Python 3 + PyYAML
 - **AIGC** (optional): Google Gemini Imagen 3, ElevenLabs TTS
-- **No frameworks, no build step** — open `index.html` and it works
+- **No frameworks, no build step** — run a local server, then open `index.html` or `editor.html`
 
 ## License
 

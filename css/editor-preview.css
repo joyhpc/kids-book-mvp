@@ -1,0 +1,52 @@
+#stage {
+  outline: none;
+}
+
+#stage::before {
+  display: none;
+}
+
+#audio-btn,
+#hint-bar {
+  display: none !important;
+}
+
+.scene-character,
+.scene-item,
+.scene-character img,
+.scene-item img,
+.emoji-sprite,
+.emoji-sprite span,
+.word-span,
+#subtitle-panel,
+#subtitle-zh {
+  animation: none !important;
+  transition: none !important;
+}
+
+.scene-character,
+.scene-item {
+  cursor: move;
+}
+
+.editor-selected {
+  outline: 2px solid rgba(143, 124, 255, 0.95);
+  outline-offset: 8px;
+  border-radius: 18px;
+  z-index: 1200 !important;
+}
+
+.editor-selected::after {
+  content: attr(data-editor-label);
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 10px);
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(143, 124, 255, 0.92);
+  color: white;
+  font: 600 12px/1 system-ui, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+}
