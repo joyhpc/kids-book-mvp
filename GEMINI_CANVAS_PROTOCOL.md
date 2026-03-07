@@ -115,6 +115,17 @@ Important fields:
 
 See `tools/templates/gemini_canvas_prompt_template.md`.
 
+Export command:
+
+```bash
+node tools/export_canvas_prompt.js --spec page_specs/lp_001.json
+```
+
+This writes:
+
+- `canvas_exports/<page_id>/<page_id>.prompt.md`
+- `canvas_exports/<page_id>/<page_id>.bundle.json`
+
 A good prompt pack should include:
 
 - page goal in one sentence
