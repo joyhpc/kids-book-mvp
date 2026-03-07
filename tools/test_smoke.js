@@ -84,6 +84,16 @@ async function main() {
   });
   ok('自动优化面板关键 ID 唯一');
 
+  r = await fetch(BASE + '/spec-editor.html');
+  if (r.status !== 200) fail('spec-editor.html 返回 ' + r.status);
+  ok('spec-editor.html 可访问');
+
+  if (!r.data.includes('prompt-preview')) fail('spec-editor.html 缺少 Prompt 预览区');
+  ok('Page Spec Editor Prompt 区存在');
+
+  if (!r.data.includes('download-spec-btn')) fail('spec-editor.html 缺少 Spec 导出按钮');
+  ok('Page Spec Editor 导出按钮存在');
+
   r = await fetch(BASE + '/editor-preview.html');
   if (r.status !== 200) fail('editor-preview.html 返回 ' + r.status);
   ok('editor-preview.html 可访问');

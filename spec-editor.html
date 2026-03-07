@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Spec Editor</title>
+  <link rel="stylesheet" href="css/spec-editor.css">
+</head>
+<body>
+  <div class="spec-shell">
+    <header class="spec-toolbar">
+      <div>
+        <strong>Page Spec Editor</strong>
+        <span>静态绘本优先 · 生成 Gemini Canvas Prompt Pack</span>
+      </div>
+      <div class="toolbar-actions">
+        <button id="load-sample-btn" type="button">加载示例</button>
+        <label class="file-button">
+          导入 JSON
+          <input id="import-spec-input" type="file" accept="application/json">
+        </label>
+        <button id="copy-prompt-btn" type="button">复制 Prompt</button>
+        <button id="download-prompt-btn" type="button">下载 Prompt</button>
+        <button id="download-spec-btn" type="button">下载 Spec</button>
+      </div>
+    </header>
+
+    <main class="spec-layout">
+      <section class="panel editor-panel">
+        <div class="panel-head">
+          <h1>页面设定</h1>
+          <span id="status-pill" class="status-pill">准备中</span>
+        </div>
+
+        <div class="panel-section grid-two">
+          <label>
+            <span>Book ID</span>
+            <input id="book-id-input" type="text">
+          </label>
+          <label>
+            <span>Page ID</span>
+            <input id="page-id-input" type="text">
+          </label>
+          <label>
+            <span>Version</span>
+            <input id="version-input" type="number" min="1" step="1">
+          </label>
+          <label>
+            <span>Page Role</span>
+            <input id="page-role-input" type="text">
+          </label>
+        </div>
+
+        <div class="panel-section grid-one">
+          <label>
+            <span>English Text</span>
+            <textarea id="story-en-input" rows="3"></textarea>
+          </label>
+          <label>
+            <span>Chinese Text</span>
+            <textarea id="story-zh-input" rows="3"></textarea>
+          </label>
+        </div>
+
+        <div class="panel-section grid-two">
+          <label>
+            <span>Core Feeling</span>
+            <input id="core-feeling-input" type="text">
+          </label>
+          <label>
+            <span>Composition</span>
+            <select id="composition-mode-select">
+              <option value="wide">wide</option>
+              <option value="left_focus">left_focus</option>
+              <option value="right_focus">right_focus</option>
+              <option value="paired">paired</option>
+              <option value="quiet_center">quiet_center</option>
+            </select>
+          </label>
+          <label>
+            <span>Lead Subject</span>
+            <input id="lead-subject-input" type="text">
+          </label>
+          <label>
+            <span>Secondary Subject</span>
+            <input id="secondary-subject-input" type="text">
+          </label>
+          <label>
+            <span>Negative Space Ratio</span>
+            <input id="negative-space-input" type="number" min="0" max="1" step="0.01">
+          </label>
+          <label>
+            <span>Subject Scale</span>
+            <input id="subject-scale-input" type="text">
+          </label>
+          <label>
+            <span>Camera Distance</span>
+            <input id="camera-distance-input" type="text">
+          </label>
+          <label>
+            <span>Aspect Ratio</span>
+            <input id="aspect-ratio-input" type="text">
+          </label>
+        </div>
+
+        <div class="panel-section">
+          <div class="subhead">Reading Safe Zone</div>
+          <div class="grid-four compact-grid">
+            <label><span>Top</span><input id="reading-top-input" type="number" min="0" max="1" step="0.01"></label>
+            <label><span>Left</span><input id="reading-left-input" type="number" min="0" max="1" step="0.01"></label>
+            <label><span>Right</span><input id="reading-right-input" type="number" min="0" max="1" step="0.01"></label>
+            <label><span>Bottom</span><input id="reading-bottom-input" type="number" min="0" max="1" step="0.01"></label>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="subhead">Edge Safety</div>
+          <div class="grid-four compact-grid">
+            <label><span>Top</span><input id="edge-top-input" type="number" min="0" max="1" step="0.01"></label>
+            <label><span>Left</span><input id="edge-left-input" type="number" min="0" max="1" step="0.01"></label>
+            <label><span>Right</span><input id="edge-right-input" type="number" min="0" max="1" step="0.01"></label>
+            <label><span>Bottom</span><input id="edge-bottom-input" type="number" min="0" max="1" step="0.01"></label>
+          </div>
+          <div class="toggle-row">
+            <label class="check-field"><input id="no-overlap-input" type="checkbox"><span>正文区不可重叠</span></label>
+            <label class="check-field"><input id="no-crop-input" type="checkbox"><span>主体不可裁切</span></label>
+          </div>
+        </div>
+
+        <div class="panel-section grid-two">
+          <label>
+            <span>Palette</span>
+            <input id="palette-input" type="text" placeholder="#0b0d1c, #2a2255, #d9d4f4">
+          </label>
+          <label>
+            <span>Style Keywords</span>
+            <input id="style-keywords-input" type="text" placeholder="restrained, quiet, storybook">
+          </label>
+          <label class="span-two">
+            <span>Negative Keywords</span>
+            <input id="negative-keywords-input" type="text" placeholder="busy, flashy, game HUD">
+          </label>
+        </div>
+
+        <div class="panel-section grid-two">
+          <label>
+            <span>Canvas Title</span>
+            <input id="canvas-title-input" type="text">
+          </label>
+          <label>
+            <span>Version Tag</span>
+            <input id="canvas-version-tag-input" type="text">
+          </label>
+          <label>
+            <span>Canvas Share URL</span>
+            <input id="canvas-share-url-input" type="text">
+          </label>
+          <label>
+            <span>Exported Image</span>
+            <input id="canvas-exported-image-input" type="text">
+          </label>
+          <label class="span-two">
+            <span>Canvas Notes</span>
+            <textarea id="canvas-notes-input" rows="2"></textarea>
+          </label>
+        </div>
+
+        <div class="panel-section">
+          <div class="subhead">Review</div>
+          <div class="grid-two">
+            <label>
+              <span>Status</span>
+              <select id="review-status-select">
+                <option value="draft_spec">draft_spec</option>
+                <option value="prompt_ready">prompt_ready</option>
+                <option value="canvas_in_progress">canvas_in_progress</option>
+                <option value="candidate_received">candidate_received</option>
+                <option value="reviewed">reviewed</option>
+                <option value="approved">approved</option>
+                <option value="locked">locked</option>
+              </select>
+            </label>
+            <label>
+              <span>Reviewer Notes</span>
+              <textarea id="review-notes-input" rows="2"></textarea>
+            </label>
+          </div>
+          <div class="grid-six compact-grid score-grid">
+            <label><span>Readability</span><input id="score-readability-input" type="number" min="0" max="100" step="1"></label>
+            <label><span>Containment</span><input id="score-containment-input" type="number" min="0" max="100" step="1"></label>
+            <label><span>Whitespace</span><input id="score-whitespace-input" type="number" min="0" max="100" step="1"></label>
+            <label><span>Focus</span><input id="score-focus-input" type="number" min="0" max="100" step="1"></label>
+            <label><span>Restraint</span><input id="score-restraint-input" type="number" min="0" max="100" step="1"></label>
+            <label><span>Consistency</span><input id="score-consistency-input" type="number" min="0" max="100" step="1"></label>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel preview-panel">
+        <div class="panel-head">
+          <h2>Prompt Pack</h2>
+          <span id="review-total" class="review-total">总评 --</span>
+        </div>
+        <section class="panel-section">
+          <div class="subhead">Prompt Preview</div>
+          <pre id="prompt-preview" class="prompt-preview"></pre>
+        </section>
+        <section class="panel-section">
+          <div class="subhead">Spec JSON</div>
+          <textarea id="json-preview" class="json-preview" spellcheck="false" readonly></textarea>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script type="module" src="js/spec-editor-app.js"></script>
+</body>
+</html>

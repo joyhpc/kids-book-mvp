@@ -34,6 +34,7 @@ http://localhost:8888/editor.html
 
 - `GEMINI_CANVAS_PROTOCOL.md` 定义了静态绘本优先的 Gemini Canvas 协作流程、页面 spec、导入导出契约和后续去 Canvas 的迁移路径。
 - `node tools/export_canvas_prompt.js --spec page_specs/lp_001.json` 可把页面 spec 导出成 Canvas Prompt Pack，产物写到 `canvas_exports/<page_id>/`。
+- `spec-editor.html` 提供最小可用的 Page Spec Editor：编辑静态绘本 spec、实时预览 Prompt Pack，并导出 JSON / Prompt。
 
 - `editor.html` 提供可视化 Scene Editor，支持实体拖拽、属性修改、JSON 导入导出。
 - 编辑器内置导演台、画面分析、自动建议与导演变体评分排序。
